@@ -1,0 +1,1 @@
+Database Schema for Risk Management platform. If needed.

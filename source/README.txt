@@ -1,0 +1,1 @@
+Platform code (views, templates, html, css, js, etc and scripts (if any) live in here
