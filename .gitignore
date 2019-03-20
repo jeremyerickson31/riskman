@@ -1,0 +1,25 @@
+# Compiled source #
+###################
+*.pyc
+
+# Logs and databases #
+######################
+**/*.log
+**/*.jlog
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+
+# pycharm stuff #
+###################
+*.idea
+
+# pycache #
+######################
+**/__pycache__.*
+
+# pycharm stuff #
+###################
+*.sqlite3
