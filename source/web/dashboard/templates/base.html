@@ -43,34 +43,34 @@
                 <!-- sidebar menu -->
                 <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                     <div class="menu_section">
-                        <h3>General</h3>
                         <ul class="nav side-menu">
-                            <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
+                            <li id="nav_tree_id_home"><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="index.html">Introduction</a></li>
+                                    <li id="nav_tree_id_intro"><a href="intro">Introduction</a></li>
                                 </ul>
                             </li>
-                            <li><a><i class="fa fa-sitemap"></i> Risk Management <span class="fa fa-chevron-down"></span></a>
+                            <li id="nav_tree_id_riskman"><a><i class="fa fa-sitemap"></i> Risk Management <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="#level1_1">Equity</a>
-                                    <li><a>Fixed Income<span class="fa fa-chevron-down"></span></a>
+                                    <li id="nav_tree_id_equity"><a href="equity">Equity</a>
+                                    <li id="nav_tree_id_fixedincome"><a>Fixed Income<span class="fa fa-chevron-down"></span></a>
                                         <ul class="nav child_menu">
-                                            <li class="sub_menu"><a href="level2.html">Interest Rate Risk</a></li>
-                                            <li><a href="#level2_1">Credit Risk</a></li>
+                                            <li id="nav_tree_id_credit_risk"><a href="credit_risk">Credit Risk</a></li>
+                                            <li id="nav_tree_id_interest_rate_risk" class="sub_menu"><a href="interest_rate_risk">Interest Rate Risk</a></li>
                                         </ul>
                                     </li>
                                 </ul>
                             </li>
 
-                            <li><a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
+                            <li id="nav_tree_id_tables"> <a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="tables.html">1 Year Transitiions</a></li>
+                                    <li id="nav_tree_id_one_year_transitions"><a href="one_year_transitions">1 Year Transitiions</a></li>
                                 </ul>
                             </li>
                         </ul>
                     </div>
                 </div>
                 <!-- /sidebar menu -->
+                
             </div>
         </div>
 
@@ -133,5 +133,20 @@
 
 <!-- Custom Theme Scripts -->
 <script src="{% static 'dashboard/build/js/custom.min.js' %}"></script>
+
+<!-- Custom Page Scripts -->
+<script>
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+
+    var nav_tree_ids = {{ nav_tree_id|safe }}
+    var nav_tree_parents = {{ nav_tree_parents|safe }}
+
+    for (i=0; i < nav_tree_ids.length; i++){
+        jQuery("#" + nav_tree_ids).addClass("current-page")
+        jQuery("#" + nav_tree_parents).addClass("active")
+    }
+
+</script>
 </body>
 </html>
