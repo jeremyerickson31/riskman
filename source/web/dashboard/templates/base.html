@@ -20,135 +20,145 @@
 </head>
 
 <body class="nav-md">
-<div class="container body">
-    <div class="main_container">
-        <div class="col-md-3 left_col">
-            <div class="left_col scroll-view">
+    <div class="container body">
+        <div class="main_container">
+            <div class="col-md-3 left_col">
+                <div class="left_col scroll-view">
 
-                <!-- menu profile quick info -->
-                <div class="profile clearfix">
-                    <div class="profile_pic">
-                        <img src="images/img.jpg" alt="..." class="img-circle profile_img">
+                    <!-- menu profile quick info -->
+                    <div class="profile clearfix">
+                        <div class="profile_pic">
+                            <img src="images/img.jpg" alt="..." class="img-circle profile_img">
+                        </div>
+                        <div class="profile_info">
+                            <span>Welcome,</span>
+                            <h2>User</h2>
+                        </div>
+                        <div class="clearfix"></div>
                     </div>
-                    <div class="profile_info">
-                        <span>Welcome,</span>
-                        <h2>User</h2>
+                    <!-- /menu profile quick info -->
+
+                    <br />
+
+                    <!-- sidebar menu -->
+                    <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+                        <div class="menu_section">
+                            <ul class="nav side-menu">
+                                <li id="nav_tree_id_home"><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li id="nav_tree_id_intro"><a href="intro">Introduction</a></li>
+                                    </ul>
+                                </li>
+                                <li id="nav_tree_id_riskman"><a><i class="fa fa-sitemap"></i> Risk Management <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li id="nav_tree_id_equity"><a href="equity">Equity</a>
+                                        <li id="nav_tree_id_fixedincome"><a>Fixed Income<span class="fa fa-chevron-down"></span></a>
+                                            <ul class="nav child_menu">
+                                                <li id="nav_tree_id_credit_risk"><a href="credit_risk">Credit Risk</a></li>
+                                                <li id="nav_tree_id_interest_rate_risk" class="sub_menu"><a href="interest_rate_risk">Interest Rate Risk</a></li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li id="nav_tree_id_tables"> <a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li id="nav_tree_id_one_year_transitions"><a href="one_year_transitions">1 Year Transitiions</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="clearfix"></div>
+                    <!-- /sidebar menu -->
+
                 </div>
-                <!-- /menu profile quick info -->
+            </div>
 
-                <br />
+            <!-- top navigation -->
+            <div class="top_nav">
+                <div class="nav_menu">
+                    <nav>
+                        <div class="nav toggle">
+                            <a id="menu_toggle"><i class="fa fa-bars"></i></a>
+                        </div>
 
-                <!-- sidebar menu -->
-                <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
-                    <div class="menu_section">
-                        <ul class="nav side-menu">
-                            <li id="nav_tree_id_home"><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li id="nav_tree_id_intro"><a href="intro">Introduction</a></li>
-                                </ul>
-                            </li>
-                            <li id="nav_tree_id_riskman"><a><i class="fa fa-sitemap"></i> Risk Management <span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li id="nav_tree_id_equity"><a href="equity">Equity</a>
-                                    <li id="nav_tree_id_fixedincome"><a>Fixed Income<span class="fa fa-chevron-down"></span></a>
-                                        <ul class="nav child_menu">
-                                            <li id="nav_tree_id_credit_risk"><a href="credit_risk">Credit Risk</a></li>
-                                            <li id="nav_tree_id_interest_rate_risk" class="sub_menu"><a href="interest_rate_risk">Interest Rate Risk</a></li>
-                                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="">
+                                <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    <img src="images/img.jpg" alt="">Risk Management User
+                                    <span class=" fa fa-angle-down"></span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-usermenu pull-right">
+                                    <li><a href="javascript:;"> Profile</a></li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            <span class="badge bg-red pull-right">50%</span>
+                                            <span>Settings</span>
+                                        </a>
                                     </li>
-                                </ul>
-                            </li>
-
-                            <li id="nav_tree_id_tables"> <a><i class="fa fa-table"></i> Tables <span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li id="nav_tree_id_one_year_transitions"><a href="one_year_transitions">1 Year Transitiions</a></li>
+                                    <li><a href="javascript:;">Help</a></li>
+                                    <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
                                 </ul>
                             </li>
                         </ul>
-                    </div>
+                    </nav>
                 </div>
-                <!-- /sidebar menu -->
-                
             </div>
-        </div>
+            <!-- /top navigation -->
 
-        <!-- top navigation -->
-        <div class="top_nav">
-            <div class="nav_menu">
-                <nav>
-                    <div class="nav toggle">
-                        <a id="menu_toggle"><i class="fa fa-bars"></i></a>
-                    </div>
-
-                    <ul class="nav navbar-nav navbar-right">
-                        <li class="">
-                            <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                <img src="images/img.jpg" alt="">Risk Management User
-                                <span class=" fa fa-angle-down"></span>
-                            </a>
-                            <ul class="dropdown-menu dropdown-usermenu pull-right">
-                                <li><a href="javascript:;"> Profile</a></li>
-                                <li>
-                                    <a href="javascript:;">
-                                        <span class="badge bg-red pull-right">50%</span>
-                                        <span>Settings</span>
-                                    </a>
-                                </li>
-                                <li><a href="javascript:;">Help</a></li>
-                                <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </nav>
+            <!-- page content -->
+            <div class="right_col" role="main">
+                {% block content %}
+                {% endblock %}
             </div>
-        </div>
-        <!-- /top navigation -->
+            <!-- /page content -->
 
-        <!-- page content -->
-        <div class="right_col" role="main">
-            {% block content %}
-            {% endblock %}
+            <!-- footer content -->
+            <footer>
+                <div class="pull-right">
+                    Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
+                </div>
+                <div class="clearfix"></div>
+            </footer>
+            <!-- /footer content -->
         </div>
-        <!-- /page content -->
-
-        <!-- footer content -->
-        <footer>
-            <div class="pull-right">
-                Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-            </div>
-            <div class="clearfix"></div>
-        </footer>
-        <!-- /footer content -->
     </div>
-</div>
 
-<!-- jQuery -->
-<script src="{% static 'dashboard/vendors/jquery/dist/jquery.min.js' %}"></script>
-<!-- Bootstrap -->
-<script src="{% static 'dashboard/vendors/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-<!-- FastClick -->
-<script src="{% static 'dashboard/vendors/fastclick/lib/fastclick.js' %}"></script>
-<!-- NProgress -->
-<script src="{% static 'dashboard/vendors/nprogress/nprogress.js' %}"></script>
+    <!-- jQuery -->
+    <script src="{% static 'dashboard/vendors/jquery/dist/jquery.min.js' %}"></script>
+    <!-- Bootstrap -->
+    <script src="{% static 'dashboard/vendors/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    <!-- FastClick -->
+    <script src="{% static 'dashboard/vendors/fastclick/lib/fastclick.js' %}"></script>
+    <!-- NProgress -->
+    <script src="{% static 'dashboard/vendors/nprogress/nprogress.js' %}"></script>
 
-<!-- Custom Theme Scripts -->
-<script src="{% static 'dashboard/build/js/custom.min.js' %}"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="{% static 'dashboard/build/js/custom.min.js' %}"></script>
 
-<!-- Custom Page Scripts -->
-<script>
-    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    <!-- Custom Page Scripts -->
+    <script>
+        var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 
 
-    var nav_tree_ids = {{ nav_tree_id|safe }}
-    var nav_tree_parents = {{ nav_tree_parents|safe }}
+        var nav_tree_ids = {{ nav_tree_id|safe }}
+        var nav_tree_parents = {{ nav_tree_parents|safe }}
 
-    for (i=0; i < nav_tree_ids.length; i++){
-        jQuery("#" + nav_tree_ids).addClass("current-page")
-        jQuery("#" + nav_tree_parents).addClass("active")
-    }
+        for (i=0; i < nav_tree_ids.length; i++){
+            jQuery("#" + nav_tree_ids).addClass("current-page")
+            jQuery("#" + nav_tree_parents).addClass("active")
+        }
+    </script>
 
-</script>
+    {% block cssbottom %}
+    {% endblock %}
+
+    {% block jsbottom %}
+    {% endblock %}
+
+    {% block inlinejsbottom %}
+    {% endblock %}
+
+
 </body>
 </html>
