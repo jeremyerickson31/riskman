@@ -9,6 +9,19 @@
             <div class="page-title">
                 <div class="title_left">
                     <h3>1 Year Transition Matrix</h3>
+                        <form class="form-horizontal form-label-left" method="post">
+                            {% csrf_token %}
+                            <label class="control-label col-md-3 col-sm-3 col-xs-3">Matrix Source</label>
+                            <div class="col-md-4 col-sm-4 col-xs-4">
+                                <select class="form-control" id="matrix_source">
+                                    <option>Credit Metrics</option>
+                                    <option>Moodys</option>
+                                    <option>S&P</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-success" onclick="get_transition_matrix_data()">Submit</button>
+                        </form>
+                    <h5>Select a Matrix Source to get the one year transition matrix and chart</h5>
                 </div>
             </div>
         </div>
@@ -16,7 +29,6 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2>Boardered table <small>Bordered table subtitle</small></h2>
                     <ul class="nav navbar-right panel_toolbox">
                         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
                         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
@@ -72,6 +84,26 @@
 {% block inlinejsbottom %}
 
     <script>
-        console.log("in the JS")
+        var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+        function get_transition_matrix_data(){
+            var matrix_source = jQuery("#matrix_source").val()
+            jQuery.ajax({
+                        url: '{% url 'ajax_get_trans_matrix' %}',
+                        type: 'POST',
+                        data: {'matrix_source': matrix_source},
+                        headers: {'X-CSRFToken': csrftoken,},
+                        dataType: 'json',
+                        success: function (){
+                            if (true)
+                            {
+                            }
+                        },
+                        failure: function (){
+                            console.log("the AJAX call failed.....")
+                        }
+            });
+        }
+
     </script>
 {% endblock %}

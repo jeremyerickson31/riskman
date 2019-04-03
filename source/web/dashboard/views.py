@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseNotFound
+
+import json
 
 # Create your views here.
 
@@ -36,3 +39,26 @@ def one_year_transitions(request):
     context["nav_tree_id"] = "nav_tree_id_one_year_transitions"
     context["nav_tree_parents"] = ["nav_tree_id_tables"]
     return render(request, 'dashboard/one_year_transitions.html', context)
+
+
+#########################################################
+# AJAX endpoints
+#########################################################
+
+def ajax_get_trans_matrix(request):
+    """
+    AJAX function to return the one year transition matrix from the provider
+    :return: transition matrix
+    """
+
+    print("############################")
+    print("VIEW: ajax_get_trans_matrix()")
+    if request.method == "POST":
+        matrix_source = request.POST.get("matrix_source")  # gets the value from Matrix Source dropdown
+        print("VIEW: recieved matrix source {" + matrix_source + "}")
+
+    response = {'message': 'OK', 'data': [], 'status': 1}
+    if True:
+        return HttpResponse(json.dumps(response), content_type="application/json")
+    else:
+        return HttpResponseNotFound()
