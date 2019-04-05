@@ -56,14 +56,18 @@ def ajax_get_trans_matrix(request):
     :return: transition matrix
     """
 
+    response = {'status': 1, 'message': 'OK', 'data': {}}
+
     if request.method == "POST":
         matrix_source = request.POST.get("matrix_source")  # gets the value from Matrix Source dropdown
+        ordered_keys, matrix_data = common.get_one_year_matrix(matrix_source)
+        response["data"]["ordered_keys"] = ordered_keys
+        response["data"]["matrix_data"] = matrix_data
+    else:
+        response["status"] = 0
+        response["message"] = "ERROR: failed to fetch transition matrix"
 
-        matrix_data = common.get_one_year_matrix(matrix_source)
-        print(matrix_data)
-
-    response = {'message': 'OK', 'data': [], 'status': 1}
-    if True:
+    if response:
         return HttpResponse(json.dumps(response), content_type="application/json")
     else:
-        return HttpResponseNotFound()
+        return HttpResponseNotFound(json.dumps(response), content_type="application/json")

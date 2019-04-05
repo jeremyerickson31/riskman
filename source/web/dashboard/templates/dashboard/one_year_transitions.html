@@ -94,9 +94,10 @@
                         data: {'matrix_source': matrix_source},
                         headers: {'X-CSRFToken': csrftoken,},
                         dataType: 'json',
-                        success: function (){
-                            if (true)
+                        success: function (response){
+                            if (response.data)
                             {
+                            
                             }
                         },
                         failure: function (){
