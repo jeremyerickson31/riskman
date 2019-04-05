@@ -1,4 +1,8 @@
 import json
+import os
+import sys
+
+sys.path.append(os.getcwd() + "\\dashboard\\utils")
 import config
 
 

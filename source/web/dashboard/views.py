@@ -2,9 +2,14 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound
 
 import json
+import sys
+import os
+
+sys.path.append(os.getcwd() + "\\dashboard")
+from utils import common
+
 
 # Create your views here.
-
 
 def intro(request):
     context = dict()
@@ -51,11 +56,11 @@ def ajax_get_trans_matrix(request):
     :return: transition matrix
     """
 
-    print("############################")
-    print("VIEW: ajax_get_trans_matrix()")
     if request.method == "POST":
         matrix_source = request.POST.get("matrix_source")  # gets the value from Matrix Source dropdown
-        print("VIEW: recieved matrix source {" + matrix_source + "}")
+
+        matrix_data = common.get_one_year_matrix(matrix_source)
+        print(matrix_data)
 
     response = {'message': 'OK', 'data': [], 'status': 1}
     if True:
