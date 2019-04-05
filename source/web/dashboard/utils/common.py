@@ -18,9 +18,10 @@ def get_one_year_matrix(provider):
     data_dict = json.load(f)
 
     try:
+        ordered_keys = data_dict["ordered_matrix_keys"]
         matrix = data_dict["data"][provider]["one_year_transitions"]
     except KeyError:
         raise Exception("Data Provider Error: Could not find data on {%s}. See docstrings Provider param for details" % provider)
 
-    return matrix
+    return ordered_keys, matrix
 
