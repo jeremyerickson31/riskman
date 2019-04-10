@@ -16,10 +16,10 @@
                                 <select class="form-control" id="matrix_source">
                                     <option>Credit Metrics</option>
                                     <option>Moodys</option>
-                                    <option>S&P</option>
+                                    <option>SP Ratings</option>
                                 </select>
                             </div>
-                            <button type="button" class="btn btn-success" onclick="get_transition_matrix_data()">Submit</button>
+                            <button type="button" class="btn btn-success" onclick="make_matrix_and_chart()">Submit</button>
                         </form>
                     <h5>Select a Matrix Source to get the one year transition matrix and chart</h5>
                 </div>
@@ -28,114 +28,34 @@
 
         <div class="clearfix"></div>
 
+
         <div class="row">
+
+            <!-- div to hold the transition matrix -->
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title" id="matrix_name_div_id"></div>
+                    <div class="x_content" id="matrix_table_div_id">
+                        <!-- the transition matrix table goes in here -->
+                    </div>
+                </div>
+            </div>
+            <!-- div to hold the transition matrix -->
+
+            <!-- div to hold the graph -->
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
-                        <ul class="nav navbar-right panel_toolbox">
-                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="#">Settings 1</a></li>
-                                    <li><a href="#">Settings 2</a></li>
-                                </ul>
-                            </li>
-                            <li><a class="close-link"><i class="fa fa-close"></i></a></li>
-                        </ul>
-                        <div class="clearfix"></div>
+                        <div class="clearfix" id="graph_name_div_id"></div>
                     </div>
-
-                    <div class="x_content">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Username</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>@mdo</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>@fat</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>Larry</td>
-                                    <td>the Bird</td>
-                                    <td>@twitter</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="x_content" id="graph_content_div_id">
 
                     </div>
                 </div>
             </div>
+            <!-- div to hold the graph -->
 
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <div class="x_panel">
-                    <div class="x_title">
-                        <ul class="nav navbar-right panel_toolbox">
-                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-                            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="#">Settings 1</a></li>
-                                    <li><a href="#">Settings 2</a></li>
-                                </ul>
-                            </li>
-                            <li><a class="close-link"><i class="fa fa-close"></i></a></li>
-                        </ul>
-                        <div class="clearfix"></div>
-                    </div>
-
-                    <div class="x_content">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>First Name</th>
-                                    <th>Last Name</th>
-                                    <th>Username</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    <td>Otto</td>
-                                    <td>@mdo</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>Jacob</td>
-                                    <td>Thornton</td>
-                                    <td>@fat</td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>Larry</td>
-                                    <td>the Bird</td>
-                                    <td>@twitter</td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                    </div>
-                </div>
-            </div>
         </div>
-
-
-
         <!-- /page content -->
 
 {% endblock %}
@@ -145,7 +65,8 @@
     <script>
         var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 
-        function get_transition_matrix_data(){
+        function make_matrix_and_chart(){
+
             var matrix_source = jQuery("#matrix_source").val()
             jQuery.ajax({
                         url: '{% url 'ajax_get_trans_matrix' %}',
@@ -156,8 +77,101 @@
                         success: function (response){
                             if (response.data)
                             {
+                                // get target divs, these are static
+                                matrix_name_div = document.getElementById("matrix_name_div_id")
+                                matrix_table_div = document.getElementById("matrix_table_div_id")
 
-                                
+                                // attributes of the name and table, to be set
+                                var name_id = "matrix_name_id"
+                                var table_id = "transition_matrix_table_id"
+                                var table_class = "table table-bordered"
+
+                                // remove name if exists, so two clicks doesn't make two names
+                                var existing_name = document.getElementById(name_id)
+                                if (existing_name){
+                                    existing_name.remove()
+                                }
+
+                                // remove table if exists, so two clicks doesn't make two tables
+                                var existing_table = document.getElementById(table_id)
+                                if (existing_table){
+                                    existing_table.remove()
+                                }
+
+                                // make name element
+                                var new_name_text = document.createTextNode(matrix_source + " 1 Yr Transitions")
+                                var new_name_div = document.createElement("div")
+                                new_name_div.setAttribute("id", name_id)
+                                new_name_div.appendChild(new_name_text)
+                                matrix_name_div.appendChild(new_name_div)
+
+                                // make table element etc, table gets destroyed on button click
+                                var new_table_obj = document.createElement("table")
+                                new_table_obj.setAttribute("id", table_id)
+                                new_table_obj.setAttribute("class", table_class)
+
+                                // get transition matrix table and make thead and tbody elements
+                                var thead = document.createElement("thead")
+                                var tbody = document.createElement("tbody")
+
+                                // get the ordered rating keys and matrix data
+                                var rating_label_dict = response.data["ordered_keys"]
+                                var rating_keys = Object.keys(rating_label_dict).sort()
+                                var matrix_data = response.data["matrix_data"]
+                                console.log(rating_label_dict)
+                                console.log(rating_keys)
+                                console.log(matrix_data)
+                                console.log(matrix_data["AAA"]["AAA"])
+
+                                // start looping through rating keys and building rows and cells
+                                // rating keys go 1-8, loop starts at 0 to account for label rpw and label column
+                                for (var i=0; i < rating_keys.length; i++){
+
+                                    var row = document.createElement("tr")
+
+                                    for (var j=0; j < rating_keys.length + 1; j++){
+
+                                        if (i==0){
+                                            // then this is the header row
+                                            var cell = document.createElement("th")
+
+                                            if (j==0){
+                                                // this is a blank cell
+                                                var cellText = document.createTextNode(" ")
+                                            }else{
+                                                // this is the rating label (AAA, AA, A, BBB...)
+                                                var label = rating_label_dict[j]
+                                                var cellText = document.createTextNode(label)
+                                            }
+                                            cell.appendChild(cellText)
+                                            row.appendChild(cell)
+                                            thead.appendChild(row)
+
+                                        } else{
+                                            // these are the data rows
+
+                                            if (j==0){
+                                                // this is a row label
+                                                var label = rating_label_dict[i]
+                                                var cell = document.createElement("th")
+                                                var cellText = document.createTextNode(label)
+                                            }else{
+                                                // this is the transition probability
+                                                var data = matrix_data[rating_label_dict[i]][rating_label_dict[j]]
+                                                data = data.toFixed(2)
+                                                var cell = document.createElement("td")
+                                                var cellText = document.createTextNode(data)
+                                            }
+                                            cell.appendChild(cellText)
+                                            row.appendChild(cell)
+                                            tbody.appendChild(row)
+                                        }
+                                    }
+                                }
+                                new_table_obj.appendChild(thead)
+                                new_table_obj.appendChild(tbody)
+                                matrix_table_div.appendChild(new_table_obj)
+
 
                             }
                         },

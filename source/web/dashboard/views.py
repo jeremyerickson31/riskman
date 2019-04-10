@@ -59,13 +59,18 @@ def ajax_get_trans_matrix(request):
     response = {'status': 1, 'message': 'OK', 'data': {}}
 
     if request.method == "POST":
-        matrix_source = request.POST.get("matrix_source")  # gets the value from Matrix Source dropdown
-        ordered_keys, matrix_data = common.get_one_year_matrix(matrix_source)
-        response["data"]["ordered_keys"] = ordered_keys
-        response["data"]["matrix_data"] = matrix_data
+        try:
+            matrix_source = request.POST.get("matrix_source")  # gets the value from Matrix Source dropdown
+            ordered_keys, matrix_data = common.get_one_year_matrix(matrix_source)
+            response["data"]["ordered_keys"] = ordered_keys
+            response["data"]["matrix_data"] = matrix_data
+        except:
+            response["status"] = 0
+            response["message"] = "ERROR: couldn't fetch transition matrix for %s" % matrix_source
+
     else:
         response["status"] = 0
-        response["message"] = "ERROR: failed to fetch transition matrix"
+        response["message"] = "ERROR: ajax endpoint {ajax_get_trans_matrix} not configured for GET request"
 
     if response:
         return HttpResponse(json.dumps(response), content_type="application/json")
