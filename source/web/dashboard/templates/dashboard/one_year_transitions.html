@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load static %}
+
 {% block title %}Dashboard | Home{% endblock %}
 
 {% block content %}
@@ -45,12 +47,8 @@
             <!-- div to hold the graph -->
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="x_panel">
-                    <div class="x_title">
-                        <div class="clearfix" id="graph_name_div_id"></div>
-                    </div>
-                    <div class="x_content" id="graph_content_div_id">
-
-                    </div>
+                    <div class="x_title" id="chart_name_div_id"></div>
+                    <div class="x_content" id="chart_content_div_id"></div>
                 </div>
             </div>
             <!-- div to hold the graph -->
@@ -77,17 +75,21 @@
                         success: function (response){
                             if (response.data)
                             {
+                                // ****************************************
+                                // this block is for building the transition matrix
+                                // ****************************************
+
                                 // get target divs, these are static
                                 matrix_name_div = document.getElementById("matrix_name_div_id")
                                 matrix_table_div = document.getElementById("matrix_table_div_id")
 
                                 // attributes of the name and table, to be set
-                                var name_id = "matrix_name_id"
+                                var matrix_name_id = "matrix_name_id"
                                 var table_id = "transition_matrix_table_id"
                                 var table_class = "table table-bordered"
 
                                 // remove name if exists, so two clicks doesn't make two names
-                                var existing_name = document.getElementById(name_id)
+                                var existing_name = document.getElementById(matrix_name_id)
                                 if (existing_name){
                                     existing_name.remove()
                                 }
@@ -98,10 +100,10 @@
                                     existing_table.remove()
                                 }
 
-                                // make name element
+                                // make name element for matrix div
                                 var new_name_text = document.createTextNode(matrix_source + " 1 Yr Transitions")
                                 var new_name_div = document.createElement("div")
-                                new_name_div.setAttribute("id", name_id)
+                                new_name_div.setAttribute("id", matrix_name_id)
                                 new_name_div.appendChild(new_name_text)
                                 matrix_name_div.appendChild(new_name_div)
 
@@ -118,17 +120,22 @@
                                 var rating_label_dict = response.data["ordered_keys"]
                                 var rating_keys = Object.keys(rating_label_dict).sort()
                                 var matrix_data = response.data["matrix_data"]
-                                console.log(rating_label_dict)
-                                console.log(rating_keys)
-                                console.log(matrix_data)
-                                console.log(matrix_data["AAA"]["AAA"])
+
+                                // make ordered labels for charting (ie: AAA, AA, A....)
+                                var ordered_rating_labels = []
+                                for (var k=1; k <= rating_keys.length; k++){
+                                    ordered_rating_labels.push(rating_label_dict[k])
+                                }
 
                                 // start looping through rating keys and building rows and cells
                                 // rating keys go 1-8, loop starts at 0 to account for label rpw and label column
+
+                                var x_labels = []
+                                var plot_series_list = []
                                 for (var i=0; i < rating_keys.length; i++){
 
                                     var row = document.createElement("tr")
-
+                                    var rating_level_data = []
                                     for (var j=0; j < rating_keys.length + 1; j++){
 
                                         if (i==0){
@@ -142,6 +149,7 @@
                                                 // this is the rating label (AAA, AA, A, BBB...)
                                                 var label = rating_label_dict[j]
                                                 var cellText = document.createTextNode(label)
+                                                x_labels.push(label)
                                             }
                                             cell.appendChild(cellText)
                                             row.appendChild(cell)
@@ -157,22 +165,80 @@
                                                 var cellText = document.createTextNode(label)
                                             }else{
                                                 // this is the transition probability
-                                                var data = matrix_data[rating_label_dict[i]][rating_label_dict[j]]
-                                                data = data.toFixed(2)
+                                                var prob = matrix_data[rating_label_dict[i]][rating_label_dict[j]]
+                                                prob = prob.toFixed(2)
                                                 var cell = document.createElement("td")
-                                                var cellText = document.createTextNode(data)
+                                                var cellText = document.createTextNode(prob)
+                                                rating_level_data.push(parseFloat(prob))
                                             }
                                             cell.appendChild(cellText)
                                             row.appendChild(cell)
                                             tbody.appendChild(row)
                                         }
                                     }
+                                    if (rating_level_data){
+                                        var data_series = {"name": label,
+                                                           "data": rating_level_data
+                                                           }
+                                        plot_series_list.push(data_series)
+                                    }
+
                                 }
+                                plot_series_list.shift() // removing the first entry because its a D row with no data
+
                                 new_table_obj.appendChild(thead)
                                 new_table_obj.appendChild(tbody)
                                 matrix_table_div.appendChild(new_table_obj)
+                                // ****************************************
 
+                                // ****************************************
+                                // this block is for making the chart
+                                // ****************************************
 
+                                // get target divs, these are static
+                                chart_name_div = document.getElementById("chart_name_div_id")
+                                chart_content_div = document.getElementById("chart_content_div_id")
+
+                                // attributes of the name and table, to be set
+                                var chart_name_id = "chart_name_id"
+                                var chart_id = "chart_content_id"
+
+                                // remove chart name if exists, so two clicks doesn't make two names
+                                var existing_chart_name = document.getElementById(chart_name_id)
+                                if (existing_chart_name){
+                                    existing_chart_name.remove()
+                                }
+
+                                // remove table if exists, so two clicks doesn't make two tables
+                                var existing_chart = document.getElementById(chart_id)
+                                if (existing_chart){
+                                    existing_chart.remove()
+                                }
+
+                                // make name element for chart div
+                                var new_chart_name_text = document.createTextNode(matrix_source + " 1 Yr Transitions")
+                                var new_chart_name_div = document.createElement("div")
+                                new_chart_name_div.setAttribute("id", chart_name_id)
+                                new_chart_name_div.appendChild(new_chart_name_text)
+                                chart_name_div.appendChild(new_chart_name_div)
+
+                                // make new div to contain chart
+                                var new_chart_div = document.createElement("div")
+                                new_chart_div.setAttribute("id", chart_id)
+                                chart_content_div.appendChild(new_chart_div)
+
+                                console.log(plot_series_list)
+
+                                // make new highcharts object and send it to new_chart_div
+                                var trans_matrix_chart = Highcharts.chart(chart_id, {
+                                    chart: {type: "line"},
+                                    title: {text: null},
+                                    xAxis: {categories: x_labels, labels: {step: 1, rotation: -45}
+                                            },
+                                    yAxis: {lineWidth: 2, title:{enabled:false}
+                                            },
+                                    series: plot_series_list
+                                });
                             }
                         },
                         failure: function (){
