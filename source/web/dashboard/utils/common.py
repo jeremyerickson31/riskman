@@ -6,6 +6,19 @@ sys.path.append(os.getcwd() + "\\dashboard\\utils")
 import config
 
 
+def load_matrix_json():
+    """
+    gets the oneyeartransitions.json and returns the dictionary
+    :return:
+    """
+
+    file_loc = config.model_inputs["one_year_matrix_file"]
+    f = open(file_loc)
+    data_dict = json.load(f)
+
+    return data_dict
+
+
 def get_matrix_providers():
     """
     will open oneyeartransitions.json and read 'providers'
