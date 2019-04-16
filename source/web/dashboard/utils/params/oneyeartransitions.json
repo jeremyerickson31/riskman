@@ -1,4 +1,6 @@
-{ "ordered_matrix_keys": {"1": "AAA", "2": "AA", "3": "A", "4": "BBB", "5": "BB", "6": "B", "7": "CCC", "8": "D"},
+{ "build_json_with": "static",
+  "providers": ["Credit Metrics", "Moodys", "SP Ratings"],
+  "ordered_matrix_keys": {"1": "AAA", "2": "AA", "3": "A", "4": "BBB", "5": "BB", "6": "B", "7": "CCC", "8": "D"},
   "data":{
     "Credit Metrics": {
       "document": "Credit Metrics Technical Manual",
