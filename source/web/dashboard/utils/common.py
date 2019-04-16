@@ -25,9 +25,7 @@ def get_matrix_providers():
     :return: list of transition matrix providers used in oneyeartransitions.json
     """
 
-    file_loc = config.model_inputs["one_year_matrix_file"]
-    f = open(file_loc)
-    data_dict = json.load(f)
+    data_dict = load_matrix_json()
 
     try:
         providers = data_dict["providers"]
@@ -44,9 +42,7 @@ def get_one_year_matrix(provider):
     :return: one year transition matrix
     """
 
-    file_loc = config.model_inputs["one_year_matrix_file"]
-    f = open(file_loc)
-    data_dict = json.load(f)
+    data_dict = load_matrix_json()
 
     try:
         ordered_keys = data_dict["ordered_matrix_keys"]
