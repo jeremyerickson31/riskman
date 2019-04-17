@@ -2,9 +2,25 @@ import json
 import os
 import sys
 
+from datetime import datetime
+
 sys.path.append(os.getcwd() + "\\dashboard\\utils")
 import config
 
+
+def open_script_log_file(script_name):
+    """
+    opens a log file for a script
+    :param script_name: name of the script that is being run
+    :return: file object
+    """
+
+    file_creation = str(datetime.now()).replace(":", "_").replace(" ", "_")
+    logs_folder = config.settings["script_log_loc"]
+    log_file = logs_folder + "\\" + script_name + "_" + file_creation + ".txt"
+    f = open(log_file, "w")
+    
+    return f
 
 def load_matrix_json():
     """
