@@ -19,6 +19,16 @@ def load_matrix_json():
     return data_dict
 
 
+def get_correlations_list():
+    """
+    gets the list of built in correlation assumptions
+    :return: correlation list
+    """
+
+    correlations = config.model_inputs["correlations"]
+    return correlations
+
+
 def get_matrix_providers():
     """
     will open oneyeartransitions.json and read 'providers'
