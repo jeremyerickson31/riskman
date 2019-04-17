@@ -40,9 +40,11 @@ def script_logger(file_obj, text):
 
     # print to file and print to console
     try:
-        file_obj.write(text + "\n")
+        timestamp = str(datetime.now()).replace(":", "_").replace(" ", "_")
+        log_text = timestamp + ": " + text
+        file_obj.write(log_text + "/n")
         file_obj.flush()
-        print(text)
+        print(log_text)
         result = True
     except:
         result = False
