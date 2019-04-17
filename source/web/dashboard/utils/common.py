@@ -2,6 +2,7 @@ import json
 import os
 import sys
 
+from io import TextIOWrapper
 from datetime import datetime
 
 sys.path.append(os.getcwd() + "\\dashboard\\utils")
@@ -19,8 +20,35 @@ def open_script_log_file(script_name):
     logs_folder = config.settings["script_log_loc"]
     log_file = logs_folder + "\\" + script_name + "_" + file_creation + ".txt"
     f = open(log_file, "w")
-    
+
     return f
+
+
+def script_logger(file_obj, text):
+    """
+    function used by the scripts to log certain things to the file as well as print them to console
+    :param file_obj: requires an open file object
+    :param text: the text to log and print
+    :return: True / False for success or fail
+    """
+
+    if not isinstance(file_obj, TextIOWrapper):
+        raise Exception("Parameter Error: first parameter is supposed to be an open file object")
+
+    if not isinstance(text, str):
+        raise Exception("Parameter Error: second parameter is supposed to be a string")
+
+    # print to file and print to console
+    try:
+        file_obj.write(text + "\n")
+        file_obj.flush()
+        print(text)
+        result = True
+    except:
+        result = False
+
+    return result
+
 
 def load_matrix_json():
     """
