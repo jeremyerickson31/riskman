@@ -108,3 +108,14 @@ def get_one_year_matrix(provider):
 
     return ordered_keys, matrix
 
+
+def get_asset_return_distribution_params():
+    """
+    function to fetch parameters of teh asset return distribution
+    :return: mu, sigma tuple
+    """
+
+    mu = config.model_inputs["asset_return_distribution"]["mu"]
+    sigma = config.model_inputs["asset_return_distribution"]["sigma"]
+
+    return mu, sigma
