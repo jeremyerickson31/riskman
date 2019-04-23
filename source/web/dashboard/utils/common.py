@@ -42,7 +42,7 @@ def script_logger(file_obj, text):
     try:
         timestamp = str(datetime.now()).replace(":", "_").replace(" ", "_")
         log_text = timestamp + ": " + text
-        file_obj.write(log_text + "/n")
+        file_obj.write(log_text + "\n")
         file_obj.flush()
         print(log_text)
         result = True
