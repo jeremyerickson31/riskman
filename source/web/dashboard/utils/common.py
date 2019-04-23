@@ -28,26 +28,34 @@ def script_logger(file_obj, text):
     """
     function used by the scripts to log certain things to the file as well as print them to console
     :param file_obj: requires an open file object
-    :param text: the text to log and print
+    :param text: the text or list of texts to log and print
     :return: True / False for success or fail
     """
 
     if not isinstance(file_obj, TextIOWrapper):
         raise Exception("Parameter Error: first parameter is supposed to be an open file object")
 
-    if not isinstance(text, str):
-        raise Exception("Parameter Error: second parameter is supposed to be a string")
+    if not isinstance(text, str) or not isinstance(text, list):
+        raise Exception("Parameter Error: second parameter is supposed to be a string or list of strings")
 
     # print to file and print to console
-    try:
-        timestamp = str(datetime.now()).replace(":", "_").replace(" ", "_")
-        log_text = timestamp + ": " + text
-        file_obj.write(log_text + "\n")
-        file_obj.flush()
-        print(log_text)
+    if isinstance(text, str):
+        text_list = [text]
+    else:
+        text_list = text
+
+    result = False
+    for entry in text_list:
+        try:
+            timestamp = str(datetime.now()).replace(":", "_").replace(" ", "_")
+            log_text = timestamp + ": " + entry
+            file_obj.write(log_text + "\n")
+            file_obj.flush()
+            print(log_text)
+        except:
+            break
+    else:
         result = True
-    except:
-        result = False
 
     return result
 
