@@ -35,7 +35,7 @@ def script_logger(file_obj, text):
     if not isinstance(file_obj, TextIOWrapper):
         raise Exception("Parameter Error: first parameter is supposed to be an open file object")
 
-    if not isinstance(text, str) or not isinstance(text, list):
+    if not isinstance(text, str) and not isinstance(text, list):
         raise Exception("Parameter Error: second parameter is supposed to be a string or list of strings")
 
     # print to file and print to console
