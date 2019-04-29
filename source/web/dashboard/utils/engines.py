@@ -25,6 +25,16 @@ def calc_rating_transition_thresholds(provider, mu, sigma):
     rating_level_thresholds = dict()
 
     logging.append("ENGINE: entered engine: %s" % engine_name)
+
+    logging.append("ENGINE: Check Provider validity")
+    supported_providers = common.get_matrix_providers()
+    if provider not in supported_providers:
+        raise Exception("Parameter Error: Got unsupported Provider: {%s}" % provider)
+
+    logging.append("ENGINE: Check Mu, Sigma Validity")
+    if not isinstance(mu, float) or not isinstance(sigma, float):
+        raise Exception("Parameter Error: Mu and Sigma must both be of type <float>")
+
     logging.append("ENGINE: Get one year transition matrix for provider: %s" % provider)
     ordered_rating_levels, matrix = common.get_one_year_matrix(provider)
     rating_indexes = list(ordered_rating_levels.keys())
