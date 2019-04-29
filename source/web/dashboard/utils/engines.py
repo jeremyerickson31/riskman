@@ -2,6 +2,7 @@
 
 import config
 import common
+import numpy
 import scipy.stats
 
 from datetime import datetime
@@ -20,7 +21,7 @@ def calc_rating_transition_thresholds(provider, mu, sigma):
     """
 
     engine_name = "calc_rating_transition_thresholds"
-    logging = list()  # if log file is specified, list will be sent to common.script_logger otherwise just print
+    logging = list()  # list for logging engine process. can be printed and stored elsewhere
     rating_level_thresholds = dict()
 
     logging.append("ENGINE: entered engine: %s" % engine_name)
@@ -74,3 +75,35 @@ def calc_rating_transition_thresholds(provider, mu, sigma):
     logging.append("ENGINE: All Threshold Calculations Complete")
 
     return rating_level_thresholds, logging
+
+
+def threshold_numerical_integration(thresholds, correlation):
+    """
+    this function calculates the joint rating transition probabilities by way of numerical integration of a bivariate
+    standard normal distribution
+    required input is a dictionary of rating transition thresholds and a correlation assumption for the bivariate
+    :param thresholds: dictionary of thresholds {'CCC': {'D': -0.85, 'CCC': 1.02, ...} }
+    :param correlation: correlation parameter used in the bivariate normal distribution
+    :return: dictionary with a set of joint transition probabilities for a pair of ratings
+     ie: {'CCC': {'AAA': [matrix], ...} } says if Rating 1 is CCC and rating 2 is AAA the joint transitions are [matrix]
+     where [matrix] is of the form {'AAA': {'AAA': number, 'AA': number'...}, 'AA':{'AAA': number, 'AA': number'...}, }
+    """
+
+    engine_name = "threshold_numerical_integration"
+    logging = list()  # list for logging engine process. can be printed and stored elsewhere
+    joint_trans_probs = dict()
+
+    """
+        
+        lower_bound = numpy.array([-10, -10])
+    
+        upper_bound = numpy.array([.1, -.2])
+    
+        mu = numpy.array([-.3, .17])
+    
+        corr_mat = numpy.array([[1.2,.35],[.35,2.1]])
+        
+        p, i = mvn.mvnun(lower_bound, upper_bound, mu, corr_mat)
+        print(p)
+    """
+    return None
