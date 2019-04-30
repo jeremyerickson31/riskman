@@ -10,6 +10,8 @@ model_inputs = dict()
 
 # locations of important files
 model_inputs["one_year_matrix_file"] = current_directory + "\\dashboard\\utils\\params\\oneyeartransitions.json"
+model_inputs["transition_thresholds"] = current_directory + "\\dashboard\\utils\\params\\transition_thresholds.json"
+model_inputs["pre_calc_joint_matrics"] = current_directory + "\\dashboard\\utils\\params\\pre_calc_joint_matrices.json"
 model_inputs["joint_transitions"] = current_directory + "\\dashboard\\utils\\params\\"
 
 # default assumptions for the asset return normal distribution
