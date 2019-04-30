@@ -33,7 +33,7 @@ def calc_rating_transition_thresholds(provider, mu, sigma):
 
     logging.append("ENGINE: Check Mu, Sigma Validity")
     if not isinstance(mu, float) or not isinstance(sigma, float):
-        raise Exception("Parameter Error: Mu and Sigma must both be of type <float>")
+        raise Exception("Parameter Error: Mu and Sigma must both be of type <float>. Got %s and %s" % (str(type(mu)), str(type(sigma))))
 
     logging.append("ENGINE: Get one year transition matrix for provider: %s" % provider)
     ordered_rating_levels, matrix = common.get_one_year_matrix(provider)
@@ -87,16 +87,16 @@ def calc_rating_transition_thresholds(provider, mu, sigma):
     return rating_level_thresholds, logging
 
 
-def threshold_numerical_integration(thresholds, correlation):
+def threshold_numerical_integration(thresholds_1, thresholds_2, correlation):
     """
     this function calculates the joint rating transition probabilities by way of numerical integration of a bivariate
     standard normal distribution
-    required input is a dictionary of rating transition thresholds and a correlation assumption for the bivariate
-    :param thresholds: dictionary of thresholds {'CCC': {'D': -0.85, 'CCC': 1.02, ...} }
+    required input is a dictionary of rating transition thresholds, one for each credit exposure and a correlation
+    assumption for the bivariate normal distribution
+    :param thresholds_1: thresholds for first credit exposure ie: 'CCC': {'D': -0.85, 'CCC': 1.02, ...}
+    :param thresholds_2: thresholds for second credit exposure ie: 'CCC': {'D': -0.85, 'CCC': 1.02, ...}
     :param correlation: correlation parameter used in the bivariate normal distribution
-    :return: dictionary with a set of joint transition probabilities for a pair of ratings
-     ie: {'CCC': {'AAA': [matrix], ...} } says if Rating 1 is CCC and rating 2 is AAA the joint transitions are [matrix]
-     where [matrix] is of the form {'AAA': {'AAA': number, 'AA': number'...}, 'AA':{'AAA': number, 'AA': number'...}, }
+    :return: joint transition probabilities matrix for a pair of ratings
     """
 
     engine_name = "threshold_numerical_integration"
