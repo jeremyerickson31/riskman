@@ -79,9 +79,11 @@ def calc_rating_transition_thresholds(provider, mu, sigma):
             logging.append("ENGINE: Next To-Rating")
             prev_thresh = curr_thresh
 
+        logging.append("ENGINE: Completed All To-Ratings")
         logging.append("ENGINE: Completed Threshold Calculations for %s" % from_rating)
         logging.append("ENGINE: Next From-Rating")
 
+    logging.append("ENGINE: Completed All From-Ratings")
     logging.append("ENGINE: All Threshold Calculations Complete")
 
     return rating_level_thresholds, logging
