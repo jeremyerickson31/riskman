@@ -89,7 +89,7 @@ def calc_rating_transition_thresholds(provider, mu, sigma):
     return rating_level_thresholds, logging
 
 
-def threshold_numerical_integration(thresholds_1, thresholds_2, correlation):
+def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
     """
     this function calculates the joint rating transition probabilities by way of numerical integration of a bivariate
     standard normal distribution
@@ -97,13 +97,70 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, correlation):
     assumption for the bivariate normal distribution
     :param thresholds_1: thresholds for first credit exposure ie: 'CCC': {'D': -0.85, 'CCC': 1.02, ...}
     :param thresholds_2: thresholds for second credit exposure ie: 'CCC': {'D': -0.85, 'CCC': 1.02, ...}
-    :param correlation: correlation parameter used in the bivariate normal distribution
+    :param gauss_corr_mat: 2x2 correlation amtrix for bivariate normal distribution, must be 2x2 numpy array
     :return: joint transition probabilities matrix for a pair of ratings
     """
 
     engine_name = "threshold_numerical_integration"
     logging = list()  # list for logging engine process. can be printed and stored elsewhere
     joint_trans_probs = dict()
+
+    logging.append("ENGINE: entered engine: %s" % engine_name)
+
+    # check that the matrices have the same keys. otherwise not square matrix and thats weird
+    if not list(thresholds_1.keys()) == list(thresholds_2.keys()):
+        raise Exception("Parameter Error: thresholds are not the same shape. Should have the same keys")
+
+    # check that the corr_mat is a 2x2 numpy array
+    if type(gauss_corr_mat) == numpy.ndarray:
+        if gauss_corr_mat.shape == (2, 2):
+            pass
+        else:
+            raise Exception("Parameter Dimension Error: gauss_corr_mat needs to be (2,2) numpy array. "
+                            "Got %s" % str(gauss_corr_mat.shape))
+    else:
+        raise Exception("Parameter Type Error: gauss_corr_mat needs to be numpy array. "
+                        "Got %s" % str(type(gauss_corr_mat)))
+
+    # get the ordered keys from the one year matrix file and sort
+    ordered_keys = common.get_ordered_rating_keys()
+    key_ints = list(ordered_keys.keys())
+    key_ints = [int(key) for key in key_ints]  # make the str numbers to integers to guarantee correct sorting
+    key_ints.sort()
+    key_ints.reverse()  # will start with D and go up
+
+    # hey_top and key_bottom used to know upper and lower bounds of integration
+    key_bottom = key_ints[0]
+    key_top = key_ints[-1]
+
+    # these limits set the outer most limits for the integration, instead of -INF and INF
+    upper_limit_max = 10.0
+    lower_limit_max = -10.0
+
+    for key_1 in key_ints:
+
+        row = dict()  # for storing joint transition probabilities for the row
+
+        if key_1 == key_bottom:
+            bond1_lower = lower_limit_max
+            bond1_upper = thresholds_1[ordered_keys[key_1]]
+        elif key_1 == key_top:
+            bond1_lower = thresholds_1[ordered_keys[key_1]]
+            bond1_upper = upper_limit_max
+        else:
+            bond1_lower = thresholds_1[ordered_keys[key_1 - 1]]
+            bond1_upper = thresholds_1[ordered_keys[key_1]]
+
+        for key_2 in key_ints:
+            if key_2 == key_bottom:
+                bond2_lower = lower_limit_max
+                bond2_upper = thresholds_2[ordered_keys[key_2]]
+            elif key_2 == key_top:
+                bond2_lower = thresholds_2[ordered_keys[key_2]]
+                bond2_upper = upper_limit_max
+            else:
+                bond2_lower = thresholds_2[ordered_keys[key_2 - 1]]
+                bond2_upper = thresholds_2[ordered_keys[key_2]]
 
     """
         
