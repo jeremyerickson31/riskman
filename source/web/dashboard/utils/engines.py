@@ -57,7 +57,7 @@ def calc_rating_transition_thresholds(provider, mu, sigma):
         logging.append("ENGINE: Loop through To-Ratings and get thresholds")
         prev_thresh = 0
         for to_rating in rating_levels:
-            
+
             trans_prob = one_year_probs[to_rating] / 100.0
             if trans_prob == 0.0:
                 trans_prob = 0.001  # this is required to avoid an inf or -inf threshold
@@ -136,30 +136,36 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
     upper_limit_max = 10.0
     lower_limit_max = -10.0
 
+    print(thresholds_1)
+    print(thresholds_2)
     for key_1 in key_ints:
 
         row = dict()  # for storing joint transition probabilities for the row
 
         if key_1 == key_bottom:
             bond1_lower = lower_limit_max
-            bond1_upper = thresholds_1[ordered_keys[key_1]]
+            bond1_upper = thresholds_1[ordered_keys[str(key_1)]]
         elif key_1 == key_top:
-            bond1_lower = thresholds_1[ordered_keys[key_1]]
+            bond1_lower = thresholds_1[ordered_keys[str(key_1)]]
             bond1_upper = upper_limit_max
         else:
-            bond1_lower = thresholds_1[ordered_keys[key_1 - 1]]
-            bond1_upper = thresholds_1[ordered_keys[key_1]]
+            bond1_lower = thresholds_1[ordered_keys[str(key_1 + 1)]]
+            bond1_upper = thresholds_1[ordered_keys[str(key_1)]]
 
         for key_2 in key_ints:
             if key_2 == key_bottom:
                 bond2_lower = lower_limit_max
-                bond2_upper = thresholds_2[ordered_keys[key_2]]
+                bond2_upper = thresholds_2[ordered_keys[str(key_2)]]
             elif key_2 == key_top:
-                bond2_lower = thresholds_2[ordered_keys[key_2]]
+                bond2_lower = thresholds_2[ordered_keys[str(key_2)]]
                 bond2_upper = upper_limit_max
             else:
-                bond2_lower = thresholds_2[ordered_keys[key_2 - 1]]
-                bond2_upper = thresholds_2[ordered_keys[key_2]]
+                bond2_lower = thresholds_2[ordered_keys[str(key_2 + 1)]]
+                bond2_upper = thresholds_2[ordered_keys[str(key_2)]]
+
+            print("--------------")
+            print(str(bond1_lower) + " : " + str(bond1_upper))
+            print(str(bond2_lower) + " : " + str(bond2_upper))
 
     """
         
