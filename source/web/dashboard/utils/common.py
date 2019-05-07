@@ -117,6 +117,18 @@ def get_one_year_matrix(provider):
     return ordered_keys, matrix
 
 
+def get_ordered_rating_keys():
+    """
+    function that will return the ordered keys located in the oneyeartransition.json file
+    :return: ordered keys
+    """
+
+    data_dict = load_matrix_json()
+    ordered_keys = data_dict["ordered_matrix_keys"]
+
+    return ordered_keys
+
+
 def get_asset_return_distribution_params():
     """
     function to fetch parameters of teh asset return distribution
