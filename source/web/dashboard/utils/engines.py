@@ -66,9 +66,12 @@ def calc_rating_transition_thresholds(provider, mu, sigma):
             logging.append("ENGINE: Transition Prob from %s to %s = %s" % (from_rating, to_rating, trans_prob))
             logging.append("ENGINE: Previous Threshold = %s" % prev_thresh)
 
-            if to_rating == "D":
-                logging.append("ENGINE: Using To-Rating = D calculation Variant")
+            if to_rating == rating_levels[0]:
+                logging.append("ENGINE: Using To-Rating = 'bottom rating' calculation Variant")
                 curr_thresh = norm_inv(trans_prob) * sigma + mu
+            elif to_rating == rating_levels[-1]:
+                logging.append("ENGINE: Using To-Rating = 'top rating' calculation Variant")
+                curr_thresh = numpy.nan  # the top level threshold is not required since anything above it is upgrade
             else:
                 logging.append("ENGINE: Using Normal Threshold Calculation")
                 curr_thresh = (norm_inv(trans_prob + norm((prev_thresh - mu) / sigma)) * sigma) + mu
