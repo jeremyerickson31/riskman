@@ -56,9 +56,8 @@ def calc_rating_transition_thresholds(provider, mu, sigma):
 
         logging.append("ENGINE: Loop through To-Ratings and get thresholds")
         prev_thresh = 0
-        for to_rating in rating_levels[:-1]:  # includes transitions TO D but doesn't consider AAA threshold
-            # any asset return over the AA threshold is an upgrade to AAA
-
+        for to_rating in rating_levels:
+            
             trans_prob = one_year_probs[to_rating] / 100.0
             if trans_prob == 0.0:
                 trans_prob = 0.001  # this is required to avoid an inf or -inf threshold
