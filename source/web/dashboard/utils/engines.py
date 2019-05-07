@@ -160,15 +160,13 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
                 bond2_lower = lower_limit_max
                 bond2_upper = thresholds_2[ordered_keys[str(key_2)]]
             elif key_2 == key_top:
-                bond2_lower = thresholds_2[ordered_keys[str(key_2)]]
+                bond2_lower = thresholds_2[ordered_keys[str(key_2 + 1)]]
                 bond2_upper = upper_limit_max
             else:
                 bond2_lower = thresholds_2[ordered_keys[str(key_2 + 1)]]
                 bond2_upper = thresholds_2[ordered_keys[str(key_2)]]
 
-            print("--------------")
-            print(str(bond1_lower) + " : " + str(bond1_upper))
-            print(str(bond2_lower) + " : " + str(bond2_upper))
+
 
     """
         
