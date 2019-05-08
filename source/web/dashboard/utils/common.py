@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+import numpy
 
 from io import TextIOWrapper
 from datetime import datetime
@@ -139,3 +140,20 @@ def get_asset_return_distribution_params():
     sigma = config.model_inputs["asset_return_distribution"]["sigma"]
 
     return mu, sigma
+
+
+def make_bivariate_gauss_corr_mat(correlation):
+    """
+    function that makes the correlation matrix for a bivariate gaussian
+    :param correlation: float
+    :return: 2x2 numpy array
+    """
+
+    # check correlation is float
+    if not isinstance(correlation, float):
+        raise Exception("Parameter Error: correlation must be a float. Got %s" % str(type(correlation)))
+
+    mu, sigma = get_asset_return_distribution_params()
+    matrix = numpy.array([[sigma ** 2, correlation * sigma ** 2], [correlation * sigma ** 2, sigma ** 2]])
+
+    return matrix
