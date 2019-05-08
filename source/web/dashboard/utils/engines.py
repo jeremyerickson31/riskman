@@ -139,10 +139,11 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
     upper_limit_max = 10.0
     lower_limit_max = -10.0
 
+    # get mu 1x1 matrix for bivariate gauss
+    mu = common.make_bivariate_gauss_mu_mat()
+
     logging.append("ENGINE: Begin numerical integration loop")
     for key_1 in key_ints:
-
-        row = dict()  # for storing joint transition probabilities for the row
 
         if key_1 == key_bottom:
             bond1_lower_limit = lower_limit_max
@@ -163,7 +164,17 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
         print("ENGINE: Bond 1 integration limits {%s: %s, %s: %s}"
                        % (bond1_lower_rating, bond1_lower_limit, bond1_upper_rating, bond1_upper_limit))
 
+        # the upper rating label of the integration is the TO-rating
+        # put results in dictionary
+        if bond1_upper_rating == "+INF":
+            bond1_to_rating = bond1_lower_rating
+        else:
+            bond1_to_rating = bond1_upper_rating
+
+        joint_trans_probs[bond1_to_rating] = dict()
+
         for key_2 in key_ints:
+
             if key_2 == key_bottom:
                 bond2_lower_limit = lower_limit_max
                 bond2_upper_limit = thresholds_2[ordered_keys[str(key_2)]]
@@ -182,17 +193,22 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
 
             print("ENGINE: Bond 2 integration limits {%s: %s, %s: %s}"
                            % (bond2_lower_rating, bond2_lower_limit, bond2_upper_rating, bond2_upper_limit))
-    """
-        
-        lower_bound = numpy.array([-10, -10])
-    
-        upper_bound = numpy.array([.1, -.2])
-    
-        mu = numpy.array([-.3, .17])
-    
-        corr_mat = numpy.array([[1.2,.35],[.35,2.1]])
-        
-        p, i = mvn.mvnun(lower_bound, upper_bound, mu, corr_mat)
-        print(p)
-    """
-    return None
+
+            # set variables for input in mvn
+            lower_bound = numpy.array([bond1_lower_limit, bond2_lower_limit])
+            upper_bound = numpy.array([bond1_upper_limit, bond2_upper_limit])
+
+            # numerical 2D integration for bivariate gauss
+            p, i = scipy.stats.mvn.mvnun(lower_bound, upper_bound, mu, gauss_corr_mat)
+            print("ENGINE: Integration results = " + str(p))
+
+            # put results in dictionary
+            if bond2_upper_rating == "+INF":
+                bond2_to_rating = bond2_lower_rating
+            else:
+                bond2_to_rating = bond2_upper_rating
+
+            # add joint transition probability to output dictionary
+            joint_trans_probs[bond1_to_rating][bond2_to_rating] = p
+
+    return joint_trans_probs
