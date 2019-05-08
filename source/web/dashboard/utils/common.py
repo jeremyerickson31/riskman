@@ -157,3 +157,15 @@ def make_bivariate_gauss_corr_mat(correlation):
     matrix = numpy.array([[sigma ** 2, correlation * sigma ** 2], [correlation * sigma ** 2, sigma ** 2]])
 
     return matrix
+
+
+def make_bivariate_gauss_mu_mat():
+    """
+    function that makes the correlation matrix for a bivariate gaussian
+    :return: 2x2 numpy array
+    """
+
+    mu, sigma = get_asset_return_distribution_params()
+    matrix = numpy.array([mu, mu])
+
+    return matrix
