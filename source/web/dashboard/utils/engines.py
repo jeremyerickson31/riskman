@@ -142,6 +142,11 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
     # get mu 1x1 matrix for bivariate gauss
     mu = common.make_bivariate_gauss_mu_mat()
 
+    # get matrix sum tolerance
+    tol = common.get_matrix_sum_tolerance()
+    # the sum of all matrix entries should ~ 1
+    matrix_sum = 0.0
+
     logging.append("ENGINE: Begin numerical integration loop")
     # get integration limits for bond1
     for key_1 in key_ints:
@@ -211,5 +216,15 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
 
             # add joint transition probability to output dictionary
             joint_trans_probs[bond1_to_rating][bond2_to_rating] = p
+
+            # add p to matrix_sum
+            matrix_sum += p
+
+    logging.append("ENGINE: Sum of Matrix Probabilities = %s" % matrix_sum)
+
+    if 1.0 - matrix_sum <= tol:
+        logging.append("ENGINE: Sum of Matrix Probabilities within tolerance? --> PASS")
+    else:
+        logging.append("ENGINE: Sum of Matrix Probabilities within tolerance? --> ***FAIL***")
 
     return joint_trans_probs, logging
