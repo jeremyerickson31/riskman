@@ -99,7 +99,7 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
     assumption for the bivariate normal distribution
     :param thresholds_1: thresholds for first credit exposure ie: 'CCC': {'D': -0.85, 'CCC': 1.02, ...}
     :param thresholds_2: thresholds for second credit exposure ie: 'CCC': {'D': -0.85, 'CCC': 1.02, ...}
-    :param gauss_corr_mat: 2x2 correlation amtrix for bivariate normal distribution, must be 2x2 numpy array
+    :param gauss_corr_mat: 2x2 correlation matrix for bivariate normal distribution, must be 2x2 numpy array
     :return: joint transition probabilities matrix for a pair of ratings
     """
 
@@ -143,6 +143,7 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
     mu = common.make_bivariate_gauss_mu_mat()
 
     logging.append("ENGINE: Begin numerical integration loop")
+    # get integration limits for bond1
     for key_1 in key_ints:
 
         if key_1 == key_bottom:
@@ -161,7 +162,7 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
             bond1_lower_rating = ordered_keys[str(key_1 + 1)]
             bond1_upper_rating = ordered_keys[str(key_1)]
 
-        print("ENGINE: Bond 1 integration limits {%s: %s, %s: %s}"
+        logging.append("ENGINE: Bond 1 integration limits {%s: %s, %s: %s}"
                        % (bond1_lower_rating, bond1_lower_limit, bond1_upper_rating, bond1_upper_limit))
 
         # the upper rating label of the integration is the TO-rating
@@ -170,9 +171,9 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
             bond1_to_rating = bond1_lower_rating
         else:
             bond1_to_rating = bond1_upper_rating
-
         joint_trans_probs[bond1_to_rating] = dict()
 
+        # get integration limits for bond2
         for key_2 in key_ints:
 
             if key_2 == key_bottom:
@@ -191,7 +192,13 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
                 bond2_lower_rating = ordered_keys[str(key_2 + 1)]
                 bond2_upper_rating = ordered_keys[str(key_2)]
 
-            print("ENGINE: Bond 2 integration limits {%s: %s, %s: %s}"
+            # put results in dictionary
+            if bond2_upper_rating == "+INF":
+                bond2_to_rating = bond2_lower_rating
+            else:
+                bond2_to_rating = bond2_upper_rating
+
+            logging.append("ENGINE: Bond 2 integration limits {%s: %s, %s: %s}"
                            % (bond2_lower_rating, bond2_lower_limit, bond2_upper_rating, bond2_upper_limit))
 
             # set variables for input in mvn
@@ -200,15 +207,9 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
 
             # numerical 2D integration for bivariate gauss
             p, i = scipy.stats.mvn.mvnun(lower_bound, upper_bound, mu, gauss_corr_mat)
-            print("ENGINE: Integration results = " + str(p))
-
-            # put results in dictionary
-            if bond2_upper_rating == "+INF":
-                bond2_to_rating = bond2_lower_rating
-            else:
-                bond2_to_rating = bond2_upper_rating
+            logging.append("ENGINE: Integration results = " + str(p))
 
             # add joint transition probability to output dictionary
             joint_trans_probs[bond1_to_rating][bond2_to_rating] = p
 
-    return joint_trans_probs
+    return joint_trans_probs, logging
