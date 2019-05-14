@@ -142,6 +142,17 @@ def get_asset_return_distribution_params():
     return mu, sigma
 
 
+def get_matrix_sum_tolerance():
+    """
+    fetches the matrix sum = 1 tolerance from config
+    :return: tolerance float
+    """
+
+    tol = config.model_inputs["matrix_sum_tolerance"]
+
+    return tol
+
+
 def make_bivariate_gauss_corr_mat(correlation):
     """
     function that makes the correlation matrix for a bivariate gaussian
