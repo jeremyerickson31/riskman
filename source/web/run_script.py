@@ -3,6 +3,7 @@
 # 'scripts' may use pieces in the dashboard/utils package
 
 import sys
+import numpy
 from datetime import datetime
 from dashboard.utils import common, engines
 
@@ -84,23 +85,37 @@ def build_joint_trans_probs():
             joint_matrices[provider][correlation] = dict()
 
             common.script_logger(f, "Calculate Joint Matrices for Provider: %s and Correlation: %s" % (provider, correlation))
+
+            # make the bivariate Gauss correlation matrix
+            common.script_logger(f, "Get bivariate Gauss correlation matrix")
+            corr_mat = common.make_bivariate_gauss_corr_mat(correlation)
+            common.script_logger(f, "Gauss Correlation Matrix: [" + str(corr_mat[0]) + "," + str(corr_mat[1]) + "]")
+
             # double loop to get all combinations
             for rating_1 in rating_labels:
                 for rating_2 in rating_labels:
 
                     # pair used to denote combo of rating_1 and rating_2 for json storage
-                    rating_pair = rating_1 + "|" + rating_2
+                    rating_pair = rating_1 + "|" + rating_2  # ie: AA|CCC, first bond AA second bond CCC
 
                     common.script_logger(f, "Get Thresholds for Rating 1: %s, Rating 2: %s" % (rating_1, rating_2))
                     rating_1_thresholds = transition_thresholds[provider][rating_1]
                     rating_2_thresholds = transition_thresholds[provider][rating_2]
 
-                    common.script_logger(f, "Submitting Thresholds and Correlation for numerical integration")
-                    #matrix = engines.threshold_numerical_integration(rating_1_thresholds, rating_2_thresholds, correlation)
+                    common.script_logger(f, "Submitting Thresholds and Correlation Matrix for numerical integration")
+                    matrix, logs = engines.threshold_numerical_integration(rating_1_thresholds, rating_2_thresholds, corr_mat)
+                    common.script_logger(f, logs)
                     common.script_logger(f, "Matrix calculation complete. Next Pair of ratings")
 
-                    joint_matrices[provider][correlation][rating_pair] = 'matrix'
-            common.script_logger("All Rating Pair Joint Transition Probability Matrices Complete")
+                    joint_matrices[provider][correlation][rating_pair] = matrix
+
+            common.script_logger(f, "Joint Transition Probabilities Complete for %s and %s " % (provider, correlation))
+            common.script_logger(f, "Next Correlation")
+
+        common.script_logger(f, "All Correlations Complete. Next Provider")
+
+    common.script_logger(f, "All Providers Complete.")
+    common.script_logger(f, "Storing Thresholds and Joint Transition Probabilities as json")
 
     common.script_logger(f, "output json thresholds:")
     common.script_logger(f, str(transition_thresholds))
@@ -110,9 +125,9 @@ def build_joint_trans_probs():
         for correlation in correlations_list:
             common.script_logger(f, str(joint_matrices[provider][correlation]))
 
-
-        # todo store the rating transition thresholds as separate file {'Credit Metrics': {}, 'Moodys': {} }
-        # todo store the rating transition probability matrices as separate file {'Credit Metrics': {0.15:{}, 0.2{} }
+    # todo store output as json
+    # todo make a function to turn matrix from dictionary into pandas frame
+    # todo add a validation so addition across the entire matrix = 1
 
 
 if __name__ == "__main__":
