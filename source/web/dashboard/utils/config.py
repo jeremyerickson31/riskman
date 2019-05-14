@@ -19,6 +19,9 @@ model_inputs["asset_return_distribution"] = {"mu": 0.0, "sigma": 1.0}
 # default correlation assumptions
 model_inputs["correlations"] = [0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90]
 
+# tolerance level for transition matrix sum = 1
+model_inputs["matrix_sum_tolerance"] = 0.000001
+
 ############################################
 # certain config settings for other stuff
 ############################################
