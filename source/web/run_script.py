@@ -60,8 +60,8 @@ def build_joint_trans_probs():
     common.script_logger(f, "Beginning main calculation loop for each combination of Providers and Correlations")
     for provider in providers_list:
 
-        # make new dictionary to hold results of threshold and joint trans probability calculations
-        joint_matrices[provider] = dict()
+        # make new dictionary to hold results of joint trans probability calculations
+        joint_matrices = dict()
 
         # calculate rating level transition thresholds, dependent only on one year transition matrix and mu and sigma
         common.script_logger(f, "Generating Rating Level Thresholds for: %s" % provider)
@@ -76,7 +76,7 @@ def build_joint_trans_probs():
         # store provider specific transition thresholds
         thresh_filename = config.model_inputs["transition_thresholds_folder"] + str(provider) + ".json"
         thresh_file = open(thresh_filename, "w")
-        json.dump(transition_thresholds, thresh_file)
+        json.dump(transition_thresholds, thresh_file, indent=4)
         thresh_file.close()
         common.script_logger(f, "FILENAME: " + str(thresh_filename))
 
@@ -86,9 +86,6 @@ def build_joint_trans_probs():
         # use the rating level thresholds in numerical integration
         common.script_logger(f, "Begin Bivariate Normal Numerical Integration Between Thresholds")
         for correlation in correlations_list:
-
-            # joint matrices are specific to the provider and the correlation
-            joint_matrices[correlation] = dict()
 
             common.script_logger(f, "Calculate Joint Matrices for Provider: %s and Correlation: %s" % (provider, correlation))
 
@@ -113,7 +110,7 @@ def build_joint_trans_probs():
                     common.script_logger(f, logs)
                     common.script_logger(f, "Matrix calculation complete. Next Pair of ratings")
 
-                    joint_matrices[correlation][rating_pair] = matrix
+                    joint_matrices[rating_pair] = matrix
 
             common.script_logger(f, "Joint Transition Probabilities Complete for %s and %s " % (provider, correlation))
             common.script_logger(f, "Storing Provider-Correlation specific matrices in json")
@@ -121,7 +118,8 @@ def build_joint_trans_probs():
             # store provider-correlation specific joint transition probability matrices
             joint_trans_filename = config.model_inputs["joint_matrices_folder"] + str(provider) + "_" + str(correlation) + ".json"
             joint_trans_file = open(joint_trans_filename, "w")
-            json.dump(joint_matrices, joint_trans_file)
+            json.dump(joint_matrices, joint_trans_file, indent=4)
+            joint_trans_file.close()
             common.script_logger(f, "FILENAME: " + str(joint_trans_filename))
 
             common.script_logger(f, "Next Correlation")
