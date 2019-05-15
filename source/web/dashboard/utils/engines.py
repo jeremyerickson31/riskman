@@ -74,7 +74,7 @@ def calc_rating_transition_thresholds(provider, mu, sigma):
                 curr_thresh = prev_thresh  # anything above top rating level -1 is upgrade to top rating level
             else:
                 logging.append("ENGINE: Using Normal Threshold Calculation")
-                # todo curr_thresh calc can yield NaN due to norm_inv exploding
+                # todo curr_thresh calc can yield NaN due to norm_inv exploding (only in moodys)
                 curr_thresh = (norm_inv(trans_prob + norm((prev_thresh - mu) / sigma)) * sigma) + mu
 
             rating_level_thresholds[from_rating][to_rating] = curr_thresh
@@ -212,6 +212,7 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
             upper_bound = numpy.array([bond1_upper_limit, bond2_upper_limit])
 
             # numerical 2D integration for bivariate gauss
+            # todo fix that p can be NaN (only for moodys and SP)
             p, i = scipy.stats.mvn.mvnun(lower_bound, upper_bound, mu, gauss_corr_mat)
             logging.append("ENGINE: Integration results = " + str(p))
 
