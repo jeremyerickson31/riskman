@@ -50,7 +50,7 @@ def build_joint_trans_probs():
     providers_list = common.get_matrix_providers()
 
     common.script_logger(f, "Getting list of correlation assumptions")
-    correlations_list = [0.15, 0.9]  # common.get_correlations_list()
+    correlations_list = common.get_correlations_list()
 
     common.script_logger(f, "Getting asset return distribution parameters")
     mu, sigma = common.get_asset_return_distribution_params()
