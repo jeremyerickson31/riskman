@@ -130,8 +130,6 @@ def build_joint_trans_probs():
 
     common.script_logger(f, "All Providers Complete.")
 
-    # todo add a validation so addition across the entire matrix = 1
-
 
 if __name__ == "__main__":
     supported_scripts = ["build_joint_trans_probs"]
