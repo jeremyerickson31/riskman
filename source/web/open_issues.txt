@@ -1,0 +1,4 @@
+# list of open issues
+
+1) Transition Thresholds and Numerical Bivariate Integration can return NaN
+    - has to do with scipy.stats normal and inverse normal functions not handling large values
