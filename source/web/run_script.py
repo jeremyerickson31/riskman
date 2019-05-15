@@ -3,8 +3,6 @@
 # 'scripts' may use pieces in the dashboard/utils package
 
 import sys
-import numpy
-from datetime import datetime
 import json
 from dashboard.utils import common, engines, config
 
@@ -62,8 +60,7 @@ def build_joint_trans_probs():
     common.script_logger(f, "Beginning main calculation loop for each combination of Providers and Correlations")
     for provider in providers_list:
 
-        # make new dictionaries to hold results of threshold and joint trans probs caluclations
-        transition_thresholds = dict()
+        # make new dictionary to hold results of threshold and joint trans probability calculations
         joint_matrices[provider] = dict()
 
         # calculate rating level transition thresholds, dependent only on one year transition matrix and mu and sigma
