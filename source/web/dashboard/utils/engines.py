@@ -74,6 +74,7 @@ def calc_rating_transition_thresholds(provider, mu, sigma):
                 curr_thresh = prev_thresh  # anything above top rating level -1 is upgrade to top rating level
             else:
                 logging.append("ENGINE: Using Normal Threshold Calculation")
+                # todo curr_thresh calc can yield NaN due to norm_inv exploding
                 curr_thresh = (norm_inv(trans_prob + norm((prev_thresh - mu) / sigma)) * sigma) + mu
 
             rating_level_thresholds[from_rating][to_rating] = curr_thresh
