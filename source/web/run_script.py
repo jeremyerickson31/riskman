@@ -129,6 +129,51 @@ def build_joint_trans_probs():
     common.script_logger(f, "All Providers Complete.")
 
 
+def example_two_bond_calculation_analytical():
+    """
+    This script will test the credit risk calculation on two bonds
+    This script is meant as a demonstration script as well as a testing script for the
+        core engines.py components that are used in the credit risk calculations
+    The calculation is the Analytical approach which involves the following:
+        (1) for each bond, calculate the value in each possible state
+        (2) apply probabilities for each state to get a mean and variance for each bond
+        (3) identify each pair of bonds and calculate value of pair-wise sub-portfolio value in each possible state
+        (4) apply joint probabilities to get sub-portfolio mean and variance
+        (5) combine individual mean values to get portfolio mean value
+        (6) combine pair-wise variances with individual variances to get portfolio variance
+    :return:
+    """
+
+    # which transition matrix provider and correlation to use
+    use_provider = "Credit Metrics"
+    use_correlation = 0.10
+
+    # make some fake bonds. fixed rate annuals for now
+    bond1_par = 100.00
+    bond1_coupon = 0.06
+    bond1_remain_maturity = 4
+    bond1_rating = "BBB"
+    bond1_priority = "Senior Unsecured"
+    bond1_issuer_rating = "BBB"
+
+    bond2_par = 100.00
+    bond2_coupon = 0.05
+    bond2_remain_maturity = 3
+    bond2_rating = "AA"
+    bond2_priority = "Junior Subordinated"
+    bond2_issuer_rating = "AA"
+
+    # some sample rating level forward rates for repricing
+    forward_rates = {"AAA": [3.60, 4.17, 4.73, 5.12],
+                     "AA": [3.65, 4.22, 4.78, 5.17],
+                     "A": [3.72, 4.32, 4.93, 5.32],
+                     "BBB": [4.10, 4.67, 5.25, 5.63],
+                     "BB": [5.55, 6.02, 6.78, 7.27],
+                     "B": [6.05, 7.02, 8.03, 8.52],
+                     "CCC": [15.05, 15.02, 14.03, 13.52]
+                     }
+
+
 if __name__ == "__main__":
     supported_scripts = ["build_joint_trans_probs"]
 
