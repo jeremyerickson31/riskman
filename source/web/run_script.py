@@ -175,12 +175,5 @@ def example_two_bond_calculation_analytical():
 
 
 if __name__ == "__main__":
-    supported_scripts = ["build_joint_trans_probs"]
-
-    # inputs = sys.argv()
-    inputs = ["", "build_joint_trans_probs"]
-    script_to_run = inputs[1]
-
-    if script_to_run == supported_scripts[0]:
-        build_joint_trans_probs()
+    build_joint_trans_probs()
 
