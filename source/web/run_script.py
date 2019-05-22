@@ -174,6 +174,20 @@ def example_two_bond_calculation_analytical():
                      }
 
 
+def example_two_bond_calculation_monte():
+    """
+    This script will test the credit risk monte carlo simulation on two bonds
+    This script is meant as a demonstration script as well as a testing script for the
+        core engines.py components that are used in the credit risk calculations
+    The calculation is the Monte Carlo approach which involves the following:
+        (1) Take correlation matrix and generate correlated random numbers with Cholesky Decomposition
+        (2) use correlated randoms to determine final rating for each bond
+        (3) use rating level forward rates to re-value the bonds and get value for entire portfolio
+        (4) do this 10,000 times and get alpha percentile for Credit VaR
+    :return:
+    """
+
+
 if __name__ == "__main__":
     build_joint_trans_probs()
 
