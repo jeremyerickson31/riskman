@@ -234,7 +234,7 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
 
 class Bond:
 
-    def __init__(self, properties, forward_rates):
+    def __init__(self, properties):
         """
         initialize the Bond object attributes
         """
