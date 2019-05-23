@@ -230,3 +230,42 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
         logging.append("ENGINE: Sum of Matrix Probabilities within tolerance? --> ***FAIL***")
 
     return joint_trans_probs, logging
+
+
+class Bond:
+
+    def __init__(self, properties, forward_rates):
+        """
+        initialize the Bond object attributes
+        """
+
+        # setting the important self variables variable
+        self.name = "CLASS {Bond}: "
+        self.logging = []
+
+        # setting the bond object properties
+        self.logging.append(self.name + "Setting Bond Class attributes")
+
+        self.par = properties["par"]
+        self.coupon = properties["coupon"]
+        self.rem_mat = properties["maturity"]
+        self.rating = properties["rating"]
+        self.seniority = properties["seniority"]
+        self.issuer_rating = properties["issuer_rating"]
+
+        # attribute placeholder for new values in forward rate scenarios
+        self.value_under_forwards = dict()
+
+    def calc_bond_prices(self, forward_rates):
+        # getting the value in the forward rates cases
+        self.logging.append(self.name + "Calculating Bond Price in Forward Rate Scenarios")
+
+        for rating in forward_rates.keys():
+
+            # call the function for re-pricing
+            self.value_under_forwards[rating] = "temp value"
+
+        # getting the price in the default even
+        # call function to apply recoveries_in_default
+        self.logging.append(self.name + "Calculating Bond Price in Default")
+        self.value_under_forwards["D"] = "default value"
