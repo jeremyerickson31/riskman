@@ -1,0 +1,7 @@
+{
+  "Senior Secured": {"mean": 53.80, "stddev": 26.86},
+  "Senior Unsecured": {"mean": 51.13, "stddev": 25.45},
+  "Senior Subordinated": {"mean": 38.52, "stddev": 23.81},
+  "Subordinated": {"mean": 32.74, "stddev": 20.18},
+  "Junior Subordinated": {"mean": 17.09, "stddev": 10.90}
+}
