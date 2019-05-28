@@ -180,3 +180,22 @@ def make_bivariate_gauss_mu_mat():
     matrix = numpy.array([mu, mu])
 
     return matrix
+
+
+def get_recovery_in_default(seniority):
+    """
+    function will look up the recovery value in the event of default
+    :param seniority: the seniority of the bond to lookup
+    :return: recovery, as float
+    """
+
+    file_loc = config.model_inputs["recoveries_in_default"]
+    f = open(file_loc)
+    data_dict = json.load(f)
+
+    try:
+        recovery = data_dict[seniority]
+    except KeyError:
+        raise Exception("KeyError: Recovery JSON has no seniority level {%s}" % seniority)
+
+    return recovery
