@@ -118,6 +118,19 @@ def get_one_year_matrix(provider):
     return ordered_keys, matrix
 
 
+def get_transition_probs(provider, rating):
+    """
+    function to get a single row from a transition matrix
+    :param provider: Credit Metrics, Moodys etc
+    :param rating: AAA, AA, A, BBB ...
+    :return: dictionary with transition probabilites
+    """
+
+    keys, matrix = get_one_year_matrix(provider)
+    probabilities = matrix[rating]
+    return probabilities
+
+
 def get_ordered_rating_keys():
     """
     function that will return the ordered keys located in the oneyeartransition.json file
