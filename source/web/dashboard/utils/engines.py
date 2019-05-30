@@ -232,7 +232,7 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
     return joint_trans_probs, logging
 
 
-def calc_rating_level_bond_prices(bond, forward_curve):
+def forward_interest_rate_repricing(bond, rating_level, forward_curve):
     """
     This function calculates the price of the bond under the forward rates provided
     :param bond:
@@ -242,39 +242,24 @@ def calc_rating_level_bond_prices(bond, forward_curve):
 
     engine_name = "sldfjslkdjflskjdflksjdf"
     logging = list()
-    values = dict()
 
     if not isinstance(bond, Bond):
         pass
 
-    for rating_level in forward_curve.keys():
+    # apply re-pricing
+    price = 0.0
+    for i, r in enumerate(forward_curve):
 
-        # convert the rate number from float to percent
-        forward_rates = [rate / 100.00 for rate in forward_curve[rating_level]]
-        # a bond with Maturity remaining has maturity -1 cash flows to discount + 1 coupon at end of year 1
-        forward_rate_segment = forward_rates[:bond.maturity - 1]
+        # if on last rate then receive coupon plus principal
+        if i == len(forward_curve) - 1:
+            price += (bond.coupon_dollar + bond.par) / (1 + r) ** (i + 1)
+        else:
+            price += bond.coupon_dollar / (1 + r) ** (i + 1)
 
-        # apply re-pricing
-        price = 0.0
-        for i, r in enumerate(forward_rate_segment):
+    # from today we calc price at end of year 1. Receive end of year 1 coupon + PV of future coupons and par
+    price += bond.coupon_dollar
 
-            # if on last rate then receive coupon plus principal
-            if i == len(forward_rate_segment) - 1:
-                price += (bond.coupon_dollar + bond.par) / (1 + r) ** (i + 1)
-            else:
-                price += bond.coupon_dollar / (1 + r) ** (i + 1)
-
-        # from today we calc price at end of year 1. Receive end of year 1 coupon + PV of future coupons and par
-        price += bond.coupon_dollar
-        values[rating_level] = price
-
-    # getting the price in the default event
-    # call function to apply recoveries_in_default
-    logging.append("Calculating Bond Price in Default")
-    recovery_stats = common.get_recovery_in_default(bond.seniority)
-    values["D"] = recovery_stats["mean"]
-
-    return values, logging
+    return price, logging
 
 
 class Bond:
@@ -299,22 +284,35 @@ class Bond:
         self.add_log("Attributes Set {par, coupon_pct, coupon_dollar, maturity, rating, seniority")
 
         # attribute placeholder for new values in forward rate scenarios
-        self.value_under_forwards = None  # will have {"AAA": price, ... "D": price"}
+        self.value_under_forwards = dict()  # will have {"AAA": price, ... "D": price"}
         self.transition_probs = dict()  # will be transition probabilities for a certain provider
 
     def add_log(self, text):
         timestamp = str(datetime.now())
         if isinstance(text, str):
-            self.logs += timestamp + " " + self.class_name + text
+            self.logs.append(timestamp + " " + self.class_name + text)
         if isinstance(text, list):
             for entry in text:
                 self.logs += timestamp + " " + self.class_name + entry
 
     def calc_prices_under_forwards(self, forwards):
         self.add_log("Calculating Bond price under forward interest rate scenarios")
-        values, logs = calc_rating_level_bond_prices(self, forwards)
-        self.value_under_forwards = values
-        self.logs += logs
+
+        for rating_level in forwards.keys():
+
+            # convert the rate number from float to percent
+            forward_rates = [rate / 100.00 for rate in forwards[rating_level]]
+            # a bond with Maturity remaining has maturity -1 cash flows to discount + 1 coupon at end of year 1
+            forward_rate_segment = forward_rates[:self.maturity - 1]
+
+            value, logs = forward_interest_rate_repricing(self, rating_level, forward_rate_segment)
+            self.value_under_forwards[rating_level] = value
+            self.logs += logs
+
+        # getting the price in the default event
+        # call function to apply recoveries_in_default
+        recovery_stats = common.get_recovery_in_default(self.seniority)
+        self.value_under_forwards["D"] = recovery_stats["mean"]
 
     def get_transition_probabilities(self, provider):
         probabilities = common.get_transition_probs(provider, self.rating)
