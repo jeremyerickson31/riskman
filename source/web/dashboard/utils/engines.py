@@ -284,9 +284,11 @@ class Bond:
         initialize the Bond object attributes
         """
         # variable for holding logging information on what this bond object is doing
+        self.class_name = "Class {Bond}: "
         self.logs = list()
 
-        # main atributes of the bond
+        self.add_log("Setting Bond Class Attributes")
+        # main attributes of the bond
         self.par = properties["par"]
         self.coupon_pct = properties["coupon"]
         self.coupon_dollar = self.par * self.coupon_pct
@@ -294,11 +296,22 @@ class Bond:
         self.rating = properties["rating"]
         self.seniority = properties["seniority"]
 
+        self.add_log("Attributes Set {par, coupon_pct, coupon_dollar, maturity, rating, seniority")
+
         # attribute placeholder for new values in forward rate scenarios
         self.value_under_forwards = None  # will have {"AAA": price, ... "D": price"}
-        self.transition_probs = dict()  # will be transition probabilites for a certain provider
+        self.transition_probs = dict()  # will be transition probabilities for a certain provider
+
+    def add_log(self, text):
+        timestamp = str(datetime.now())
+        if isinstance(text, str):
+            self.logs += timestamp + " " + self.class_name + text
+        if isinstance(text, list):
+            for entry in text:
+                self.logs += timestamp + " " + self.class_name + entry
 
     def calc_prices_under_forwards(self, forwards):
+        self.add_log("Calculating Bond price under forward interest rate scenarios")
         values, logs = calc_rating_level_bond_prices(self, forwards)
         self.value_under_forwards = values
         self.logs += logs
