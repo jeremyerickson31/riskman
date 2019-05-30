@@ -137,7 +137,7 @@ def example_two_bond_calculation_analytical():
     The calculation is the Analytical approach which involves the following:
         (1) for each bond, calculate the value in each possible state
         (2) apply probabilities for each state to get a mean and variance for each bond
-        (3) identify each pair of bonds and calculate value of pair-wise sub-portfolio value in each possible state
+        (3) identify each pair of bonds and calculate pair-wise sub-portfolio value in each possible state
         (4) apply joint probabilities to get sub-portfolio mean and variance
         (5) combine individual mean values to get portfolio mean value
         (6) combine pair-wise variances with individual variances to get portfolio variance
@@ -145,33 +145,34 @@ def example_two_bond_calculation_analytical():
     """
 
     # which transition matrix provider and correlation to use
+    # this combination is used to lookup the pre-calculated joint transition probabilities
     use_provider = "Credit Metrics"
     use_correlation = 0.10
 
     # make some fake bonds. fixed rate annuals for now
-    bond1_par = 100.00
-    bond1_coupon = 0.06
-    bond1_remain_maturity = 4
-    bond1_rating = "BBB"
-    bond1_priority = "Senior Unsecured"
-    bond1_issuer_rating = "BBB"
-
-    bond2_par = 100.00
-    bond2_coupon = 0.05
-    bond2_remain_maturity = 3
-    bond2_rating = "AA"
-    bond2_priority = "Junior Subordinated"
-    bond2_issuer_rating = "AA"
+    bond1_properties = {"par": 100, "coupon": 0.06, "maturity": 5,
+                        "rating": "BBB", "seniority": "Senior Unsecured"}
+    bond2_properties = {"par": 100, "coupon": 0.05, "maturity": 3,
+                        "rating": "AA", "seniority": "Junior Subordinated"}
 
     # some sample rating level forward rates for repricing
-    forward_rates = {"AAA": [3.60, 4.17, 4.73, 5.12],
-                     "AA": [3.65, 4.22, 4.78, 5.17],
-                     "A": [3.72, 4.32, 4.93, 5.32],
-                     "BBB": [4.10, 4.67, 5.25, 5.63],
-                     "BB": [5.55, 6.02, 6.78, 7.27],
-                     "B": [6.05, 7.02, 8.03, 8.52],
-                     "CCC": [15.05, 15.02, 14.03, 13.52]
+    forward_rates = {"AAA": [3.60, 4.17, 4.73, 5.12, 5.83, 6.05, 6.27, 6.68, 7.12],
+                     "AA": [3.65, 4.22, 4.78, 5.17, 5.92, 6.12, 6.45, 7.01, 7.38],
+                     "A": [3.72, 4.32, 4.93, 5.32, 6.15, 6.29, 6.78, 7.25, 7.50],
+                     "BBB": [4.10, 4.67, 5.25, 5.63, 6.37, 6.45, 6.98, 7.37, 7.81],
+                     "BB": [5.55, 6.02, 6.78, 7.27, 7.98, 8.15, 8.64, 9.12, 9.53],
+                     "B": [6.05, 7.02, 8.03, 8.52, 9.04, 9.73, 10.15, 10.64, 11.30],
+                     "CCC": [15.05, 15.02, 14.03, 13.52, 13.07, 12.63, 12.12, 11.70]
                      }
+
+    bond1 = engines.Bond(bond1_properties)
+    bond1.calc_prices_under_forwards(forward_rates)
+    bond1.get_transition_probabilities(use_provider)
+    print(bond1.value_under_forwards)
+    print(bond1.transition_probs)
+    print(bond1.logs)
+    #bond2 = engines.Bond(bond2_properties)
+    #bond2.calc_rating_level_bond_prices(bond2, forward_rates)
 
 
 def example_two_bond_calculation_monte():
@@ -189,5 +190,5 @@ def example_two_bond_calculation_monte():
 
 
 if __name__ == "__main__":
-    build_joint_trans_probs()
+    example_two_bond_calculation_analytical()
 

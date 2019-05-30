@@ -232,40 +232,78 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
     return joint_trans_probs, logging
 
 
+def calc_rating_level_bond_prices(bond, forward_curve):
+    """
+    This function calculates the price of the bond under the forward rates provided
+    :param bond:
+    :param forward_curve:
+    :return: populates the Bond.value_under_forwards
+    """
+
+    engine_name = "sldfjslkdjflskjdflksjdf"
+    logging = list()
+    values = dict()
+
+    if not isinstance(bond, Bond):
+        pass
+
+    for rating_level in forward_curve.keys():
+
+        # convert the rate number from float to percent
+        forward_rates = [rate / 100.00 for rate in forward_curve[rating_level]]
+        # a bond with Maturity remaining has maturity -1 cash flows to discount + 1 coupon at end of year 1
+        forward_rate_segment = forward_rates[:bond.maturity - 1]
+
+        # apply re-pricing
+        price = 0.0
+        for i, r in enumerate(forward_rate_segment):
+
+            # if on last rate then receive coupon plus principal
+            if i == len(forward_rate_segment) - 1:
+                price += (bond.coupon_dollar + bond.par) / (1 + r) ** (i + 1)
+            else:
+                price += bond.coupon_dollar / (1 + r) ** (i + 1)
+
+        # from today we calc price at end of year 1. Receive end of year 1 coupon + PV of future coupons and par
+        price += bond.coupon_dollar
+        values[rating_level] = price
+
+    # getting the price in the default event
+    # call function to apply recoveries_in_default
+    logging.append("Calculating Bond Price in Default")
+    recovery_stats = common.get_recovery_in_default(bond.seniority)
+    values["D"] = recovery_stats["mean"]
+
+    return values, logging
+
+
 class Bond:
 
     def __init__(self, properties):
         """
         initialize the Bond object attributes
         """
+        # variable for holding logging information on what this bond object is doing
+        self.logs = list()
 
-        # setting the important self variables variable
-        self.name = "CLASS {Bond}: "
-        self.logging = []
-
-        # setting the bond object properties
-        self.logging.append(self.name + "Setting Bond Class attributes")
-
+        # main atributes of the bond
         self.par = properties["par"]
-        self.coupon = properties["coupon"]
-        self.rem_mat = properties["maturity"]
+        self.coupon_pct = properties["coupon"]
+        self.coupon_dollar = self.par * self.coupon_pct
+        self.maturity = properties["maturity"]
         self.rating = properties["rating"]
         self.seniority = properties["seniority"]
-        self.issuer_rating = properties["issuer_rating"]
 
         # attribute placeholder for new values in forward rate scenarios
-        self.value_under_forwards = dict()
+        self.value_under_forwards = None  # will have {"AAA": price, ... "D": price"}
+        self.transition_probs = dict()  # will be transition probabilites for a certain provider
 
-    def calc_bond_prices(self, forward_rates):
-        # getting the value in the forward rates cases
-        self.logging.append(self.name + "Calculating Bond Price in Forward Rate Scenarios")
+    def calc_prices_under_forwards(self, forwards):
+        values, logs = calc_rating_level_bond_prices(self, forwards)
+        self.value_under_forwards = values
+        self.logs += logs
 
-        for rating in forward_rates.keys():
+    def get_transition_probabilities(self, provider):
+        probabilities = common.get_transition_probs(provider, self.rating)
+        self.transition_probs[provider] = probabilities
 
-            # call the function for re-pricing
-            self.value_under_forwards[rating] = "temp value"
-
-        # getting the price in the default even
-        # call function to apply recoveries_in_default
-        self.logging.append(self.name + "Calculating Bond Price in Default")
-        self.value_under_forwards["D"] = "default value"
