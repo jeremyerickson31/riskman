@@ -232,21 +232,22 @@ def threshold_numerical_integration(thresholds_1, thresholds_2, gauss_corr_mat):
     return joint_trans_probs, logging
 
 
-def forward_interest_rate_repricing(bond, rating_level, forward_curve):
+def forward_interest_rate_repricing(bond, forward_curve):
     """
     This function calculates the price of the bond under the forward rates provided
-    :param bond:
-    :param forward_curve:
+    :param bond: a Bond class object with associated attributes like par, coupon, maturity etc
+    :param forward_curve: interest rates to use in the discounted cash flow calculation
     :return: populates the Bond.value_under_forwards
     """
+    # todo turn this into a generic discounted cash flow function
 
-    engine_name = "sldfjslkdjflskjdflksjdf"
+    engine_name = "forward_interest_rate_repricing"
     logging = list()
 
     if not isinstance(bond, Bond):
-        pass
+        raise Exception("Type Error: bond parameter must be a Bond class object with associated attributes")
 
-    # apply re-pricing
+    # discount cash flows
     price = 0.0
     for i, r in enumerate(forward_curve):
 
@@ -272,7 +273,7 @@ class Bond:
         self.class_name = "Class {Bond}: "
         self.logs = list()
 
-        self.add_log("Setting Bond Class Attributes")
+        self.log_action("Setting Bond Class Attributes")
         # main attributes of the bond
         self.par = properties["par"]
         self.coupon_pct = properties["coupon"]
@@ -281,22 +282,22 @@ class Bond:
         self.rating = properties["rating"]
         self.seniority = properties["seniority"]
 
-        self.add_log("Attributes Set {par, coupon_pct, coupon_dollar, maturity, rating, seniority")
+        self.log_action("Attributes Set {par, coupon_pct, coupon_dollar, maturity, rating, seniority")
 
         # attribute placeholder for new values in forward rate scenarios
-        self.value_under_forwards = dict()  # will have {"AAA": price, ... "D": price"}
+        self.rating_level_prices = dict()  # will have {"AAA": price, ... "D": price"}
         self.transition_probs = dict()  # will be transition probabilities for a certain provider
 
-    def add_log(self, text):
+    def log_action(self, text):
         timestamp = str(datetime.now())
         if isinstance(text, str):
             self.logs.append(timestamp + " " + self.class_name + text)
         if isinstance(text, list):
             for entry in text:
-                self.logs += timestamp + " " + self.class_name + entry
+                self.logs.append(timestamp + " " + self.class_name + entry)
 
     def calc_prices_under_forwards(self, forwards):
-        self.add_log("Calculating Bond price under forward interest rate scenarios")
+        self.log_action("Calculating Bond price under rating level forward interest rate scenarios")
 
         for rating_level in forwards.keys():
 
@@ -305,14 +306,16 @@ class Bond:
             # a bond with Maturity remaining has maturity -1 cash flows to discount + 1 coupon at end of year 1
             forward_rate_segment = forward_rates[:self.maturity - 1]
 
-            value, logs = forward_interest_rate_repricing(self, rating_level, forward_rate_segment)
-            self.value_under_forwards[rating_level] = value
+            self.log_action("Re-pricing for rating level " + rating_level)
+            price, logs = forward_interest_rate_repricing(self, forward_rate_segment)
+            self.rating_level_prices[rating_level] = price
             self.logs += logs
 
         # getting the price in the default event
         # call function to apply recoveries_in_default
+        self.log_action("Re-pricing for rating level D")
         recovery_stats = common.get_recovery_in_default(self.seniority)
-        self.value_under_forwards["D"] = recovery_stats["mean"]
+        self.rating_level_prices["D"] = recovery_stats["mean"]
 
     def get_transition_probabilities(self, provider):
         probabilities = common.get_transition_probs(provider, self.rating)
