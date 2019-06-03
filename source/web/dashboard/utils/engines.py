@@ -278,6 +278,7 @@ class Bond:
         self.par = properties["par"]
         self.coupon_pct = properties["coupon"]
         self.coupon_dollar = self.par * self.coupon_pct
+        self.notional = properties["notional"]
         self.maturity = properties["maturity"]
         self.rating = properties["rating"]
         self.seniority = properties["seniority"]
