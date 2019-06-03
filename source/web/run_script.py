@@ -129,7 +129,7 @@ def build_joint_trans_probs():
     common.script_logger(f, "All Providers Complete.")
 
 
-def example_two_bond_calculation_analytical():
+def example_three_bond_calculation_analytical():
     """
     This script will test the credit risk calculation on two bonds
     This script is meant as a demonstration script as well as a testing script for the
@@ -146,14 +146,20 @@ def example_two_bond_calculation_analytical():
 
     # which transition matrix provider and correlation to use
     # this combination is used to lookup the pre-calculated joint transition probabilities
-    use_provider = "Credit Metrics"
+    use_provider = "SP Ratings"
     use_correlation = 0.10
 
     # make some fake bonds. fixed rate annuals for now
-    bond1_properties = {"par": 100, "coupon": 0.06, "maturity": 5,
+    bond1_properties = {"bond_name": "bond_A",
+                        "par": 100, "coupon": 0.06, "maturity": 5, "notional": 4000000.00,
                         "rating": "BBB", "seniority": "Senior Unsecured"}
-    bond2_properties = {"par": 100, "coupon": 0.05, "maturity": 3,
-                        "rating": "AA", "seniority": "Junior Subordinated"}
+    bond2_properties = {"bond_name": "bond_B",
+                        "par": 100, "coupon": 0.05, "maturity": 3, "notional": 2000000.00,
+                        "rating": "A", "seniority": "Junior Subordinated"}
+    bond3_properties = {"bond_name": "bond_C",
+                        "par": 100, "coupon": 0.10, "maturity": 2, "notional": 1000000.00,
+                        "rating": "CCC", "seniority": "Senior Secured"}
+    bond_list = [bond1_properties, bond2_properties, bond3_properties]
 
     # some sample rating level forward rates for repricing
     forward_rates = {"AAA": [3.60, 4.17, 4.73, 5.12, 5.83, 6.05, 6.27, 6.68, 7.12],
@@ -165,17 +171,30 @@ def example_two_bond_calculation_analytical():
                      "CCC": [15.05, 15.02, 14.03, 13.52, 13.07, 12.63, 12.12, 11.70]
                      }
 
-    bond1 = engines.Bond(bond1_properties)
-    bond1.calc_prices_under_forwards(forward_rates)
-    bond1.get_transition_probabilities(use_provider)
-    print(bond1.value_under_forwards)
-    print(bond1.transition_probs)
-    print(bond1.logs)
-    #bond2 = engines.Bond(bond2_properties)
-    #bond2.calc_rating_level_bond_prices(bond2, forward_rates)
+    bond_calcs = dict()
+    for bond_properties in bond_list:
+        bond = engines.Bond(bond_properties)
+        bond.get_transition_probabilities(use_provider)
+        bond.calc_prices_under_forwards(forward_rates)
+        bond.calc_price_stats()
+
+        print("----------------------")
+        print(bond.transition_probs)
+        print(bond.rating_level_prices_pct)
+        print(bond.rating_level_prices_dollar)
+        print(bond.price_stats_pct)
+        print(bond.price_stats_dollar)
+
+        # add this bond object to the dictionary of bond objects
+        bond_calcs[bond.name] = bond
+
+        # todo make each pairwise subportfolio
+        # todo fetch joint probability matrix
+        # todo add single bond rating level prices together and apply joint prob
+        # todo calculate mean and variance
 
 
-def example_two_bond_calculation_monte():
+def example_three_bond_calculation_monte():
     """
     This script will test the credit risk monte carlo simulation on two bonds
     This script is meant as a demonstration script as well as a testing script for the
@@ -190,5 +209,5 @@ def example_two_bond_calculation_monte():
 
 
 if __name__ == "__main__":
-    example_two_bond_calculation_analytical()
+    example_three_bond_calculation_analytical()
 
