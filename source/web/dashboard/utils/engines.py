@@ -275,6 +275,7 @@ class Bond:
 
         self.log_action("Setting Bond Class Attributes")
         # main attributes of the bond
+        self.name = properties["bond_name"]
         self.par = properties["par"]
         self.coupon_pct = properties["coupon"]
         self.coupon_dollar = self.par * self.coupon_pct
