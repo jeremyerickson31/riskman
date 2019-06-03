@@ -286,9 +286,12 @@ class Bond:
         self.log_action("Attributes Set {par, coupon_pct, coupon_dollar, maturity, rating, seniority")
 
         # attribute placeholder for new values in forward rate scenarios
-        self.rating_level_prices = dict()  # will have {"AAA": price, ... "D": price"}
+
         self.transition_probs = None  # will be transition probabilities for a certain provider
-        self.price_stats = dict()
+        self.rating_level_prices_pct = dict()  # will have {"AAA": price, ... "D": price"}
+        self.rating_level_prices_dollar = dict()  # is the pct variable times notional
+        self.price_stats_pct = dict()
+        self.price_stats_dollar = dict()
 
     def log_action(self, text):
         timestamp = str(datetime.now())
@@ -310,14 +313,16 @@ class Bond:
 
             self.log_action("Re-pricing for rating level " + rating_level)
             price, logs = forward_interest_rate_repricing(self, forward_rate_segment)
-            self.rating_level_prices[rating_level] = price
+            self.rating_level_prices_pct[rating_level] = price
+            self.rating_level_prices_dollar[rating_level] = (price / 100.00) * self.notional
             self.logs += logs
 
         # getting the price in the default event
         # call function to apply recoveries_in_default
         self.log_action("Re-pricing for rating level D")
         recovery_stats = common.get_recovery_in_default(self.seniority)
-        self.rating_level_prices["D"] = recovery_stats["mean"]
+        self.rating_level_prices_pct["D"] = recovery_stats["mean"]
+        self.rating_level_prices_dollar["D"] = (recovery_stats["mean"] / 100.00) * self.notional
 
     def get_transition_probabilities(self, provider):
         probabilities = common.get_transition_probs(provider, self.rating)
@@ -325,28 +330,38 @@ class Bond:
 
     def calc_price_stats(self):
 
-        if not self.rating_level_prices.keys() == self.transition_probs.keys():
+        if not self.rating_level_prices_pct.keys() == self.transition_probs.keys():
             raise Exception("Key Mismatch Error: rating_level_prices and transition_probs have non-matching keys\n"
                             "Keys must match to perform price stats calculations\n"
                             "Rating Level Prices Keys = %s\n"
-                            "Transition Prob Keys = %s" % (self.rating_level_prices.keys(), self.transition_probs.keys()))
+                            "Transition Prob Keys = %s" % (self.rating_level_prices_pct.keys(), self.transition_probs.keys()))
 
         self.log_action("Calculate mean and std dev of rating level prices")
-        mean = 0.0
-        for rating_level in self.rating_level_prices.keys():
-            price = self.rating_level_prices[rating_level]
+        mean_pct = 0.0
+        mean_dollar = 0.0
+        for rating_level in self.rating_level_prices_pct.keys():
+            price_pct = self.rating_level_prices_pct[rating_level]
+            price_dollar = self.rating_level_prices_dollar[rating_level]
             prob = self.transition_probs[rating_level] / 100.00
-            mean += prob * price
+            mean_pct += prob * price_pct
+            mean_dollar += prob * price_dollar
 
-        variance = 0.0
-        for rating_level in self.rating_level_prices.keys():
-            price = self.rating_level_prices[rating_level]
+        variance_pct = 0.0
+        variance_dollar = 0.0
+        for rating_level in self.rating_level_prices_pct.keys():
+            price_pct = self.rating_level_prices_pct[rating_level]
+            price_dollar = self.rating_level_prices_dollar[rating_level]
             prob = self.transition_probs[rating_level] / 100.00
-            variance += prob * ((price - mean) ** 2)
+            variance_pct += prob * ((price_pct - mean_pct) ** 2)
+            variance_dollar += prob * ((price_dollar - mean_dollar) ** 2)
 
-        self.price_stats["mean"] = mean
-        self.price_stats["variance"] = variance
-        self.price_stats["std_dev"] = variance ** 0.5
+        self.price_stats_pct["mean"] = mean_pct
+        self.price_stats_pct["variance"] = variance_pct
+        self.price_stats_pct["std_dev"] = variance_pct ** 0.5
+
+        self.price_stats_dollar["mean"] = mean_dollar
+        self.price_stats_dollar["variance"] = variance_dollar
+        self.price_stats_dollar["std_dev"] = variance_dollar ** 0.5
 
 
 
