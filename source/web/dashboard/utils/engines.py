@@ -286,7 +286,8 @@ class Bond:
 
         # attribute placeholder for new values in forward rate scenarios
         self.rating_level_prices = dict()  # will have {"AAA": price, ... "D": price"}
-        self.transition_probs = dict()  # will be transition probabilities for a certain provider
+        self.transition_probs = None  # will be transition probabilities for a certain provider
+        self.price_stats = dict()
 
     def log_action(self, text):
         timestamp = str(datetime.now())
@@ -319,5 +320,32 @@ class Bond:
 
     def get_transition_probabilities(self, provider):
         probabilities = common.get_transition_probs(provider, self.rating)
-        self.transition_probs[provider] = probabilities
+        self.transition_probs = probabilities
+
+    def calc_price_stats(self):
+
+        if not self.rating_level_prices.keys() == self.transition_probs.keys():
+            raise Exception("Key Mismatch Error: rating_level_prices and transition_probs have non-matching keys\n"
+                            "Keys must match to perform price stats calculations\n"
+                            "Rating Level Prices Keys = %s\n"
+                            "Transition Prob Keys = %s" % (self.rating_level_prices.keys(), self.transition_probs.keys()))
+
+        self.log_action("Calculate mean and std dev of rating level prices")
+        mean = 0.0
+        for rating_level in self.rating_level_prices.keys():
+            price = self.rating_level_prices[rating_level]
+            prob = self.transition_probs[rating_level] / 100.00
+            mean += prob * price
+
+        variance = 0.0
+        for rating_level in self.rating_level_prices.keys():
+            price = self.rating_level_prices[rating_level]
+            prob = self.transition_probs[rating_level] / 100.00
+            variance += prob * ((price - mean) ** 2)
+
+        self.price_stats["mean"] = mean
+        self.price_stats["variance"] = variance
+        self.price_stats["std_dev"] = variance ** 0.5
+
+
 
