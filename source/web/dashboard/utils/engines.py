@@ -264,6 +264,11 @@ def forward_interest_rate_repricing(bond, forward_curve):
 
 
 class Bond:
+    """
+    This is the Bond Class
+    It is an easy way to keep all information and calculations about the bond tied to the Bond object
+    The methods of this bond don't return variables but instead set certain Bond attributes
+    """
 
     def __init__(self, properties):
         """
@@ -287,22 +292,29 @@ class Bond:
         self.log_action("Attributes Set {par, coupon_pct, coupon_dollar, maturity, rating, seniority")
 
         # attribute placeholder for new values in forward rate scenarios
-
-        self.transition_probs = None  # will be transition probabilities for a certain provider
+        self.transition_probs = None  # will be transition probabilities pulled for a certain provider
         self.rating_level_prices_pct = dict()  # will have {"AAA": price, ... "D": price"}
         self.rating_level_prices_dollar = dict()  # is the pct variable times notional
-        self.price_stats_pct = dict()
-        self.price_stats_dollar = dict()
+        self.price_stats_pct = dict()  # mean , variance, std dev based on price
+        self.price_stats_dollar = dict()  # mean, variance, std dev based on price * notional
 
     def log_action(self, text):
+        """
+        Function to add some text to the list of actions in the self.logs attribute
+        :param text: some text to. either string or list of strings
+        """
         timestamp = str(datetime.now())
         if isinstance(text, str):
             self.logs.append(timestamp + " " + self.class_name + text)
         if isinstance(text, list):
             for entry in text:
-                self.logs.append(timestamp + " " + self.class_name + entry)
+                self.logs.append(timestamp + " " + self.class_name + str(entry))
 
     def calc_prices_under_forwards(self, forwards):
+        """
+        function to apply each forward interest rate curve
+        :param forwards: dictionary of forward interest rate curves on a rating level basis
+        """
         self.log_action("Calculating Bond price under rating level forward interest rate scenarios")
 
         for rating_level in forwards.keys():
@@ -320,16 +332,25 @@ class Bond:
 
         # getting the price in the default event
         # call function to apply recoveries_in_default
+        # todo will need to incorporate a stochastic factor for recovery in default when doing the simulation
         self.log_action("Re-pricing for rating level D")
         recovery_stats = common.get_recovery_in_default(self.seniority)
         self.rating_level_prices_pct["D"] = recovery_stats["mean"]
         self.rating_level_prices_dollar["D"] = (recovery_stats["mean"] / 100.00) * self.notional
 
     def get_transition_probabilities(self, provider):
+        """
+        function to get the transition probabilities from the providers matrix for the bond's rating
+        :param provider: Credit Metrics, Moodys etc
+        """
         probabilities = common.get_transition_probs(provider, self.rating)
         self.transition_probs = probabilities
 
     def calc_price_stats(self):
+        """
+        This function takes the rating level bond prices and calculates the mean, variance and std dev
+        This is done on a price basis and a dollar basis (price * notional)
+        """
 
         if not self.rating_level_prices_pct.keys() == self.transition_probs.keys():
             raise Exception("Key Mismatch Error: rating_level_prices and transition_probs have non-matching keys\n"
