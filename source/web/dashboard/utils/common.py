@@ -212,3 +212,41 @@ def get_recovery_in_default(seniority):
         raise Exception("KeyError: Recovery JSON has no seniority level {%s}" % seniority)
 
     return recovery
+
+
+def get_two_asset_combinations(name_list):
+    """
+    this function will determine the distinct list of two asset sub portfolios from the list of asset names
+    :param name_list: list of asset names
+    :return: list of two asset sub portfolio combinations
+    """
+
+    # check that name_list is a list
+    if not isinstance(name_list, list):
+        raise Exception("Paramter Error: name_list parameter must be a list. Got %s instead" % str(type(name_list)))
+
+    # check to see that name_list has no duplicates
+    if len(set(name_list)) == len(name_list):
+        pass
+    else:
+        raise Exception("Uniquness Error: name_list cannot have duplicate entries. Each entry must be unique")
+
+    combos = list()
+    # double loop through names in name_list
+    for first in name_list:
+        for second in name_list:
+
+            forward_combo_name = first + "-" + second
+            backward_combo_name = second + "-" + first
+
+            # don't keep (name_1 - name_1) combo
+            if first == second:
+                continue
+
+            # only keep one of (name_1-name_2) or (name_2-name_1)
+            if (forward_combo_name in combos) or (backward_combo_name in combos):
+                continue
+
+            combos.append(forward_combo_name)
+
+    return combos
