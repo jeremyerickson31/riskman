@@ -263,6 +263,18 @@ def forward_interest_rate_repricing(bond, forward_curve):
     return price, logging
 
 
+def calc_two_asset_portfolio_stats(bond1, bond2, joint_trans_probs):
+    """
+
+    :param bond1:
+    :param bond2:
+    :param joint_trans_probs:
+    :return:
+    """
+
+    return None
+
+
 class Bond:
     """
     This is the Bond Class
