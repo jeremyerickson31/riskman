@@ -131,6 +131,23 @@ def get_transition_probs(provider, rating):
     return probabilities
 
 
+def get_provider_correlation_joint_probs(provider, correlation):
+    """
+    this function will fetch the pre-calculated joint transition probabilities for the provider-correlation pair
+    :param provider: Credit Metrics, SP Ratings, Moodys
+    :param correlation: 0.1, 0.2, ....
+    :return: dictionary
+    """
+
+    joint_probs_loc = config.model_inputs["joint_matrices_folder"]
+    file_name = joint_probs_loc + provider + "_" + str(correlation) + ".json"
+
+    f = open(file_name)
+    joint_probs_dict = json.load(f)
+
+    return joint_probs_dict
+
+
 def get_ordered_rating_keys():
     """
     function that will return the ordered keys located in the oneyeartransition.json file
