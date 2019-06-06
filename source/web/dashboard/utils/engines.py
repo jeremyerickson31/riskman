@@ -338,7 +338,7 @@ class Bond:
 
             self.log_action("Re-pricing for rating level " + rating_level)
             price, logs = forward_interest_rate_repricing(self, forward_rate_segment)
-            self.rating_level_prices_pct[rating_level] = price
+            self.rating_level_prices_pct[rating_level] = price  # per 100 of par
             self.rating_level_prices_dollar[rating_level] = (price / 100.00) * self.notional
             self.logs += logs
 
@@ -370,24 +370,32 @@ class Bond:
                             "Rating Level Prices Keys = %s\n"
                             "Transition Prob Keys = %s" % (self.rating_level_prices_pct.keys(), self.transition_probs.keys()))
 
+        """
+        # this block shows how to make a dictionary to a list then to an array then broadcast to matrix
+        # this is neat but not used
+        ordered_keys = common.get_ordered_rating_keys()
+        keys = [int(key) for key in ordered_keys]
+        keys.sort()
+        ordered_ratings = [ordered_keys[str(num)] for num in keys]
+        price_pct_array = numpy.array([self.rating_level_prices_pct[rating] for rating in ordered_ratings])
+        price_pct_matrix = price_pct_array.reshape(len(price_pct_array), 1).repeat(len(price_pct_array), axis=1)
+        print(price_pct_matrix + price_pct_matrix)
+        """
+
         self.log_action("Calculate mean and std dev of rating level prices")
         mean_pct = 0.0
-        mean_dollar = 0.0
         for rating_level in self.rating_level_prices_pct.keys():
-            price_pct = self.rating_level_prices_pct[rating_level]
-            price_dollar = self.rating_level_prices_dollar[rating_level]
-            prob = self.transition_probs[rating_level] / 100.00
+            price_pct = self.rating_level_prices_pct[rating_level]  # prices pct is like 104.63 per 100 par
+            prob = self.transition_probs[rating_level] / 100.00  # probability is like 93.4%
             mean_pct += prob * price_pct
-            mean_dollar += prob * price_dollar
+        mean_dollar = mean_pct * self.notional
 
         variance_pct = 0.0
-        variance_dollar = 0.0
         for rating_level in self.rating_level_prices_pct.keys():
-            price_pct = self.rating_level_prices_pct[rating_level]
-            price_dollar = self.rating_level_prices_dollar[rating_level]
-            prob = self.transition_probs[rating_level] / 100.00
+            price_pct = self.rating_level_prices_pct[rating_level]  # prices pct is like 104.63 per par
+            prob = self.transition_probs[rating_level] / 100.00  # probability is like 93.4%
             variance_pct += prob * ((price_pct - mean_pct) ** 2)
-            variance_dollar += prob * ((price_dollar - mean_dollar) ** 2)
+        variance_dollar = variance_pct * self.notional**2
 
         self.price_stats_pct["mean"] = mean_pct
         self.price_stats_pct["variance"] = variance_pct
