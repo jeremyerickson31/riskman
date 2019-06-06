@@ -147,19 +147,24 @@ def example_three_bond_calculation_analytical():
     # which transition matrix provider and correlation to use
     # this combination is used to lookup the pre-calculated joint transition probabilities
     use_provider = "SP Ratings"
-    use_correlation = 0.10
+    use_correlation = 0.30
+    joint_probs_master = common.get_provider_correlation_joint_probs(use_provider, use_correlation)
 
     # make some fake bonds. fixed rate annuals for now
-    bond1_properties = {"bond_name": "bond_A",
+    bond1_properties = {"bond_name": "bondA",
                         "par": 100, "coupon": 0.06, "maturity": 5, "notional": 4000000.00,
                         "rating": "BBB", "seniority": "Senior Unsecured"}
-    bond2_properties = {"bond_name": "bond_B",
+    bond2_properties = {"bond_name": "bondB",
                         "par": 100, "coupon": 0.05, "maturity": 3, "notional": 2000000.00,
                         "rating": "A", "seniority": "Junior Subordinated"}
-    bond3_properties = {"bond_name": "bond_C",
+    bond3_properties = {"bond_name": "bondC",
                         "par": 100, "coupon": 0.10, "maturity": 2, "notional": 1000000.00,
                         "rating": "CCC", "seniority": "Senior Secured"}
+
+    # add bond properties to list for nice looping through bonds
     bond_list = [bond1_properties, bond2_properties, bond3_properties]
+    bond_names = [item["bond_name"] for item in bond_list]  # list of names to use for making two asset sub portfolios
+    two_asset_combos = common.get_two_asset_combinations(bond_names)
 
     # some sample rating level forward rates for repricing
     forward_rates = {"AAA": [3.60, 4.17, 4.73, 5.12, 5.83, 6.05, 6.27, 6.68, 7.12],
@@ -171,27 +176,41 @@ def example_three_bond_calculation_analytical():
                      "CCC": [15.05, 15.02, 14.03, 13.52, 13.07, 12.63, 12.12, 11.70]
                      }
 
+    # begin the individual bond calculations
     bond_calcs = dict()
     for bond_properties in bond_list:
-        bond = engines.Bond(bond_properties)
-        bond.get_transition_probabilities(use_provider)
-        bond.calc_prices_under_forwards(forward_rates)
-        bond.calc_price_stats()
+        bond = engines.Bond(bond_properties)  # initialize the bond object
+        bond.get_transition_probabilities(use_provider)  # fetch transition probabilities given provider and self.rating
+        bond.calc_prices_under_forwards(forward_rates)  # use provided forward rates to do re-pricing
+        bond.calc_price_stats()  # apply transition probabilities to get mean and variance
 
         print("----------------------")
+        print(bond.name)
         print(bond.transition_probs)
         print(bond.rating_level_prices_pct)
         print(bond.rating_level_prices_dollar)
         print(bond.price_stats_pct)
         print(bond.price_stats_dollar)
 
-        # add this bond object to the dictionary of bond objects
-        bond_calcs[bond.name] = bond
+        # add this bond object to the dictionary of bond objects that we have done calculations for
+        bond_calcs[bond.name] = {"type": "single", "stats": None, "object": bond}
 
-        # todo make each pairwise subportfolio
-        # todo fetch joint probability matrix
-        # todo add single bond rating level prices together and apply joint prob
-        # todo calculate mean and variance
+    # begin the two bond sub portfolio calculations
+    for combo in two_asset_combos:
+        bonds_in_combo = combo.split("-")  # splits bondA-bondB into its components
+
+        # retrieve bond object with calculated prices and stats for first name
+        bond1 = bond_calcs[bonds_in_combo[0]]["object"]
+        bond2 = bond_calcs[bonds_in_combo[1]]["object"]
+
+        # fetch the relevant joint transition probability
+        joint_probs_lookup = bond1.rating + "|" + bond2.rating  # concatenate bond names to match joint probs file names
+        joint_trans_probs = joint_probs_master[joint_probs_lookup]  # lookup joint transition probabilities
+
+        # send bond1, bond2 and joint transition probabilities into function to do looping for price stats
+        x = engines.calc_two_asset_portfolio_stats(bond1, bond2, joint_trans_probs)
+
+        bond_calcs[combo] = {"type": "two_asset", "stats": {"mean": None, "variance": None}, "object": None}
 
 
 def example_three_bond_calculation_monte():
