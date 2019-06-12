@@ -265,14 +265,59 @@ def forward_interest_rate_repricing(bond, forward_curve):
 
 def calc_two_asset_portfolio_stats(bond1, bond2, joint_trans_probs):
     """
-
-    :param bond1:
-    :param bond2:
-    :param joint_trans_probs:
-    :return:
+    This function takes two Bond class instances along with a joint probability matrix and will calculate the
+    value and mean and variance of the pairwise portfolio
+    :param bond1: a Bond Class instance
+    :param bond2: a Bond Class instance
+    :param joint_trans_probs: distionary of joint rating transition probabilities
+    :return: dictionary of stats {"stats_pct":{}, "stats_dollar": {} }
     """
 
-    return None
+    if not isinstance(bond1, Bond) or not isinstance(bond2, Bond):
+        raise Exception("Type Error: Parameters bond1 and bond2 must be of type Bond with associated properties")
+
+    if set(joint_trans_probs.keys()) != set(bond1.rating_level_prices_pct.keys()):
+        raise Exception("Key Mismatch Error: bond1, bond2 and joint_trans_prob must have same set of dictionary keys")
+
+    mean_pct = 0.0
+    mean_dollar = 0.0
+    for rating_1 in bond1.rating_level_prices_pct.keys():
+        for rating_2 in bond2.rating_level_prices_pct.keys():
+            bond1_price_pct = bond1.rating_level_prices_pct[rating_1]
+            bond1_price_dollar = bond1.rating_level_prices_dollar[rating_1]
+            bond2_price_pct = bond2.rating_level_prices_pct[rating_2]
+            bond2_price_dollar = bond2.rating_level_prices_dollar[rating_2]
+
+            joint_trans_prob = round(joint_trans_probs[rating_1][rating_2], 5) / 100.00
+
+            mean_pct += joint_trans_prob * (bond1_price_pct + bond2_price_pct)
+            mean_dollar += joint_trans_prob * (bond1_price_dollar + bond2_price_dollar)
+
+    variance_pct = 0.0
+    variance_dollar = 0.0
+    for rating_1 in bond1.rating_level_prices_pct.keys():
+        for rating_2 in bond2.rating_level_prices_pct.keys():
+            bond1_price_pct = bond1.rating_level_prices_pct[rating_1]
+            bond1_price_dollar = bond1.rating_level_prices_dollar[rating_1]
+            bond2_price_pct = bond2.rating_level_prices_pct[rating_2]
+            bond2_price_dollar = bond2.rating_level_prices_dollar[rating_2]
+
+            joint_trans_prob = round(joint_trans_probs[rating_1][rating_2], 5) / 100.00
+
+            variance_pct += joint_trans_prob * ((bond1_price_pct + bond2_price_pct) - mean_pct)**2
+            variance_dollar += joint_trans_prob * ((bond1_price_dollar + bond2_price_dollar) - mean_dollar)**2
+
+    stats = {"pct": {}, "dollar": {}}
+
+    stats["pct"]["mean"] = mean_pct
+    stats["pct"]["variance"] = variance_pct
+    stats["pct"]["std_dev"] = variance_pct ** 0.5
+
+    stats["dollar"]["mean"] = mean_dollar
+    stats["dollar"]["variance"] = variance_dollar
+    stats["dollar"]["std_dev"] = variance_dollar ** 0.5
+
+    return stats
 
 
 class Bond:
@@ -385,14 +430,14 @@ class Bond:
         self.log_action("Calculate mean and std dev of rating level prices")
         mean_pct = 0.0
         for rating_level in self.rating_level_prices_pct.keys():
-            price_pct = self.rating_level_prices_pct[rating_level]  # prices pct is like 104.63 per 100 par
+            price_pct = self.rating_level_prices_pct[rating_level] / 100.00  # prices pct is like 104.63 per 100 par
             prob = self.transition_probs[rating_level] / 100.00  # probability is like 93.4%
             mean_pct += prob * price_pct
         mean_dollar = mean_pct * self.notional
 
         variance_pct = 0.0
         for rating_level in self.rating_level_prices_pct.keys():
-            price_pct = self.rating_level_prices_pct[rating_level]  # prices pct is like 104.63 per par
+            price_pct = self.rating_level_prices_pct[rating_level] / 100.00  # prices pct is like 104.63 per par
             prob = self.transition_probs[rating_level] / 100.00  # probability is like 93.4%
             variance_pct += prob * ((price_pct - mean_pct) ** 2)
         variance_dollar = variance_pct * self.notional**2

@@ -186,16 +186,19 @@ def example_three_bond_calculation_analytical():
 
         print("----------------------")
         print(bond.name)
-        print(bond.transition_probs)
-        print(bond.rating_level_prices_pct)
-        print(bond.rating_level_prices_dollar)
-        print(bond.price_stats_pct)
-        print(bond.price_stats_dollar)
+        print("transition probs - " + str(bond.transition_probs))
+        print("bond price pct - " + str(bond.rating_level_prices_pct))
+        print("bond price dollar - " + str(bond.rating_level_prices_dollar))
+        print("price stats pct - " + str(bond.price_stats_pct))
+        print("price stats dollar - " + str(bond.price_stats_dollar))
 
         # add this bond object to the dictionary of bond objects that we have done calculations for
-        bond_calcs[bond.name] = {"type": "single", "stats": None, "object": bond}
+        bond_calcs[bond.name] = {"type": "single_asset", "stats": None, "object": bond}
 
     # begin the two bond sub portfolio calculations
+    print("-------------------------")
+    print("two asset combos")
+    print("-------------------------")
     for combo in two_asset_combos:
         bonds_in_combo = combo.split("-")  # splits bondA-bondB into its components
 
@@ -208,9 +211,38 @@ def example_three_bond_calculation_analytical():
         joint_trans_probs = joint_probs_master[joint_probs_lookup]  # lookup joint transition probabilities
 
         # send bond1, bond2 and joint transition probabilities into function to do looping for price stats
-        x = engines.calc_two_asset_portfolio_stats(bond1, bond2, joint_trans_probs)
+        price_stats = engines.calc_two_asset_portfolio_stats(bond1, bond2, joint_trans_probs)
 
-        bond_calcs[combo] = {"type": "two_asset", "stats": {"mean": None, "variance": None}, "object": None}
+        print(combo)
+        print("joint trans probs - " + str(joint_trans_probs))
+        print("price stats pct - " + str(price_stats["pct"]))
+        print("price stats dollar - " + str(price_stats["dollar"]))
+        print("-----------------------")
+
+        bond_calcs[combo] = {"type": "two_asset", "stats": {
+            "pct": price_stats["pct"], "dollar": price_stats["dollar"]},
+                             "object": None}
+
+    print("----------------------")
+    print("List of bond calculations")
+    print(bond_calcs.keys())
+
+    # loop through calculations that were done to get portfolio level stuff
+    portfolio_mean = 0.0
+    portfolio_variance = 0.0
+    for calc_name in bond_calcs.keys():
+
+        if bond_calcs[calc_name]["type"] == "two_asset":
+            portfolio_variance += bond_calcs[calc_name]["stats"]["dollar"]["variance"]
+        if bond_calcs[calc_name]["type"] == "single_asset":
+            portfolio_variance -= bond_calcs[calc_name]["object"].price_stats_dollar["variance"]
+            portfolio_mean += bond_calcs[calc_name]["object"].price_stats_dollar["mean"]
+
+    print("--------------------")
+    print("Portfolio Results")
+    print("Mean : " + str(portfolio_mean))
+    print("Variance : " + str(portfolio_variance / 1000000**2))
+    print("Std Dev : " + str((portfolio_variance / 1000000**2) * 0.5))
 
 
 def example_three_bond_calculation_monte():
