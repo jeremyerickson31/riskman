@@ -131,7 +131,7 @@ def build_joint_trans_probs():
 
 def example_three_bond_calculation_analytical():
     """
-    This script will test the credit risk calculation on two bonds
+    This script will test the credit risk calculation on three bonds
     This script is meant as a demonstration script as well as a testing script for the
         core engines.py components that are used in the credit risk calculations
     The calculation is the Analytical approach which involves the following:
@@ -144,11 +144,11 @@ def example_three_bond_calculation_analytical():
     :return:
     """
 
-    # which transition matrix provider and correlation to use
-    # this combination is used to lookup the pre-calculated joint transition probabilities
+    # ###################################################################################
+    # #########################      BEGIN USER INPUTS      #############################
+    # ###################################################################################
     use_provider = "SP Ratings"
     use_correlation = 0.30
-    joint_probs_master = common.get_provider_correlation_joint_probs(use_provider, use_correlation)
 
     # make some fake bonds. fixed rate annuals for now
     bond1_properties = {"bond_name": "bondA",
@@ -161,11 +161,6 @@ def example_three_bond_calculation_analytical():
                         "par": 100, "coupon": 0.10, "maturity": 2, "notional": 1000000.00,
                         "rating": "CCC", "seniority": "Senior Secured"}
 
-    # add bond properties to list for nice looping through bonds
-    bond_list = [bond1_properties, bond2_properties, bond3_properties]
-    bond_names = [item["bond_name"] for item in bond_list]  # list of names to use for making two asset sub portfolios
-    two_asset_combos = common.get_two_asset_combinations(bond_names)
-
     # some sample rating level forward rates for repricing
     forward_rates = {"AAA": [3.60, 4.17, 4.73, 5.12, 5.83, 6.05, 6.27, 6.68, 7.12],
                      "AA": [3.65, 4.22, 4.78, 5.17, 5.92, 6.12, 6.45, 7.01, 7.38],
@@ -176,11 +171,23 @@ def example_three_bond_calculation_analytical():
                      "CCC": [15.05, 15.02, 14.03, 13.52, 13.07, 12.63, 12.12, 11.70]
                      }
 
+    # ###################################################################################
+    # #########################      END OF USER INPUTS      ############################
+    # ###################################################################################
+
+    # get master file of joint probabilities for provider/correlation pair
+    joint_probs_master = common.get_provider_correlation_joint_probs(use_provider, use_correlation)
+
+    # add bond properties to list for nice looping through bonds
+    bond_list = [bond1_properties, bond2_properties, bond3_properties]
+    bond_names = [item["bond_name"] for item in bond_list]  # list of names to use for making two asset sub portfolios
+    two_asset_combos = common.get_two_asset_combinations(bond_names)
+
     # begin the individual bond calculations
-    bond_calcs = dict()
+    bond_calcs = dict()  # dictionary for holding the single asset and two asset calculations that have been done
     for bond_properties in bond_list:
         bond = engines.Bond(bond_properties)  # initialize the bond object
-        bond.get_transition_probabilities(use_provider)  # fetch transition probabilities given provider and self.rating
+        bond.get_transition_probabilities(use_provider)  # fetch transition probs for given provider and self.rating
         bond.calc_prices_under_forwards(forward_rates)  # use provided forward rates to do re-pricing
         bond.calc_price_stats()  # apply transition probabilities to get mean and variance
 
@@ -243,6 +250,8 @@ def example_three_bond_calculation_analytical():
     print("Mean : " + str(portfolio_mean))
     print("Variance : " + str(portfolio_variance / 1000000**2))
     print("Std Dev : " + str((portfolio_variance / 1000000**2) * 0.5))
+
+    # loop through bonds and adjust mean and variance to exclude bond and sub-portfolios
 
 
 def example_three_bond_calculation_monte():
