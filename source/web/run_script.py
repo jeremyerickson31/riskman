@@ -213,6 +213,7 @@ def example_three_bond_calculation_analytical():
         bond1 = bond_calcs[bonds_in_combo[0]]["object"]
         bond2 = bond_calcs[bonds_in_combo[1]]["object"]
 
+        # todo if use_correlation is Matrix then fetch thresholds, make gauss corr mat, do numerical integration
         # fetch the relevant joint transition probability
         joint_probs_lookup = bond1.rating + "|" + bond2.rating  # concatenate bond names to match joint probs file names
         joint_trans_probs = joint_probs_master[joint_probs_lookup]  # lookup joint transition probabilities
