@@ -252,7 +252,33 @@ def example_three_bond_calculation_analytical():
     print("Variance : " + str(portfolio_variance / 1000000**2))
     print("Std Dev : " + str((portfolio_variance / 1000000**2) * 0.5))
 
+    print("--------------------")
+    print("Marginal Variances")
+    # Calculating marginal variances and standard deviations
     # loop through bonds and adjust mean and variance to exclude bond and sub-portfolios
+
+    # for each single bond in the list
+    for bondname in bond_names:
+
+        # marginal variance comes from adjusting portfolio variance
+        marginal_var = portfolio_variance
+
+        # find all the single and two asset calculation packages that bond was involved in
+        for calc_name in bond_calcs.keys():
+            if bondname in calc_name:
+
+                if bond_calcs[calc_name]["type"] == "single_asset":
+                    # add the variance back
+                    marginal_var += bond_calcs[calc_name]["object"].price_stats_dollar["variance"]
+
+                if bond_calcs[calc_name]["type"] == "two_asset":
+                    # subtract the pair-wise variance out
+                    marginal_var -= bond_calcs[calc_name]["stats"]["dollar"]["variance"]
+
+        bond_calcs[bondname]["object"].marginal_variance = marginal_var
+        print(bondname + ": " + str(marginal_var / 1000000.0**2))
+
+
 
 
 def example_three_bond_calculation_monte():
