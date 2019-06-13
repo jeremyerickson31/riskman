@@ -354,6 +354,8 @@ class Bond:
         self.rating_level_prices_dollar = dict()  # is the pct variable times notional
         self.price_stats_pct = dict()  # mean , variance, std dev based on price
         self.price_stats_dollar = dict()  # mean, variance, std dev based on price * notional
+        self.marginal_variance = None
+        self.marginal_standard_dev = None
 
     def log_action(self, text):
         """
