@@ -23,6 +23,9 @@ model_inputs["correlations"] = [0.10, 0.20, 0.30, 0.40, 0.50, 0.60, 0.70, 0.80, 
 # tolerance level for transition matrix sum = 1
 model_inputs["matrix_sum_tolerance"] = 0.000001
 
+# required bond properties for running credit risk analytics
+model_inputs["required_bond_properties"] = ["bond_name", "par", "coupon", "notional", "maturity", "rating", "seniority"]
+
 ############################################
 # certain config settings for other stuff
 ############################################
