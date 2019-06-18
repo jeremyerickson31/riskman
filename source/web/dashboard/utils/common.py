@@ -267,3 +267,31 @@ def get_two_asset_combinations(name_list):
             combos.append(forward_combo_name)
 
     return combos
+
+
+def run_bond_properties_check(bond_props):
+    """
+    function will validate that all the required bond properties are present
+    :param bond_prop: accepts a list of dictionaries with bond properties
+    :return: ist of wrong stuff, if no wrong stuff then empty list
+    """
+
+    if not isinstance(bond_props, list):
+        raise Exception("Parameter Error: bond_props must be a list of dictionaries")
+    for entry in bond_props:
+        if not isinstance(entry, dict):
+            raise Exception("Parameter Error: each entry in bond_props must be a dictionary")
+
+    # list of required properties
+    req_props = set(config.model_inputs["required_bond_properties"])
+
+    incomplete_properties = list()
+    for properties in bond_props:
+        props = set(properties.keys())
+
+        prop_diff = req_props - props
+        if prop_diff != set():
+            incomplete_properties.append({"properties": properties, "missing": prop_diff})
+
+    return incomplete_properties
+
