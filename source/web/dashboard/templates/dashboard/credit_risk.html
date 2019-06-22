@@ -2,13 +2,92 @@
 
 {% load static %}
 
-{% block title %}Dashboard | Home{% endblock %}<!DOCTYPE html>
-<html lang="en">
-  <head>
-  </head>
+{% block title %}Dashboard | Credit Risk{% endblock %}
 
-  <body class="nav-md">
-    <div class="container body">      
-    </div>
-  </body>
-</html>
+{% block content %}
+
+<!-- page content -->
+          <div class="">
+              <div class="page-title">
+                  <div class="title_left">
+                      <h3>Credit Risk Tools</h3>
+                      <h5>
+                          Description of Credit Risk Tools
+                          <br>
+                          INPUT (Analytic, Simulation), (Provider), (0.1, 0.2, ...), (Bond Portfolio), (Forward Curves)
+                          <br>
+                          for anayltic and simulation, correlation is flat
+                      </h5>
+                      <form class="form-horizontal form-label-left" method="post">
+                          {% csrf_token %}
+                          <label class="control-label col-md-3 col-sm-3 col-xs-3">Matrix Source</label>
+                          <div class="col-md-4 col-sm-4 col-xs-4">
+                              <select class="form-control" id="matrix_source">
+                                  <option>Credit Metrics</option>
+                                  <option>Moodys</option>
+                                  <option>SP Ratings</option>
+                              </select>
+                          </div>
+
+                          <button type="button" class="btn btn-success" onclick="button_run_portfolio_credit_risk()">Submit</button>
+                      </form>
+                  </div>
+              </div>
+
+              <div class="clearfix"></div>
+
+              <div class="row">
+                  <div class="col-md-4 col-sm-12 col-xs-12">
+                      <div class="x_panel">
+                          <div class="x_title">
+                              <h2>Dropzone multiple file uploader</h2>
+                              <div class="clearfix"></div>
+                          </div>
+
+                          <div class="x_content">
+                              <form action="ajax_cred_risk_analytics" class="dropzone" enctype="multipart/form-data">
+                                  {% csrf_token %}
+                              </form>
+                              <br />
+                              <br />
+                              <br />
+                              <br />
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        <!-- /page content -->
+
+<div class="clearfix"></div>
+
+
+{% endblock %}
+
+{% block inlinejsbottom %}
+
+<script>
+        var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+        function button_run_portfolio_credit_risk(){
+
+            var matrix_source = jQuery("#matrix_source").val()
+            jQuery.ajax({
+                        url: '{% url 'ajax_cred_risk_analytics' %}',
+                        type: 'POST',
+                        data: {'matrix_source': matrix_source},
+                        headers: {'X-CSRFToken': csrftoken,},
+                        dataType: 'json',
+                        success: function (response){
+                            if (response.data)
+                            {
+                            console.log("fired the ajax")
+                            }
+                        },
+                        failure: function (){
+                            console.log("the AJAX call failed.....")
+                        }
+            });
+        }
+</script>
+{% endblock %}
