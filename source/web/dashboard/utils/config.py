@@ -34,3 +34,9 @@ settings = dict()
 
 # location of folder to dump script logs
 settings["script_log_loc"] = current_directory + "\\script_logs"
+
+db_conn = dict()
+db_conn['username'] = 'riskmanuser'
+db_conn['password'] = 'abc123'
+db_conn['local_host'] = '127.0.0.1'
+db_conn['database'] = 'portfolio_risk_management'

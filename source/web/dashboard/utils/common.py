@@ -5,9 +5,27 @@ import numpy
 
 from io import TextIOWrapper
 from datetime import datetime
+import mysql.connector
 
 sys.path.append(os.getcwd() + "\\dashboard\\utils")
 import config
+
+
+def open_db_connection():
+    """
+    will open connection to portfolio_risk_management database with user = riskmanuser
+    :return:
+    """
+
+    try:
+        connection = mysql.connector.connect(host=config.db_conn['local_host'],
+                                             user=config.db_conn['username'],
+                                             passwd=config.db_conn['password'],
+                                             database=config.db_conn['database'])
+    except:
+        raise Exception("DB Connection Error: Couldn't connect to DB. Check username, password")
+
+    return connection
 
 
 def open_script_log_file(script_name):
@@ -295,3 +313,9 @@ def run_bond_properties_check(bond_props):
 
     return incomplete_properties
 
+
+if __name__ == "__main__":
+    conn = open_db_connection()
+    curr = conn.cursor()
+    curr.execute("SHOW DATABASES;")
+    print(curr.fetchall())
