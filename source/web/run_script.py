@@ -307,7 +307,7 @@ def make_random_portfolio():
     portfoli = list()
     for i in range(0, 100):
         bond_name = "bond_" + str(i)
-        
+
 
 if __name__ == "__main__":
     example_three_bond_calculation_analytical()
