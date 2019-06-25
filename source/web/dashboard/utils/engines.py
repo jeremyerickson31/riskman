@@ -320,6 +320,48 @@ def calc_two_asset_portfolio_stats(bond1, bond2, joint_trans_probs):
     return stats
 
 
+def run_portfolio_credit_risk(bonds, forwards, run_type="analytical", provider="Credit Metrics", correlation=0.3, ):
+    """
+    this is the main engine that will rin the portfolio credit risk analytics
+
+    :param bonds: a list of dictionaries with bond properties
+    :param forwards: set of rating level forward interest rate curves for bond re-pricing
+    :param run_type: Can be 'analytical' or 'simulation'
+    :param provider: one of the transition matrix providers
+    :param correlation: either float in approved list or a correlation matrix
+    :return: output differs for each run_type
+    """
+    # ######################## parameter validation #########################
+    # validate bonds
+    if not isinstance(bonds, list):
+        raise Exception("Parameter Error: bond must be a list of dictionaries")
+    missing_properties = common.run_bond_properties_check(bonds)
+    if not missing_properties:
+        pass
+
+    # validate run_type
+    if run_type not in ["analytical", "simulation"]:
+        raise Exception("Paramter Error: run_type must be eith 'analytical' or 'simulation'")
+
+    # validate provider
+    provider_list = common.get_matrix_providers()
+    if provider not in provider_list:
+        raise Exception("Parameter Error: provider must be one of the following %s" % str(provider_list))
+
+    # validate correlation
+    # could be a single float or a numpy square matrix
+    print()
+
+    # validate forwards
+    if not isinstance(forwards, dict):
+        raise Exception("Parameter Error: forwards must be a dictionary with rating level lists")
+
+    # ######################## parameter validation #########################
+
+    # ########################  begin calculations  #########################
+    return None
+
+
 class Bond:
     """
     This is the Bond Class
