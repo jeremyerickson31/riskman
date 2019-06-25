@@ -279,8 +279,6 @@ def example_three_bond_calculation_analytical():
         print(bondname + ": " + str(marginal_var / 1000000.0**2))
 
 
-
-
 def example_three_bond_calculation_monte():
     """
     This script will test the credit risk monte carlo simulation on two bonds
@@ -294,6 +292,22 @@ def example_three_bond_calculation_monte():
     :return:
     """
 
+
+def make_random_portfolio():
+    """
+    script that will make a random portfolio and insert into DB
+    :return:
+    """
+
+    num_securities = 100
+    portfolio_names = ["IG", "Non-IG", "Balanced"]
+    rating_buckets = {"IG": ["AAA", "AA", "A", "BBB"],
+                      "Non-IG": ["BB", "B", "CCC"]}
+
+    portfoli = list()
+    for i in range(0, 100):
+        bond_name = "bond_" + str(i)
+        
 
 if __name__ == "__main__":
     example_three_bond_calculation_analytical()
