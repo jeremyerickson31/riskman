@@ -76,3 +76,28 @@ def ajax_get_trans_matrix(request):
         return HttpResponse(json.dumps(response), content_type="application/json")
     else:
         return HttpResponseNotFound(json.dumps(response), content_type="application/json")
+
+
+def ajax_cred_risk_analytics(request):
+    """
+    AJAX function to kick off the credit risk analytics calculations
+    :return: 
+    """
+
+    response = {'status': 1, 'message': 'OK', 'data': {}}
+
+    if request.method == "POST":
+        try:
+            pass
+        except:
+            response["status"] = 0
+            response["message"] = "ERROR: "
+
+    else:
+        response["status"] = 0
+        response["message"] = "ERROR: ajax endpoint {ajax_cred_risk_analytics} not configured for GET request"
+
+    if response:
+        return HttpResponse(json.dumps(response), content_type="application/json")
+    else:
+        return HttpResponseNotFound(json.dumps(response), content_type="application/json")
