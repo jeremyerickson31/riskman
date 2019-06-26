@@ -4,6 +4,7 @@
 
 import sys
 import json
+import random
 from dashboard.utils import common, engines, config
 
 
@@ -293,22 +294,63 @@ def example_three_bond_calculation_monte():
     """
 
 
-def make_random_portfolio():
+def make_random_portfolio(num_securities, portfolio_type, clear_db=False):
     """
     script that will make a random portfolio and insert into DB
     :return:
     """
-
-    num_securities = 100
-    portfolio_names = ["IG", "Non-IG", "Balanced"]
     rating_buckets = {"IG": ["AAA", "AA", "A", "BBB"],
-                      "Non-IG": ["BB", "B", "CCC"]}
+                      "Non-IG": ["BB", "B", "CCC"],
+                      "Balanced": ["AAA", "AA", "A", "BBB", "BB", "B", "CCC"]}
 
-    portfoli = list()
-    for i in range(0, 100):
+    portfolio = list()
+    for i in range(1, num_securities + 1):
         bond_name = "bond_" + str(i)
+        par = 100.00
+        maturity = random.randrange(1, 6, 1)
+        notional = random.randrange(1, 20, 1) * 1000000.00
+        seniority = "Senior Unsecured"
+        coupon = None
+        rating = None
+
+        # get a rating and get an appropriate coupon given that rating (Junk bonds offer higher coupons)
+        if portfolio_type == "IG":
+            rating = rating_buckets["IG"][random.randrange(0, len(rating_buckets["IG"]))]
+            coupon = random.randrange(1, 6) / 100.00  # IG bonds have lower yields generally
+        elif portfolio_type == "Non-IG":
+            rating = rating_buckets["Non-IG"][random.randrange(0, len(rating_buckets["Non-IG"]))]
+            coupon = random.randrange(6, 15) / 100.00  # Non-IG bonds have higher yields generally
+        elif portfolio_type == "Balanced":
+            rating = rating_buckets["Balanced"][random.randrange(0, len(rating_buckets["Balanced"]))]
+            if rating in rating_buckets["IG"]:
+                coupon = random.randrange(1, 6) / 100.00
+            elif rating in rating_buckets["Non-IG"]:
+                coupon = random.randrange(6, 15) / 100.00
+
+        portfolio.append({"bond_name": bond_name,
+                          "par": par, "coupon": coupon, "maturity": maturity, "notional": notional,
+                          "rating": rating, "seniority": seniority})
+
+    # open DB connection
+    db_conn = common.open_db_connection()
+    cursor = db_conn.cursor()
+
+    # delete existing entrie?
+    if clear_db:
+        cursor.execute("DELETE FROM portfolio_risk_management.fixed_income_securities")
+
+    # insert new portfolios
+    for bond in portfolio:
+        insert_string = "INSERT INTO portfolio_risk_management.fixed_income_securities " \
+                        "(id, name, par, coupon, maturity, notional, rating, seniority, portfolio_name) " \
+                        "VALUES " \
+                        "(%s, '%s', %s, %s, %s, %s, '%s', '%s', '%s')" \
+                        % ('NULL', bond['bond_name'], bond['par'], bond['coupon'], bond['maturity'],
+                           bond['notional'], bond['rating'], bond['seniority'], portfolio_type)
+        cursor.execute(insert_string)
+        db_conn.commit()
 
 
 if __name__ == "__main__":
-    example_three_bond_calculation_analytical()
+    make_random_portfolio(10, "Balanced", True)
 
