@@ -7,63 +7,118 @@
 {% block content %}
 
 <!-- page content -->
-          <div class="">
-              <div class="page-title">
-                  <div class="title_left">
-                      <h3>Credit Risk Tools</h3>
-                      <h5>
-                          Description of Credit Risk Tools
-                          <br>
-                          INPUT (Portfolio Name), (Analytic, Simulation), (Provider), (0.1, 0.2, ...), (Forward Curves)
-                          <br>
-                          for anayltic and simulation, correlation is flat
-                      </h5>
-                      <form class="form-horizontal form-label-left" method="post">
-                          {% csrf_token %}
-                          <label class="control-label col-md-3 col-sm-3 col-xs-3">Matrix Source</label>
-                          <div class="col-md-4 col-sm-4 col-xs-4">
-                              <select class="form-control" id="matrix_source">
-                                  <option>Credit Metrics</option>
-                                  <option>Moodys</option>
-                                  <option>SP Ratings</option>
-                              </select>
-                          </div>
+<div class="right" role="main">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>Credit Risk Analytics</h3>
+            </div>
+        </div>
 
-                          <button type="button" class="btn btn-success" onclick="button_run_portfolio_credit_risk()">Submit</button>
-                      </form>
-                  </div>
-              </div>
-          </div>
-        <!-- /page content -->
+        <div class="clearfix"></div>
 
-<div class="clearfix"></div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Inputs</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <br />
 
+                        <form class="form-horizontal form-label">
+                            <div class="form-group">
+                                <label class="control-label col-md-3">Portfolio Name</label>
+                                <div class="col-md-6">
+                                    <select class="form-control">
+                                        <option>Investment Grade</option>
+                                        <option>Non-Investment Grade</option>
+                                        <option>Balanced</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3" >Analytics Type</label>
+                                <div class="col-md-6">
+                                    <select class="form-control">
+                                        <option>Analytical</option>
+                                        <option>Monte Carlo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3">Matrix Provider</label>
+                                <div class="col-md-6">
+                                    <select class="form-control">
+                                        <option>Credit Metrics</option>
+                                        <option>S and P</option>
+                                        <option>Moodys</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 ">Correlation</label>
+                                <div class="col-md-6">
+                                    <select class="form-control">
+                                        <option>0.1</option>
+                                        <option>0.2</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="ln_solid"></div>
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                    <button type="submit" class="btn btn-success">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Results</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <br />
+                    </div>
+                </div>
+            </div>
+            <!-- /page content -->
 
 {% endblock %}
 
 {% block inlinejsbottom %}
 
-<script>
+    <script>
         var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 
         function button_run_portfolio_credit_risk(){
 
             var matrix_source = jQuery("#matrix_source").val()
             jQuery.ajax({
-                        url: '{% url 'ajax_cred_risk_analytics' %}',
-                        type: 'POST',
-                        data: {'matrix_source': matrix_source},
-                        headers: {'X-CSRFToken': csrftoken,},
-                        dataType: 'json',
-                        success: function (response){
-                            if (response.data)
-                            {
-                            console.log("fired the ajax")
-                            }
-                        },
-                        failure: function (){
-                            console.log("the AJAX call failed.....")
+                    url: '{% url 'ajax_cred_risk_analytics' %}',
+                    type: 'POST',
+                    data: {'matrix_source': matrix_source},
+                    headers: {'X-CSRFToken': csrftoken,},
+                    dataType: 'json',
+                    success: function (response){
+                        if (response.data)
+                        {
+                        console.log("fired the ajax")
                         }
+                    },
+                    failure: function (){
+                        console.log("the AJAX call failed.....")
+                    }
             });
         }
 </script>
