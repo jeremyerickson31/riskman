@@ -157,7 +157,7 @@ def example_three_bond_calculation_analytical():
                         "rating": "BBB", "seniority": "Senior Unsecured"}
     bond2_properties = {"bond_name": "bondB",
                         "par": 100, "coupon": 0.05, "maturity": 3, "notional": 2000000.00,
-                        "rating": "A", "seniority": "Junior Subordinated"}
+                        "rating": "A", "seniority": "Senior Unsecured"}
     bond3_properties = {"bond_name": "bondC",
                         "par": 100, "coupon": 0.10, "maturity": 2, "notional": 1000000.00,
                         "rating": "CCC", "seniority": "Senior Secured"}
@@ -352,5 +352,6 @@ def make_random_portfolio(num_securities, portfolio_type, clear_db=False):
 
 
 if __name__ == "__main__":
-    make_random_portfolio(10, "Balanced", True)
+    example_three_bond_calculation_analytical()
+    #make_random_portfolio(10, "Balanced", True)
 
