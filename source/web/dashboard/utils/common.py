@@ -201,6 +201,17 @@ def get_matrix_sum_tolerance():
     return tol
 
 
+def get_price_decimals():
+    """
+    fetches the rounding digits from config
+    :return: number of decimals to carry, as int
+    """
+
+    decimals = config.model_inputs["price_decimals"]
+
+    return decimals
+
+
 def make_bivariate_gauss_corr_mat(correlation):
     """
     function that makes the correlation matrix for a bivariate gaussian
