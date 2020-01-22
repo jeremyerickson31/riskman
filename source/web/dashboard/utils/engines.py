@@ -288,7 +288,7 @@ def calc_two_asset_portfolio_stats(bond1, bond2, joint_trans_probs):
             bond2_price_pct = bond2.rating_level_prices_pct[rating_2]
             bond2_price_dollar = bond2.rating_level_prices_dollar[rating_2]
 
-            joint_trans_prob = round(joint_trans_probs[rating_1][rating_2], 5) / 100.00
+            joint_trans_prob = round(joint_trans_probs[rating_1][rating_2], 5)
 
             mean_pct += joint_trans_prob * (bond1_price_pct + bond2_price_pct)
             mean_dollar += joint_trans_prob * (bond1_price_dollar + bond2_price_dollar)
@@ -302,10 +302,13 @@ def calc_two_asset_portfolio_stats(bond1, bond2, joint_trans_probs):
             bond2_price_pct = bond2.rating_level_prices_pct[rating_2]
             bond2_price_dollar = bond2.rating_level_prices_dollar[rating_2]
 
-            joint_trans_prob = round(joint_trans_probs[rating_1][rating_2], 5) / 100.00
+            joint_trans_prob = round(joint_trans_probs[rating_1][rating_2], 5)
 
             variance_pct += joint_trans_prob * ((bond1_price_pct + bond2_price_pct) - mean_pct)**2
             variance_dollar += joint_trans_prob * ((bond1_price_dollar + bond2_price_dollar) - mean_dollar)**2
+
+            #print(rating_1 + "|" + rating_2 + ": " + str(joint_trans_prob))
+
 
     stats = {"pct": {}, "dollar": {}}
 
