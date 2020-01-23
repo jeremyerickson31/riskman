@@ -253,11 +253,16 @@ def example_three_bond_calculation_analytical():
     portfolio_variance = 0.0
     for calc_name in bond_calcs.keys():
 
-        if bond_calcs[calc_name]["type"] == "two_asset":
-            portfolio_variance += bond_calcs[calc_name]["stats"]["dollar"]["variance"]
         if bond_calcs[calc_name]["type"] == "single_asset":
-            portfolio_variance -= bond_calcs[calc_name]["object"].price_stats_dollar["variance"]
+            # portfolio mean is sum of the means
             portfolio_mean += bond_calcs[calc_name]["object"].price_stats_dollar["mean"]
+            # subtract single asset vars
+            # portfolio var is var(p) = var(b1+b2) + var(b2+b3) + var(b1+b3) - var(b1) - var(b2) - var(b3)
+            portfolio_variance -= bond_calcs[calc_name]["object"].price_stats_dollar["variance"]
+
+        if bond_calcs[calc_name]["type"] == "two_asset":
+            # add the two-asset sub portfolio vars
+            portfolio_variance += bond_calcs[calc_name]["stats"]["dollar"]["variance"]
 
     logger(f, "--------------------")
     logger(f, "Portfolio Results")
