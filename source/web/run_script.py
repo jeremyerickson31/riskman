@@ -266,9 +266,8 @@ def example_three_bond_calculation_analytical():
 
     logger(f, "--------------------")
     logger(f, "Portfolio Results")
-    logger(f, "Mean : " + str(portfolio_mean))
-    logger(f, "Variance : " + str(portfolio_variance / 1000000**2))
-    logger(f, "Std Dev : " + str((portfolio_variance / 1000000**2) * 0.5))
+    logger(f, "Mean: " + str(round(common.fmt_num(portfolio_mean, '$', 1, 'MM'), 3)))
+    logger(f, "Mean: " + str(round(common.fmt_num(portfolio_variance, '$', 2, 'MM'), 3)))
 
     logger(f, "--------------------")
     logger(f, "Marginal Variances")
@@ -279,7 +278,7 @@ def example_three_bond_calculation_analytical():
     for bondname in bond_names:
 
         # marginal variance comes from adjusting portfolio variance
-        marginal_var = portfolio_variance
+        portfolio_var_without = portfolio_variance
 
         # find all the single and two asset calculation packages that bond was involved in
         for calc_name in bond_calcs.keys():
@@ -287,14 +286,14 @@ def example_three_bond_calculation_analytical():
 
                 if bond_calcs[calc_name]["type"] == "single_asset":
                     # add the variance back
-                    marginal_var += bond_calcs[calc_name]["object"].price_stats_dollar["variance"]
+                    portfolio_var_without += bond_calcs[calc_name]["object"].price_stats_dollar["variance"]
 
                 if bond_calcs[calc_name]["type"] == "two_asset":
                     # subtract the pair-wise variance out
-                    marginal_var -= bond_calcs[calc_name]["stats"]["dollar"]["variance"]
+                    portfolio_var_without -= bond_calcs[calc_name]["stats"]["dollar"]["variance"]
 
-        bond_calcs[bondname]["object"].marginal_variance = marginal_var
-        logger(f, bondname + ": " + str(marginal_var / 1000000.0**2))
+        bond_calcs[bondname]["object"].marginal_variance = portfolio_variance - portfolio_var_without
+        logger(f, bondname + ": " + str(round(common.fmt_num(bond_calcs[bondname]["object"].marginal_variance, '$', 2, 'MM'), 3)))
 
 
 def example_three_bond_calculation_monte():
