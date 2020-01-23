@@ -212,6 +212,40 @@ def get_price_decimals():
     return decimals
 
 
+def fmt_num(number, fmt, power, scale):
+    """
+    small function to format numbers
+    :param number: the number to be formatted
+    :param fmt: type of formatting (dollar, percent later)
+    :param power: optional, power=1 for means, power=2 for variances
+    :param scale: optional, Millions, Billions etc
+    :return: formatted number
+    """
+
+    formats = ['$']
+    if fmt not in formats:
+        raise Exception("Parameter Error: unsupported number format. Currently supports " + str(formats))
+
+    scales = ['MM']
+    if scale not in scales:
+        raise Exception("Parameter Error: unsupported number scale. Currently supports " + str(scales))
+
+    if fmt == "$":
+        if power == 1:
+            if scale == "MM":
+                formatted = number / 1000000.0
+            if scale == "BB":
+                formatted = number / 1000000000.0
+
+        if power == 2:
+            if scale == "MM":
+                formatted = number / (1000000.0 ** 2)
+            if scale == "BB":
+                formatted = number / (1000000000.0 ** 2)
+
+    return formatted
+
+
 def make_bivariate_gauss_corr_mat(correlation):
     """
     function that makes the correlation matrix for a bivariate gaussian
@@ -326,7 +360,11 @@ def run_bond_properties_check(bond_props):
 
 
 if __name__ == "__main__":
+    out = fmt_num(14308956522.32637, '$', 2, 'MM')
+    print(out)
+    """
     conn = open_db_connection()
     curr = conn.cursor()
     curr.execute("SHOW DATABASES;")
     print(curr.fetchall())
+    """
