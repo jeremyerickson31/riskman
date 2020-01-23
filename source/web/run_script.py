@@ -145,6 +145,14 @@ def example_three_bond_calculation_analytical():
     :return:
     """
 
+    script_name = "example_three_bond_calc_analytic"
+
+    # open log file for script logging
+    f = common.open_script_log_file(script_name)
+    common.script_logger(f, "******************")
+    common.script_logger(f, "Script Log for: " + script_name)
+    common.script_logger(f, "******************")
+
     # ###################################################################################
     # #########################      BEGIN USER INPUTS      #############################
     # ###################################################################################
@@ -192,21 +200,21 @@ def example_three_bond_calculation_analytical():
         bond.calc_prices_under_forwards(forward_rates)  # use provided forward rates to do re-pricing
         bond.calc_price_stats()  # apply transition probabilities to get mean and variance
 
-        print("----------------------")
-        print(bond.name)
-        print("transition probs - " + str(bond.transition_probs))
-        print("bond price pct - " + str(bond.rating_level_prices_pct))
-        print("bond price dollar - " + str(bond.rating_level_prices_dollar))
-        print("price stats pct - " + str(bond.price_stats_pct))
-        print("price stats dollar - " + str(bond.price_stats_dollar))
+        common.script_logger(f, "----------------------")
+        common.script_logger(f, bond.name)
+        common.script_logger(f, "transition probs - " + str(bond.transition_probs))
+        common.script_logger(f, "bond price pct - " + str(bond.rating_level_prices_pct))
+        common.script_logger(f, "bond price dollar - " + str(bond.rating_level_prices_dollar))
+        common.script_logger(f, "price stats pct - " + str(bond.price_stats_pct))
+        common.script_logger(f, "price stats dollar - " + str(bond.price_stats_dollar))
 
         # add this bond object to the dictionary of bond objects that we have done calculations for
         bond_calcs[bond.name] = {"type": "single_asset", "stats": None, "object": bond}
 
     # begin the two bond sub portfolio calculations
-    print("-------------------------")
-    print("two asset combos")
-    print("-------------------------")
+    common.script_logger(f, "-------------------------")
+    common.script_logger(f, "two asset combos")
+    common.script_logger(f, "-------------------------")
     for combo in two_asset_combos:
         bonds_in_combo = combo.split("-")  # splits bondA-bondB into its components
 
@@ -222,19 +230,19 @@ def example_three_bond_calculation_analytical():
         # send bond1, bond2 and joint transition probabilities into function to do looping for price stats
         price_stats = engines.calc_two_asset_portfolio_stats(bond1, bond2, joint_trans_probs)
 
-        print(combo)
-        print("joint trans probs - " + str(joint_trans_probs))
-        print("price stats pct - " + str(price_stats["pct"]))
-        print("price stats dollar - " + str(price_stats["dollar"]))
-        print("-----------------------")
+        common.script_logger(f, combo)
+        common.script_logger(f, "joint trans probs - " + str(joint_trans_probs))
+        common.script_logger(f, "price stats pct - " + str(price_stats["pct"]))
+        common.script_logger(f, "price stats dollar - " + str(price_stats["dollar"]))
+        common.script_logger(f, "-----------------------")
 
         bond_calcs[combo] = {"type": "two_asset", "stats": {
             "pct": price_stats["pct"], "dollar": price_stats["dollar"]},
                              "object": None}
 
-    print("----------------------")
-    print("List of bond calculations")
-    print(bond_calcs.keys())
+    common.script_logger(f, "----------------------")
+    common.script_logger(f, "List of bond calculations")
+    common.script_logger(f, str(bond_calcs.keys()))
 
     # loop through calculations that were done to get portfolio level stuff
     portfolio_mean = 0.0
@@ -247,14 +255,14 @@ def example_three_bond_calculation_analytical():
             portfolio_variance -= bond_calcs[calc_name]["object"].price_stats_dollar["variance"]
             portfolio_mean += bond_calcs[calc_name]["object"].price_stats_dollar["mean"]
 
-    print("--------------------")
-    print("Portfolio Results")
-    print("Mean : " + str(portfolio_mean))
-    print("Variance : " + str(portfolio_variance / 1000000**2))
-    print("Std Dev : " + str((portfolio_variance / 1000000**2) * 0.5))
+    common.script_logger(f, "--------------------")
+    common.script_logger(f, "Portfolio Results")
+    common.script_logger(f, "Mean : " + str(portfolio_mean))
+    common.script_logger(f, "Variance : " + str(portfolio_variance / 1000000**2))
+    common.script_logger(f, "Std Dev : " + str((portfolio_variance / 1000000**2) * 0.5))
 
-    print("--------------------")
-    print("Marginal Variances")
+    common.script_logger(f, "--------------------")
+    common.script_logger(f, "Marginal Variances")
     # Calculating marginal variances and standard deviations
     # loop through bonds and adjust mean and variance to exclude bond and sub-portfolios
 
@@ -277,7 +285,7 @@ def example_three_bond_calculation_analytical():
                     marginal_var -= bond_calcs[calc_name]["stats"]["dollar"]["variance"]
 
         bond_calcs[bondname]["object"].marginal_variance = marginal_var
-        print(bondname + ": " + str(marginal_var / 1000000.0**2))
+        common.script_logger(f, bondname + ": " + str(marginal_var / 1000000.0**2))
 
 
 def example_three_bond_calculation_monte():
