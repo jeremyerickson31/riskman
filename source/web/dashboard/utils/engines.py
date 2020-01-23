@@ -307,9 +307,6 @@ def calc_two_asset_portfolio_stats(bond1, bond2, joint_trans_probs):
             variance_pct += joint_trans_prob * ((bond1_price_pct + bond2_price_pct) - mean_pct)**2
             variance_dollar += joint_trans_prob * ((bond1_price_dollar + bond2_price_dollar) - mean_dollar)**2
 
-            #print(rating_1 + "|" + rating_2 + ": " + str(joint_trans_prob))
-
-
     stats = {"pct": {}, "dollar": {}}
 
     stats["pct"]["mean"] = mean_pct
