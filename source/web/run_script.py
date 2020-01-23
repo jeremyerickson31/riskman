@@ -191,7 +191,6 @@ def example_three_bond_calculation_analytical():
     # add bond properties to list for nice looping through bonds
     bond_list = [bond1_properties, bond2_properties, bond3_properties]
     bond_names = [item["bond_name"] for item in bond_list]  # list of names to use for making two asset sub portfolios
-    two_asset_combos = common.get_two_asset_combinations(bond_names)
 
     # begin the individual bond calculations
     bond_calcs = dict()  # dictionary for holding the single asset and two asset calculations that have been done
@@ -218,6 +217,7 @@ def example_three_bond_calculation_analytical():
     logger(f, "-------------------------")
     logger(f, "two asset combos")
     logger(f, "-------------------------")
+    two_asset_combos = common.get_two_asset_combinations(bond_names)
     for combo in two_asset_combos:
         bonds_in_combo = combo.split("-")  # splits bondA-bondB into its components
 
