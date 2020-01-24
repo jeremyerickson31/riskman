@@ -202,8 +202,8 @@ def example_three_bond_calculation_analytical():
 
         logger(f, "----------------------")
         logger(f, bond.name)
-        logger(f, "Mean: " + str(round(common.fmt_num(bond.price_stats_dollar["mean"], '$', 1, 'MM'), 3)))
-        logger(f, "Var: " + str(round(common.fmt_num(bond.price_stats_dollar["variance"], '$', 2, 'MM'), 3)))
+        logger(f, "Mean: " + str(round(common.fmt_num(bond.price_stats_dollar["mean"], '$', 1, 'MM'), 5)))
+        logger(f, "Var: " + str(round(common.fmt_num(bond.price_stats_dollar["variance"], '$', 2, 'MM'), 5)))
         # common.script_logger(f, "transition probs - " + str(bond.transition_probs))
         # common.script_logger(f, "bond price pct - " + str(bond.rating_level_prices_pct))
         # common.script_logger(f, "bond price dollar - " + str(bond.rating_level_prices_dollar))
@@ -240,8 +240,8 @@ def example_three_bond_calculation_analytical():
         logger(f, combo)
         # logger(f, "joint trans probs - " + str(joint_trans_probs))
         # logger(f, "price stats pct - " + str(price_stats["pct"]))
-        logger(f, "Mean: " + str(round(common.fmt_num(bond_calcs[combo]['stats']['dollar']['mean'], '$', 1, 'MM'), 3)))
-        logger(f, "Var: " + str(round(common.fmt_num(bond_calcs[combo]['stats']['dollar']['variance'], '$', 2, 'MM'), 3)))
+        logger(f, "Mean: " + str(round(common.fmt_num(bond_calcs[combo]['stats']['dollar']['mean'], '$', 1, 'MM'), 5)))
+        logger(f, "Var: " + str(round(common.fmt_num(bond_calcs[combo]['stats']['dollar']['variance'], '$', 2, 'MM'), 5)))
         logger(f, "-----------------------")
 
     logger(f, "----------------------")
@@ -266,8 +266,8 @@ def example_three_bond_calculation_analytical():
 
     logger(f, "--------------------")
     logger(f, "Portfolio Results")
-    logger(f, "Mean: " + str(round(common.fmt_num(portfolio_mean, '$', 1, 'MM'), 3)))
-    logger(f, "Mean: " + str(round(common.fmt_num(portfolio_variance, '$', 2, 'MM'), 3)))
+    logger(f, "Mean: " + str(round(common.fmt_num(portfolio_mean, '$', 1, 'MM'), 5)))
+    logger(f, "Mean: " + str(round(common.fmt_num(portfolio_variance, '$', 2, 'MM'), 5)))
 
     logger(f, "--------------------")
     logger(f, "Marginal Variances")
@@ -276,7 +276,6 @@ def example_three_bond_calculation_analytical():
 
     # for each single bond in the list
     for bondname in bond_names:
-
         # marginal variance comes from adjusting portfolio variance
         portfolio_var_without = portfolio_variance
 
@@ -293,7 +292,7 @@ def example_three_bond_calculation_analytical():
                     portfolio_var_without -= bond_calcs[calc_name]["stats"]["dollar"]["variance"]
 
         bond_calcs[bondname]["object"].marginal_variance = portfolio_variance - portfolio_var_without
-        logger(f, bondname + ": " + str(round(common.fmt_num(bond_calcs[bondname]["object"].marginal_variance, '$', 2, 'MM'), 3)))
+        logger(f, bondname + ": " + str(round(common.fmt_num(bond_calcs[bondname]["object"].marginal_variance, '$', 2, 'MM'), 5)))
 
 
 def example_three_bond_calculation_monte():
