@@ -1,4 +1,7 @@
 # list of open issues
 
-1) Transition Thresholds and Numerical Bivariate Integration can return NaN
-    - has to do with scipy.stats normal and inverse normal functions not handling large values
+1) Transition Thresholds and Numerical Bivariate Integration
+    - has to do with transition matrix that has a 0.00 value. this breaks scipy.stats norm and inverse norm
+
+2) Marginal Risk Doesnt Seem Right
+    - large notional of CCC should have larger marginal risk than small notional of AAA
