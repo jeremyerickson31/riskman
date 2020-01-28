@@ -275,6 +275,20 @@ def make_bivariate_gauss_mu_mat():
     return matrix
 
 
+def get_interest_rate_curves():
+    """
+    fetch interest rate curves found in the param folder
+    :return:
+    """
+
+    file_loc = config.model_inputs["interest_rate_curves"]
+    f = open(file_loc)
+    data_dict = json.load(f)
+    rating_level_rates_dict = data_dict["rates"]
+
+    return rating_level_rates_dict
+
+
 def get_recovery_in_default(seniority):
     """
     function will look up the recovery value in the event of default
