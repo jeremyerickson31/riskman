@@ -320,7 +320,7 @@ def calc_two_asset_portfolio_stats(bond1, bond2, joint_trans_probs):
     return stats
 
 
-def run_portfolio_credit_risk(bonds, forwards, run_type="analytical", provider="Credit Metrics", correlation=0.3, ):
+def run_portfolio_credit_risk(bonds, forwards, run_type="all", provider="Credit Metrics", correlation=0.3, ):
     """
     this is the main engine that will rin the portfolio credit risk analytics
 
@@ -340,8 +340,8 @@ def run_portfolio_credit_risk(bonds, forwards, run_type="analytical", provider="
         pass
 
     # validate run_type
-    if run_type not in ["analytical", "simulation"]:
-        raise Exception("Paramter Error: run_type must be eith 'analytical' or 'simulation'")
+    if run_type not in ["analytical", "simulation", "all"]:
+        raise Exception("Parameter Error: run_type must be 'analytical', 'simulation', 'all'")
 
     # validate provider
     provider_list = common.get_matrix_providers()
