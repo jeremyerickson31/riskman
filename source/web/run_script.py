@@ -171,19 +171,14 @@ def example_three_bond_calculation_analytical():
                         "par": 100, "coupon": 0.10, "maturity": 2, "notional": 1000000.00,
                         "rating": "CCC", "seniority": "Senior Secured"}
 
-    # some sample rating level forward rates for repricing
-    forward_rates = {"AAA": [3.60, 4.17, 4.73, 5.12, 5.83, 6.05, 6.27, 6.68, 7.12],
-                     "AA": [3.65, 4.22, 4.78, 5.17, 5.92, 6.12, 6.45, 7.01, 7.38],
-                     "A": [3.72, 4.32, 4.93, 5.32, 6.15, 6.29, 6.78, 7.25, 7.50],
-                     "BBB": [4.10, 4.67, 5.25, 5.63, 6.37, 6.45, 6.98, 7.37, 7.81],
-                     "BB": [5.55, 6.02, 6.78, 7.27, 7.98, 8.15, 8.64, 9.12, 9.53],
-                     "B": [6.05, 7.02, 8.03, 8.52, 9.04, 9.73, 10.15, 10.64, 11.30],
-                     "CCC": [15.05, 15.02, 14.03, 13.52, 13.07, 12.63, 12.12, 11.70]
-                     }
+
 
     # ###################################################################################
     # #########################      END OF USER INPUTS      ############################
     # ###################################################################################
+
+    # rating level interest rate curves for bond repricing under rating level scenarios
+    forward_rates = common.get_interest_rate_curves()
 
     # get master file of joint probabilities for provider/correlation pair
     joint_probs_master = common.get_provider_correlation_joint_probs(use_provider, use_correlation)
