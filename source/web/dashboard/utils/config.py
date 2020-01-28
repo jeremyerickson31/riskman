@@ -12,6 +12,7 @@ model_inputs = dict()
 model_inputs["one_year_matrix_file"] = current_directory + "\\dashboard\\utils\\params\\oneyeartransitions.json"
 model_inputs["transition_thresholds_folder"] = current_directory + "\\dashboard\\utils\\params\\transition_thresholds\\"
 model_inputs["joint_matrices_folder"] = current_directory + "\\dashboard\\utils\\params\\joint_trans_prob_matrices\\"
+model_inputs["interest_rate_curves"] = current_directory + "\\dashboard\\utils\\params\\rating_level_interest_rate_curves.json"
 model_inputs["recoveries_in_default"] = current_directory + "\\dashboard\\utils\\params\\recoveries_in_default.json"
 
 # default assumptions for the asset return normal distribution
