@@ -352,10 +352,6 @@ def run_portfolio_credit_risk(bonds, forwards, run_type="all", provider="Credit 
     # could be a single float or a numpy square matrix
     print()
 
-    # validate forwards
-    if not isinstance(forwards, dict):
-        raise Exception("Parameter Error: forwards must be a dictionary with rating level lists")
-
     # ######################## parameter validation #########################
 
     # ########################  begin calculations  #########################
