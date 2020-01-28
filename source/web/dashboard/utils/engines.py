@@ -338,6 +338,10 @@ def run_portfolio_credit_risk(bonds, forwards, run_type="all", provider="Credit 
     missing_properties = common.run_bond_properties_check(bonds)
     if not missing_properties:
         pass
+    else:
+        properties_error = "Bond Properties Error: List of bonds has missing properties needed for calcs\n"
+        properties_error += str(missing_properties)
+        raise Exception(properties_error)
 
     # validate run_type
     if run_type not in ["analytical", "simulation", "all"]:
