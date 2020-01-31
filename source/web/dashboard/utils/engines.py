@@ -320,12 +320,11 @@ def calc_two_asset_portfolio_stats(bond1, bond2, joint_trans_probs):
     return stats
 
 
-def run_portfolio_credit_risk(bonds, forwards, run_type="all", provider="Credit Metrics", correlation=0.3, ):
+def run_portfolio_credit_risk(bonds, run_type="all", provider="Credit Metrics", correlation=0.3, ):
     """
     this is the main engine that will rin the portfolio credit risk analytics
 
     :param bonds: a list of dictionaries with bond properties
-    :param forwards: set of rating level forward interest rate curves for bond re-pricing
     :param run_type: Can be 'analytical' or 'simulation'
     :param provider: one of the transition matrix providers
     :param correlation: either float in approved list or a correlation matrix
