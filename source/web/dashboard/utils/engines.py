@@ -335,9 +335,7 @@ def run_portfolio_credit_risk(bonds, run_type="all", provider="Credit Metrics", 
     if not isinstance(bonds, list):
         raise Exception("Parameter Error: bond must be a list of dictionaries")
     missing_properties = common.run_bond_properties_check(bonds)
-    if not missing_properties:
-        pass
-    else:
+    if missing_properties:
         properties_error = "Bond Properties Error: List of bonds has missing properties needed for calcs\n"
         properties_error += str(missing_properties)
         raise Exception(properties_error)
