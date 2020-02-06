@@ -330,8 +330,15 @@ def run_portfolio_credit_risk(bonds, run_type="all", provider="Credit Metrics", 
     :param correlation: either float in approved list or a correlation matrix
     :return: output differs for each run_type
     """
+
+    engine_name = "run_portfolio_credit_risk"
+    logging = list()  # list for logging engine process. can be printed and stored elsewhere
+
+    logging.append("ENGINE: entered engine: %s" % engine_name)
+
     # ######################## parameter validation #########################
     # validate bonds
+    logging.append("ENGINE: Validating List of Bonds and doing Bond Properties Check")
     if not isinstance(bonds, list):
         raise Exception("Parameter Error: bond must be a list of dictionaries")
     missing_properties = common.run_bond_properties_check(bonds)
@@ -341,22 +348,90 @@ def run_portfolio_credit_risk(bonds, run_type="all", provider="Credit Metrics", 
         raise Exception(properties_error)
 
     # validate run_type
+    logging.append("ENGINE: Validating Run Type")
     if run_type not in ["analytical", "simulation", "all"]:
         raise Exception("Parameter Error: run_type must be 'analytical', 'simulation', 'all'")
 
     # validate provider
+    logging.append("ENGINE: Validating Transition Matrix Provider")
     provider_list = common.get_matrix_providers()
     if provider not in provider_list:
         raise Exception("Parameter Error: provider must be one of the following %s" % str(provider_list))
 
     # validate correlation
     # could be a single float or a numpy square matrix
-    print()
-
+    # for now only works as a single float
+    # todo extend for numpy square matrix
+    logging.append("ENGINE: Validating Correlation")
+    if not isinstance(correlation, float):
+        raise Exception("Parameter Error: Correlation must be a single float")
     # ######################## parameter validation #########################
 
+    #
     # ########################  begin calculations  #########################
-    return None
+    #
+
+    # rating level interest rate curves for bond repricing under rating level scenarios
+    logging.append("ENGINE: Fetching rating level interest rates for bond repricing")
+    forward_rates = common.get_interest_rate_curves()
+
+    # get master file of joint probabilities for provider/correlation pair
+    logging.append("ENGINE: Fetching pre-made joint probability matrix for %s and %s" % (provider, correlation))
+    joint_probs_master = common.get_provider_correlation_joint_probs(provider, correlation)
+
+    logging.append("ENGINE: Performing Single Bond Calcs")
+    bond_names = [item["bond_name"] for item in bonds]  # list of names to use for making two asset sub portfolios
+    bond_calcs = dict()  # dictionary for holding the single asset and two asset calculations that have been done
+    for bond_properties in bonds:
+        bond = Bond(bond_properties)  # initialize the bond object
+        bond.get_transition_probabilities(provider)  # fetch transition probs for given provider and self.rating
+        bond.calc_prices_under_forwards(forward_rates)  # use provided forward rates to do re-pricing
+        bond.calc_price_stats()  # apply transition probabilities to get mean and variance
+
+        # add this bond object to the dictionary of bond objects that we have done calculations for
+        bond_calcs[bond.name] = {"type": "single_asset", "stats": None, "object": bond}
+
+    logging.append("ENGINE: Performing Two Asset Sub-Portfolio Calcs")
+    two_asset_combos = common.get_two_asset_combinations(bond_names)
+    for combo in two_asset_combos:
+        bonds_in_combo = combo.split("-")  # splits bondA-bondB into its components
+
+        # retrieve bond object with calculated prices and stats for first name
+        bond1 = bond_calcs[bonds_in_combo[0]]["object"]
+        bond2 = bond_calcs[bonds_in_combo[1]]["object"]
+
+        # fetch the relevant joint transition probability
+        joint_probs_lookup = bond1.rating + "|" + bond2.rating  # concatenate bond names to match joint probs file names
+        joint_trans_probs = joint_probs_master[joint_probs_lookup]  # lookup joint transition probabilities
+
+        # send bond1, bond2 and joint transition probabilities into function to do looping for price stats
+        price_stats = calc_two_asset_portfolio_stats(bond1, bond2, joint_trans_probs)
+
+        # add two-asset portfolio stats to the dictionary of bond calcs
+        bond_calcs[combo] = {"type": "two_asset",
+                             "stats": {"pct": price_stats["pct"], "dollar": price_stats["dollar"]},
+                             "object": None}
+
+    logging.append("ENGINE: Performing Portfolio Calculations")
+    # loop through calculations that were done to get portfolio level stuff
+    portfolio_mean = 0.0
+    portfolio_variance = 0.0
+    for calc_name in bond_calcs.keys():
+
+        if bond_calcs[calc_name]["type"] == "single_asset":
+            # portfolio mean is sum of the means
+            portfolio_mean += bond_calcs[calc_name]["object"].price_stats_dollar["mean"]
+            # subtract single asset vars
+            # portfolio var is var(p) = var(b1+b2) + var(b2+b3) + var(b1+b3) - var(b1) - var(b2) - var(b3)
+            portfolio_variance -= bond_calcs[calc_name]["object"].price_stats_dollar["variance"]
+
+        if bond_calcs[calc_name]["type"] == "two_asset":
+            # add the two-asset sub portfolio vars
+            portfolio_variance += bond_calcs[calc_name]["stats"]["dollar"]["variance"]
+
+    portfolio_calcs = {"mean": portfolio_mean, "variance": portfolio_variance}
+
+    return bond_calcs, portfolio_calcs, logging
 
 
 class Bond:
