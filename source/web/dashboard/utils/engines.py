@@ -434,6 +434,28 @@ def run_portfolio_credit_risk(bonds, run_type="all", provider="Credit Metrics", 
     return bond_calcs, portfolio_calcs, logging
 
 
+def run_credit_risk_analytical(bonds, provider="Credit Metrics", correlation=0.3):
+    """
+    this is the engine that will run the portfolio credit risk under the analytical approach
+
+    :param bonds: a list of dictionaries with bond properties
+    :param provider: one of the transition matrix providers
+    :param correlation: either float in approved list or a correlation matrix
+    :return: results of the analytical calcs: bond_calcs (dict), portfolio_calcs (dict), logging (list)
+    """
+
+
+def run_credit_risk_simulation(bonds, provider="Credit Metrics", correlation=0.3):
+    """
+    this is the engine that will run the portfolio credit risk under the simulation approach
+
+    :param bonds: a list of dictionaries with bond properties
+    :param provider: one of the transition matrix providers
+    :param correlation: either float in approved list or a correlation matrix
+    :return: results of the simulation calcs: TBD
+    """
+
+
 class Bond:
     """
     This is the Bond Class
