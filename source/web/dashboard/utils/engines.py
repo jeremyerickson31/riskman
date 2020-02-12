@@ -320,7 +320,7 @@ def calc_two_asset_portfolio_stats(bond1, bond2, joint_trans_probs):
     return stats
 
 
-def run_portfolio_credit_risk(bonds, run_type="all", provider="Credit Metrics", correlation=0.3, ):
+def run_portfolio_credit_risk(bonds, run_type="all", provider="Credit Metrics", correlation=0.3):
     """
     this is the main engine that will rin the portfolio credit risk analytics
 
@@ -359,17 +359,43 @@ def run_portfolio_credit_risk(bonds, run_type="all", provider="Credit Metrics", 
         raise Exception("Parameter Error: provider must be one of the following %s" % str(provider_list))
 
     # validate correlation
-    # could be a single float or a numpy square matrix
-    # for now only works as a single float
+    # could be a single float or a numpy square matrix, for now only works as a single float
     # todo extend for numpy square matrix
     logging.append("ENGINE: Validating Correlation")
     if not isinstance(correlation, float):
         raise Exception("Parameter Error: Correlation must be a single float")
     # ######################## parameter validation #########################
 
+    # run calculations as per input
+    credit_risk_results = dict()
+
+    if run_type == "analytical" or run_type == "all":
+        bond_calcs, portfolio_calcs, analytic_logs = run_credit_risk_analytical(bonds, provider, correlation)
+        credit_risk_results["analytical"] = {"bond_calcs": bond_calcs,
+                                             "portfolio_calcs": portfolio_calcs,
+                                             "logs": analytic_logs}
+
+    if run_type == "simulation" or run_type == "all":
+        sim_results = run_credit_risk_simulation(bonds, provider, correlation)
+        credit_risk_results["simulation"] = {"sim_results": sim_results}
+
+    return credit_risk_results
+
+
+def run_credit_risk_analytical(bonds, provider, correlation):
+    """
+    this is the engine that will run the portfolio credit risk under the analytical approach
+
+    :param bonds: a list of dictionaries with bond properties
+    :param provider: one of the transition matrix providers
+    :param correlation: either float in approved list or a correlation matrix
+    :return: results of the analytical calcs: bond_calcs (dict), portfolio_calcs (dict), logging (list)
+    """
     #
     # ########################  begin calculations  #########################
     #
+
+    logging = list()
 
     # rating level interest rate curves for bond repricing under rating level scenarios
     logging.append("ENGINE: Fetching rating level interest rates for bond repricing")
@@ -434,18 +460,7 @@ def run_portfolio_credit_risk(bonds, run_type="all", provider="Credit Metrics", 
     return bond_calcs, portfolio_calcs, logging
 
 
-def run_credit_risk_analytical(bonds, provider="Credit Metrics", correlation=0.3):
-    """
-    this is the engine that will run the portfolio credit risk under the analytical approach
-
-    :param bonds: a list of dictionaries with bond properties
-    :param provider: one of the transition matrix providers
-    :param correlation: either float in approved list or a correlation matrix
-    :return: results of the analytical calcs: bond_calcs (dict), portfolio_calcs (dict), logging (list)
-    """
-
-
-def run_credit_risk_simulation(bonds, provider="Credit Metrics", correlation=0.3):
+def run_credit_risk_simulation(bonds, provider, correlation):
     """
     this is the engine that will run the portfolio credit risk under the simulation approach
 
@@ -454,6 +469,10 @@ def run_credit_risk_simulation(bonds, provider="Credit Metrics", correlation=0.3
     :param correlation: either float in approved list or a correlation matrix
     :return: results of the simulation calcs: TBD
     """
+    logging = list()
+    sim_results = None
+
+    return sim_results, logging
 
 
 class Bond:
