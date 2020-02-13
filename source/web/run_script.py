@@ -133,15 +133,8 @@ def build_joint_trans_probs():
 def example_three_bond_calculation_analytical():
     """
     This script will test the credit risk calculation on three bonds
+    This script runs engines.run_portfolio_credit_risk with run_type = analytical
     This script is meant as a demonstration script as well as a testing script for the
-        core engines.py components that are used in the credit risk calculations
-    The calculation is the Analytical approach which involves the following:
-        (1) for each bond, calculate the value in each possible state
-        (2) apply probabilities for each state to get a mean and variance for each bond
-        (3) identify each pair of bonds and calculate pair-wise sub-portfolio value in each possible state
-        (4) apply joint probabilities to get sub-portfolio mean and variance
-        (5) combine individual mean values to get portfolio mean value
-        (6) combine pair-wise variances with individual variances to get portfolio variance
     :return:
     """
 
@@ -157,7 +150,7 @@ def example_three_bond_calculation_analytical():
     # ###################################################################################
     # #########################      BEGIN USER INPUTS      #############################
     # ###################################################################################
-    use_provider = "SP Ratings"
+    use_provider = "Credit Metrics"
     use_correlation = 0.30
 
     # make some fake bonds. fixed rate annuals for now
@@ -171,123 +164,12 @@ def example_three_bond_calculation_analytical():
                         "par": 100, "coupon": 0.10, "maturity": 2, "notional": 1000000.00,
                         "rating": "CCC", "seniority": "Senior Secured"}
 
-
-
     # ###################################################################################
     # #########################      END OF USER INPUTS      ############################
     # ###################################################################################
 
-    # rating level interest rate curves for bond repricing under rating level scenarios
-    forward_rates = common.get_interest_rate_curves()
-
-    # get master file of joint probabilities for provider/correlation pair
-    joint_probs_master = common.get_provider_correlation_joint_probs(use_provider, use_correlation)
-
-    # add bond properties to list for nice looping through bonds
-    bond_list = [bond1_properties, bond2_properties, bond3_properties]
-    bond_names = [item["bond_name"] for item in bond_list]  # list of names to use for making two asset sub portfolios
-
-    # begin the individual bond calculations
-    bond_calcs = dict()  # dictionary for holding the single asset and two asset calculations that have been done
-    for bond_properties in bond_list:
-        bond = engines.Bond(bond_properties)  # initialize the bond object
-        bond.get_transition_probabilities(use_provider)  # fetch transition probs for given provider and self.rating
-        bond.calc_prices_under_forwards(forward_rates)  # use provided forward rates to do re-pricing
-        bond.calc_price_stats()  # apply transition probabilities to get mean and variance
-
-        logger(f, "----------------------")
-        logger(f, bond.name)
-        logger(f, "Mean: " + str(round(common.fmt_num(bond.price_stats_dollar["mean"], '$', 1, 'MM'), 5)))
-        logger(f, "Var: " + str(round(common.fmt_num(bond.price_stats_dollar["variance"], '$', 2, 'MM'), 5)))
-        # common.script_logger(f, "transition probs - " + str(bond.transition_probs))
-        # common.script_logger(f, "bond price pct - " + str(bond.rating_level_prices_pct))
-        # common.script_logger(f, "bond price dollar - " + str(bond.rating_level_prices_dollar))
-        # common.script_logger(f, "price stats pct - " + str(bond.price_stats_pct))
-        # common.script_logger(f, "price stats dollar - " + str(bond.price_stats_dollar))
-
-        # add this bond object to the dictionary of bond objects that we have done calculations for
-        bond_calcs[bond.name] = {"type": "single_asset", "stats": None, "object": bond}
-
-    # begin the two bond sub portfolio calculations
-    logger(f, "-------------------------")
-    logger(f, "two asset combos")
-    logger(f, "-------------------------")
-    two_asset_combos = common.get_two_asset_combinations(bond_names)
-    for combo in two_asset_combos:
-        bonds_in_combo = combo.split("-")  # splits bondA-bondB into its components
-
-        # retrieve bond object with calculated prices and stats for first name
-        bond1 = bond_calcs[bonds_in_combo[0]]["object"]
-        bond2 = bond_calcs[bonds_in_combo[1]]["object"]
-
-        # todo if use_correlation is Matrix then fetch thresholds, make gauss corr mat, do numerical integration
-        # fetch the relevant joint transition probability
-        joint_probs_lookup = bond1.rating + "|" + bond2.rating  # concatenate bond names to match joint probs file names
-        joint_trans_probs = joint_probs_master[joint_probs_lookup]  # lookup joint transition probabilities
-
-        # send bond1, bond2 and joint transition probabilities into function to do looping for price stats
-        price_stats = engines.calc_two_asset_portfolio_stats(bond1, bond2, joint_trans_probs)
-
-        bond_calcs[combo] = {"type": "two_asset",
-                             "stats": {"pct": price_stats["pct"], "dollar": price_stats["dollar"]},
-                             "object": None}
-
-        logger(f, combo)
-        # logger(f, "joint trans probs - " + str(joint_trans_probs))
-        # logger(f, "price stats pct - " + str(price_stats["pct"]))
-        logger(f, "Mean: " + str(round(common.fmt_num(bond_calcs[combo]['stats']['dollar']['mean'], '$', 1, 'MM'), 5)))
-        logger(f, "Var: " + str(round(common.fmt_num(bond_calcs[combo]['stats']['dollar']['variance'], '$', 2, 'MM'), 5)))
-        logger(f, "-----------------------")
-
-    logger(f, "----------------------")
-    logger(f, "List of bond calculations")
-    logger(f, str(bond_calcs.keys()))
-
-    # loop through calculations that were done to get portfolio level stuff
-    portfolio_mean = 0.0
-    portfolio_variance = 0.0
-    for calc_name in bond_calcs.keys():
-
-        if bond_calcs[calc_name]["type"] == "single_asset":
-            # portfolio mean is sum of the means
-            portfolio_mean += bond_calcs[calc_name]["object"].price_stats_dollar["mean"]
-            # subtract single asset vars
-            # portfolio var is var(p) = var(b1+b2) + var(b2+b3) + var(b1+b3) - var(b1) - var(b2) - var(b3)
-            portfolio_variance -= bond_calcs[calc_name]["object"].price_stats_dollar["variance"]
-
-        if bond_calcs[calc_name]["type"] == "two_asset":
-            # add the two-asset sub portfolio vars
-            portfolio_variance += bond_calcs[calc_name]["stats"]["dollar"]["variance"]
-
-    logger(f, "--------------------")
-    logger(f, "Portfolio Results")
-    logger(f, "Mean: " + str(round(common.fmt_num(portfolio_mean, '$', 1, 'MM'), 5)))
-    logger(f, "Mean: " + str(round(common.fmt_num(portfolio_variance, '$', 2, 'MM'), 5)))
-
-    logger(f, "--------------------")
-    logger(f, "Marginal Variances")
-    # Calculating marginal variances and standard deviations
-    # loop through bonds and adjust mean and variance to exclude bond and sub-portfolios
-
-    # for each single bond in the list
-    for bondname in bond_names:
-        # marginal variance comes from adjusting portfolio variance
-        portfolio_var_without = portfolio_variance
-
-        # find all the single and two asset calculation packages that bond was involved in
-        for calc_name in bond_calcs.keys():
-            if bondname in calc_name:
-
-                if bond_calcs[calc_name]["type"] == "single_asset":
-                    # add the variance back
-                    portfolio_var_without += bond_calcs[calc_name]["object"].price_stats_dollar["variance"]
-
-                if bond_calcs[calc_name]["type"] == "two_asset":
-                    # subtract the pair-wise variance out
-                    portfolio_var_without -= bond_calcs[calc_name]["stats"]["dollar"]["variance"]
-
-        bond_calcs[bondname]["object"].marginal_variance = portfolio_variance - portfolio_var_without
-        logger(f, bondname + ": " + str(round(common.fmt_num(bond_calcs[bondname]["object"].marginal_variance, '$', 2, 'MM'), 5)))
+    results = engines.run_portfolio_credit_risk([bond1_properties, bond2_properties, bond3_properties], "analytical")
+    print(results)
 
 
 def example_three_bond_calculation_monte():
