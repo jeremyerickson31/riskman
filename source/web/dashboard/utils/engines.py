@@ -385,6 +385,13 @@ def run_portfolio_credit_risk(bonds, run_type="all", provider="Credit Metrics", 
 def run_credit_risk_analytical(bonds, provider, correlation):
     """
     this is the engine that will run the portfolio credit risk under the analytical approach
+    The calculation is the Analytical approach which involves the following:
+        (1) for each bond, calculate the value in each possible state
+        (2) apply probabilities for each state to get a mean and variance for each bond
+        (3) identify each pair of bonds and calculate pair-wise sub-portfolio value in each possible state
+        (4) apply joint probabilities to get sub-portfolio mean and variance
+        (5) combine individual mean values to get portfolio mean value
+        (6) combine pair-wise variances with individual variances to get portfolio variance
 
     :param bonds: a list of dictionaries with bond properties
     :param provider: one of the transition matrix providers
