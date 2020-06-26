@@ -30,6 +30,9 @@ model_inputs["price_decimals"] = 3
 # required bond properties for running credit risk analytics
 model_inputs["required_bond_properties"] = ["bond_name", "par", "coupon", "notional", "maturity", "rating", "seniority"]
 
+# location of json files containing sample bond portfolios
+model_inputs["sample_portfolios_folder"] = current_directory + "\\dashboard\\utils\\sample_portfolios_folder"
+
 ############################################
 # certain config settings for other stuff
 ############################################
