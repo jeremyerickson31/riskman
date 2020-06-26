@@ -186,9 +186,10 @@ def example_three_bond_calculation_monte():
     """
 
 
-def make_random_portfolio(num_securities, portfolio_type):
+def make_random_portfolio(num_securities, portfolio_type, to_db=True):
     """
     script that will make a random portfolio and insert into DB / target file
+    target is either DB or File name
     :return:
     """
     rating_buckets = {"IG": ["AAA", "AA", "A", "BBB"],
@@ -223,26 +224,34 @@ def make_random_portfolio(num_securities, portfolio_type):
                           "par": par, "coupon": coupon, "maturity": maturity, "notional": notional,
                           "rating": rating, "seniority": seniority})
 
-    # open DB connection
-    db_conn = common.open_db_connection()
-    cursor = db_conn.cursor()
+    if to_db is True:
+        # open DB connection
+        db_conn = common.open_db_connection()
+        cursor = db_conn.cursor()
 
-    # delete existing entries
-    cursor.execute("DELETE FROM portfolio_risk_management.fixed_income_securities")
+        # delete existing entries
+        cursor.execute("DELETE FROM portfolio_risk_management.fixed_income_securities")
 
-    # insert new portfolios
-    for bond in portfolio:
-        insert_string = "INSERT INTO portfolio_risk_management.fixed_income_securities " \
-                        "(id, name, par, coupon, maturity, notional, rating, seniority, portfolio_name) " \
-                        "VALUES " \
-                        "(%s, '%s', %s, %s, %s, %s, '%s', '%s', '%s')" \
-                        % ('NULL', bond['bond_name'], bond['par'], bond['coupon'], bond['maturity'],
-                           bond['notional'], bond['rating'], bond['seniority'], portfolio_type)
-        cursor.execute(insert_string)
-        db_conn.commit()
+        # insert new portfolios
+        for bond in portfolio:
+            insert_string = "INSERT INTO portfolio_risk_management.fixed_income_securities " \
+                            "(id, name, par, coupon, maturity, notional, rating, seniority, portfolio_name) " \
+                            "VALUES " \
+                            "(%s, '%s', %s, %s, %s, %s, '%s', '%s', '%s')" \
+                            % ('NULL', bond['bond_name'], bond['par'], bond['coupon'], bond['maturity'],
+                               bond['notional'], bond['rating'], bond['seniority'], portfolio_type)
+            cursor.execute(insert_string)
+            db_conn.commit()
 
+    else:
+        # dump to a json file
+        folder = config.model_inputs["sample_portfolios_folder"]
+        file_name = folder + "\\" + portfolio_type + "_" + str(num_securities) + ".json"
+        f = open(file_name, "w")
+        json.dump({"portfolio_bonds": portfolio}, f, indent=4)
+        f.close()
 
 if __name__ == "__main__":
-    example_three_bond_calculation_analytical()
-    #make_random_portfolio(10, "Balanced", True)
+    #example_three_bond_calculation_analytical()
+    make_random_portfolio(10, "IG", False)
 
