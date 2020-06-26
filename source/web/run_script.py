@@ -186,9 +186,9 @@ def example_three_bond_calculation_monte():
     """
 
 
-def make_random_portfolio(num_securities, portfolio_type, clear_db=False):
+def make_random_portfolio(num_securities, portfolio_type):
     """
-    script that will make a random portfolio and insert into DB
+    script that will make a random portfolio and insert into DB / target file
     :return:
     """
     rating_buckets = {"IG": ["AAA", "AA", "A", "BBB"],
@@ -227,9 +227,8 @@ def make_random_portfolio(num_securities, portfolio_type, clear_db=False):
     db_conn = common.open_db_connection()
     cursor = db_conn.cursor()
 
-    # delete existing entrie?
-    if clear_db:
-        cursor.execute("DELETE FROM portfolio_risk_management.fixed_income_securities")
+    # delete existing entries
+    cursor.execute("DELETE FROM portfolio_risk_management.fixed_income_securities")
 
     # insert new portfolios
     for bond in portfolio:
