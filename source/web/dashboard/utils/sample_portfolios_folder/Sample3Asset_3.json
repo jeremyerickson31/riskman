@@ -1,0 +1,31 @@
+{
+    "portfolio_bonds": [
+        {
+            "bond_name": "bond_1",
+            "par": 100.0,
+            "coupon": 0.06,
+            "maturity": 5,
+            "notional": 4000000.0,
+            "rating": "BBB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_2",
+            "par": 100.0,
+            "coupon": 0.05,
+            "maturity": 3,
+            "notional": 2000000.0,
+            "rating": "A",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_3",
+            "par": 100.0,
+            "coupon": 0.10,
+            "maturity": 2,
+            "notional": 1000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        }
+    ]
+}

@@ -1,0 +1,904 @@
+{
+    "portfolio_bonds": [
+        {
+            "bond_name": "bond_1",
+            "par": 100.0,
+            "coupon": 0.06,
+            "maturity": 2,
+            "notional": 16000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_2",
+            "par": 100.0,
+            "coupon": 0.06,
+            "maturity": 4,
+            "notional": 7000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_3",
+            "par": 100.0,
+            "coupon": 0.12,
+            "maturity": 1,
+            "notional": 2000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_4",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 4,
+            "notional": 8000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_5",
+            "par": 100.0,
+            "coupon": 0.06,
+            "maturity": 5,
+            "notional": 3000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_6",
+            "par": 100.0,
+            "coupon": 0.08,
+            "maturity": 2,
+            "notional": 7000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_7",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 3,
+            "notional": 15000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_8",
+            "par": 100.0,
+            "coupon": 0.14,
+            "maturity": 5,
+            "notional": 15000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_9",
+            "par": 100.0,
+            "coupon": 0.13,
+            "maturity": 5,
+            "notional": 15000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_10",
+            "par": 100.0,
+            "coupon": 0.09,
+            "maturity": 1,
+            "notional": 11000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_11",
+            "par": 100.0,
+            "coupon": 0.06,
+            "maturity": 1,
+            "notional": 18000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_12",
+            "par": 100.0,
+            "coupon": 0.13,
+            "maturity": 3,
+            "notional": 13000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_13",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 2,
+            "notional": 7000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_14",
+            "par": 100.0,
+            "coupon": 0.14,
+            "maturity": 4,
+            "notional": 15000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_15",
+            "par": 100.0,
+            "coupon": 0.12,
+            "maturity": 4,
+            "notional": 17000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_16",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 5,
+            "notional": 14000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_17",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 2,
+            "notional": 1000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_18",
+            "par": 100.0,
+            "coupon": 0.13,
+            "maturity": 4,
+            "notional": 4000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_19",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 1,
+            "notional": 11000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_20",
+            "par": 100.0,
+            "coupon": 0.14,
+            "maturity": 5,
+            "notional": 18000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_21",
+            "par": 100.0,
+            "coupon": 0.14,
+            "maturity": 4,
+            "notional": 2000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_22",
+            "par": 100.0,
+            "coupon": 0.06,
+            "maturity": 1,
+            "notional": 2000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_23",
+            "par": 100.0,
+            "coupon": 0.06,
+            "maturity": 3,
+            "notional": 5000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_24",
+            "par": 100.0,
+            "coupon": 0.09,
+            "maturity": 4,
+            "notional": 17000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_25",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 2,
+            "notional": 4000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_26",
+            "par": 100.0,
+            "coupon": 0.13,
+            "maturity": 3,
+            "notional": 10000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_27",
+            "par": 100.0,
+            "coupon": 0.12,
+            "maturity": 5,
+            "notional": 12000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_28",
+            "par": 100.0,
+            "coupon": 0.06,
+            "maturity": 5,
+            "notional": 6000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_29",
+            "par": 100.0,
+            "coupon": 0.14,
+            "maturity": 1,
+            "notional": 7000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_30",
+            "par": 100.0,
+            "coupon": 0.12,
+            "maturity": 3,
+            "notional": 2000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_31",
+            "par": 100.0,
+            "coupon": 0.13,
+            "maturity": 2,
+            "notional": 16000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_32",
+            "par": 100.0,
+            "coupon": 0.1,
+            "maturity": 1,
+            "notional": 11000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_33",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 3,
+            "notional": 1000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_34",
+            "par": 100.0,
+            "coupon": 0.14,
+            "maturity": 4,
+            "notional": 18000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_35",
+            "par": 100.0,
+            "coupon": 0.13,
+            "maturity": 4,
+            "notional": 17000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_36",
+            "par": 100.0,
+            "coupon": 0.14,
+            "maturity": 4,
+            "notional": 1000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_37",
+            "par": 100.0,
+            "coupon": 0.12,
+            "maturity": 3,
+            "notional": 4000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_38",
+            "par": 100.0,
+            "coupon": 0.07,
+            "maturity": 3,
+            "notional": 17000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_39",
+            "par": 100.0,
+            "coupon": 0.06,
+            "maturity": 4,
+            "notional": 16000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_40",
+            "par": 100.0,
+            "coupon": 0.14,
+            "maturity": 2,
+            "notional": 17000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_41",
+            "par": 100.0,
+            "coupon": 0.06,
+            "maturity": 4,
+            "notional": 1000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_42",
+            "par": 100.0,
+            "coupon": 0.06,
+            "maturity": 5,
+            "notional": 13000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_43",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 5,
+            "notional": 2000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_44",
+            "par": 100.0,
+            "coupon": 0.07,
+            "maturity": 4,
+            "notional": 7000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_45",
+            "par": 100.0,
+            "coupon": 0.09,
+            "maturity": 4,
+            "notional": 18000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_46",
+            "par": 100.0,
+            "coupon": 0.08,
+            "maturity": 4,
+            "notional": 17000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_47",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 5,
+            "notional": 9000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_48",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 2,
+            "notional": 1000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_49",
+            "par": 100.0,
+            "coupon": 0.14,
+            "maturity": 2,
+            "notional": 3000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_50",
+            "par": 100.0,
+            "coupon": 0.12,
+            "maturity": 3,
+            "notional": 10000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_51",
+            "par": 100.0,
+            "coupon": 0.09,
+            "maturity": 4,
+            "notional": 8000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_52",
+            "par": 100.0,
+            "coupon": 0.14,
+            "maturity": 2,
+            "notional": 9000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_53",
+            "par": 100.0,
+            "coupon": 0.1,
+            "maturity": 4,
+            "notional": 7000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_54",
+            "par": 100.0,
+            "coupon": 0.07,
+            "maturity": 5,
+            "notional": 14000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_55",
+            "par": 100.0,
+            "coupon": 0.1,
+            "maturity": 5,
+            "notional": 4000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_56",
+            "par": 100.0,
+            "coupon": 0.13,
+            "maturity": 1,
+            "notional": 9000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_57",
+            "par": 100.0,
+            "coupon": 0.14,
+            "maturity": 2,
+            "notional": 13000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_58",
+            "par": 100.0,
+            "coupon": 0.1,
+            "maturity": 5,
+            "notional": 18000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_59",
+            "par": 100.0,
+            "coupon": 0.12,
+            "maturity": 5,
+            "notional": 16000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_60",
+            "par": 100.0,
+            "coupon": 0.12,
+            "maturity": 4,
+            "notional": 4000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_61",
+            "par": 100.0,
+            "coupon": 0.1,
+            "maturity": 3,
+            "notional": 19000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_62",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 4,
+            "notional": 13000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_63",
+            "par": 100.0,
+            "coupon": 0.14,
+            "maturity": 4,
+            "notional": 5000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_64",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 1,
+            "notional": 18000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_65",
+            "par": 100.0,
+            "coupon": 0.13,
+            "maturity": 4,
+            "notional": 16000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_66",
+            "par": 100.0,
+            "coupon": 0.08,
+            "maturity": 5,
+            "notional": 16000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_67",
+            "par": 100.0,
+            "coupon": 0.12,
+            "maturity": 3,
+            "notional": 16000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_68",
+            "par": 100.0,
+            "coupon": 0.12,
+            "maturity": 4,
+            "notional": 5000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_69",
+            "par": 100.0,
+            "coupon": 0.08,
+            "maturity": 1,
+            "notional": 5000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_70",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 3,
+            "notional": 5000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_71",
+            "par": 100.0,
+            "coupon": 0.06,
+            "maturity": 3,
+            "notional": 16000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_72",
+            "par": 100.0,
+            "coupon": 0.12,
+            "maturity": 3,
+            "notional": 18000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_73",
+            "par": 100.0,
+            "coupon": 0.09,
+            "maturity": 2,
+            "notional": 8000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_74",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 1,
+            "notional": 1000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_75",
+            "par": 100.0,
+            "coupon": 0.06,
+            "maturity": 3,
+            "notional": 16000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_76",
+            "par": 100.0,
+            "coupon": 0.14,
+            "maturity": 1,
+            "notional": 14000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_77",
+            "par": 100.0,
+            "coupon": 0.1,
+            "maturity": 3,
+            "notional": 6000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_78",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 4,
+            "notional": 12000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_79",
+            "par": 100.0,
+            "coupon": 0.13,
+            "maturity": 5,
+            "notional": 12000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_80",
+            "par": 100.0,
+            "coupon": 0.13,
+            "maturity": 1,
+            "notional": 12000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_81",
+            "par": 100.0,
+            "coupon": 0.1,
+            "maturity": 5,
+            "notional": 7000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_82",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 2,
+            "notional": 9000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_83",
+            "par": 100.0,
+            "coupon": 0.12,
+            "maturity": 3,
+            "notional": 4000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_84",
+            "par": 100.0,
+            "coupon": 0.14,
+            "maturity": 3,
+            "notional": 5000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_85",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 4,
+            "notional": 13000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_86",
+            "par": 100.0,
+            "coupon": 0.1,
+            "maturity": 1,
+            "notional": 6000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_87",
+            "par": 100.0,
+            "coupon": 0.12,
+            "maturity": 3,
+            "notional": 5000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_88",
+            "par": 100.0,
+            "coupon": 0.12,
+            "maturity": 5,
+            "notional": 14000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_89",
+            "par": 100.0,
+            "coupon": 0.08,
+            "maturity": 3,
+            "notional": 6000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_90",
+            "par": 100.0,
+            "coupon": 0.09,
+            "maturity": 4,
+            "notional": 10000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_91",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 2,
+            "notional": 17000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_92",
+            "par": 100.0,
+            "coupon": 0.12,
+            "maturity": 1,
+            "notional": 9000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_93",
+            "par": 100.0,
+            "coupon": 0.13,
+            "maturity": 1,
+            "notional": 6000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_94",
+            "par": 100.0,
+            "coupon": 0.13,
+            "maturity": 5,
+            "notional": 7000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_95",
+            "par": 100.0,
+            "coupon": 0.08,
+            "maturity": 1,
+            "notional": 7000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_96",
+            "par": 100.0,
+            "coupon": 0.1,
+            "maturity": 5,
+            "notional": 5000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_97",
+            "par": 100.0,
+            "coupon": 0.07,
+            "maturity": 4,
+            "notional": 4000000.0,
+            "rating": "B",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_98",
+            "par": 100.0,
+            "coupon": 0.11,
+            "maturity": 3,
+            "notional": 12000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_99",
+            "par": 100.0,
+            "coupon": 0.12,
+            "maturity": 2,
+            "notional": 6000000.0,
+            "rating": "CCC",
+            "seniority": "Senior Unsecured"
+        },
+        {
+            "bond_name": "bond_100",
+            "par": 100.0,
+            "coupon": 0.12,
+            "maturity": 2,
+            "notional": 18000000.0,
+            "rating": "BB",
+            "seniority": "Senior Unsecured"
+        }
+    ]
+}
