@@ -78,7 +78,7 @@ def ajax_get_trans_matrix(request):
         return HttpResponseNotFound(json.dumps(response), content_type="application/json")
 
 
-def ajax_cred_risk_analytics(request):
+def ajax_get_cred_risk_calcs(request):
     """
     AJAX function to kick off the credit risk analytics calculations
     :return: 

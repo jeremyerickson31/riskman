@@ -105,7 +105,7 @@
 
             var matrix_source = jQuery("#matrix_source").val()
             jQuery.ajax({
-                    url: '{% url 'ajax_cred_risk_analytics' %}',
+                    url: '{% url 'ajax_get_cred_risk_calcs' %}',
                     type: 'POST',
                     data: {'matrix_source': matrix_source},
                     headers: {'X-CSRFToken': csrftoken,},
