@@ -88,7 +88,10 @@ def ajax_get_cred_risk_calcs(request):
 
     if request.method == "POST":
         try:
-            pass
+            print(request.POST.get("portfolio_name"))
+            print(request.POST.get("calculation_type"))
+            print(request.POST.get("trans_matrix_source"))
+            print(request.POST.get("correlation"))
         except:
             response["status"] = 0
             response["message"] = "ERROR: "

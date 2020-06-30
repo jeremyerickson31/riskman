@@ -26,12 +26,12 @@
                     </div>
                     <div class="x_content">
                         <br />
-
                         <form class="form-horizontal form-label">
+                            {% csrf_token %}
                             <div class="form-group">
                                 <label class="control-label col-md-3">Portfolio Name</label>
                                 <div class="col-md-6">
-                                    <select class="form-control">
+                                    <select class="form-control" id="form_portfolio_name_id">
                                         <option>Investment Grade</option>
                                         <option>Non-Investment Grade</option>
                                         <option>Balanced</option>
@@ -41,7 +41,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-3" >Analytics Type</label>
                                 <div class="col-md-6">
-                                    <select class="form-control">
+                                    <select class="form-control" id="form_calculation_type_id">
                                         <option>Analytical</option>
                                         <option>Monte Carlo</option>
                                     </select>
@@ -50,7 +50,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-3">Matrix Provider</label>
                                 <div class="col-md-6">
-                                    <select class="form-control">
+                                    <select class="form-control" id="form_trans_matrix_source_id">
                                         <option>Credit Metrics</option>
                                         <option>S and P</option>
                                         <option>Moodys</option>
@@ -60,7 +60,7 @@
                             <div class="form-group">
                                 <label class="control-label col-md-3 ">Correlation</label>
                                 <div class="col-md-6">
-                                    <select class="form-control">
+                                    <select class="form-control" id="form_correlation_id">
                                         <option>0.1</option>
                                         <option>0.2</option>
                                     </select>
@@ -69,7 +69,7 @@
                             <div class="ln_solid"></div>
                             <div class="form-group">
                                 <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                    <button type="submit" class="btn btn-success">Submit</button>
+                                    <button type="submit" class="btn btn-success" onclick="button_run_portfolio_credit_risk()">Submit</button>
                                 </div>
                             </div>
                         </form>
@@ -103,11 +103,19 @@
 
         function button_run_portfolio_credit_risk(){
 
-            var matrix_source = jQuery("#matrix_source").val()
+            var portfolio_name = jQuery("#form_portfolio_name_id").val()
+            var calculation_type = jQuery("#form_calculation_type_id").val()
+            var trans_matrix_source = jQuery("#form_trans_matrix_source_id").val()
+            var correlation = jQuery("#form_correlation_id").val()
+
             jQuery.ajax({
                     url: '{% url 'ajax_get_cred_risk_calcs' %}',
                     type: 'POST',
-                    data: {'matrix_source': matrix_source},
+                    data: {'portfolio_name': portfolio_name,
+                           'calculation_type': calculation_type,
+                           'trans_matrix_source': trans_matrix_source,
+                           'correlation': correlation
+                            },
                     headers: {'X-CSRFToken': csrftoken,},
                     dataType: 'json',
                     success: function (response){
