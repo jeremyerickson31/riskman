@@ -92,6 +92,27 @@ def load_matrix_json():
     return data_dict
 
 
+def load_bond_portfolio_json(portfolio_name):
+    """
+    will load sample portfolios
+    :param portfolio_name: name of portfolio to load
+    :return:
+    """
+
+    portfolio_folder = config.model_inputs["sample_portfolios_folder"]
+    portfolio_files = os.listdir(portfolio_folder)
+    for portfolio_file in portfolio_files:
+        name = portfolio_file.split(".")[0]
+        if name == portfolio_name:
+            f = open(portfolio_folder + "\\" + portfolio_file)
+            portfolio_data = json.load(f)
+            break
+    else:
+        portfolio_data = {"NONE"}
+
+    return portfolio_data
+
+
 def get_correlations_list():
     """
     gets the list of built in correlation assumptions
