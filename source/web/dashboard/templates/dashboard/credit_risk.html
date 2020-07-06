@@ -32,9 +32,9 @@
                                 <label class="control-label col-md-3">Portfolio Name</label>
                                 <div class="col-md-6">
                                     <select class="form-control" id="form_portfolio_name_id">
-                                        <option>Investment Grade</option>
-                                        <option>Non-Investment Grade</option>
-                                        <option>Balanced</option>
+                                        {% for portfolio_name in bond_portfolio_names %}
+                                            <option>{{ portfolio_name }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>
