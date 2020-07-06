@@ -27,8 +27,15 @@ def equity(request):
 
 def credit_risk(request):
     context = dict()
+
+    # nav tree information
     context["nav_tree_id"] = "nav_tree_id_credit_risk"
     context["nav_tree_parents"] = ["nav_tree_id_riskman", "nav_tree_id_fixedincome"]
+
+    # get list of file names in sample_portfolio_folder to add to dropdown
+    portfolios = common.get_available_bond_portfolios()
+    context["bond_portfolio_names"] = portfolios
+    
     return render(request, 'dashboard/credit_risk.html', context)
 
 
