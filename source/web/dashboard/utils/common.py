@@ -113,6 +113,18 @@ def load_bond_portfolio_json(portfolio_name):
     return portfolio_data
 
 
+def get_available_bond_portfolios():
+    """
+    will grab all the file names in the sample_po
+    :return:
+    """
+
+    files = os.listdir(config.model_inputs["sample_portfolios_folder"])
+    file_names = [name.split(".")[0] for name in files]
+
+    return file_names
+
+
 def get_correlations_list():
     """
     gets the list of built in correlation assumptions
