@@ -106,11 +106,12 @@ def load_bond_portfolio_json(portfolio_name):
         if name == portfolio_name:
             f = open(portfolio_folder + "\\" + portfolio_file)
             portfolio_data = json.load(f)
+            bond_list = portfolio_data["portfolio_bonds"]  # this line was updated
             break
     else:
-        portfolio_data = {"NONE"}
+        bond_list = {"NONE"}
 
-    return portfolio_data
+    return bond_list
 
 
 def get_available_bond_portfolios():
