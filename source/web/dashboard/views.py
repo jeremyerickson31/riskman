@@ -7,6 +7,7 @@ import os
 
 sys.path.append(os.getcwd() + "\\dashboard")
 from utils import common
+from utils import engines
 
 
 # Create your views here.
@@ -95,10 +96,28 @@ def ajax_get_cred_risk_calcs(request):
 
     if request.method == "POST":
         try:
-            print(request.POST.get("portfolio_name"))
-            print(request.POST.get("calculation_type"))
-            print(request.POST.get("trans_matrix_source"))
-            print(request.POST.get("correlation"))
+
+            # read in form data
+            print("reading in form data")
+            portfolio_name = request.POST.get("portfolio_name")
+            if request.POST.get("calculation_type") == "Analytical + Monte":
+                calculation_type = "all"
+            else:
+                calculation_type = request.POST.get("calculation_type")
+            trans_matrix_source = request.POST.get("trans_matrix_source")
+            correlation = float(request.POST.get("correlation"))
+
+            # load the sample portfolio submitted from the form
+            print("reading in bond portfolio")
+            bond_list = common.load_bond_portfolio_json(portfolio_name)
+
+            # push bond portfolio and form parameters into engine
+            print("running credit risk calcs")
+            results = engines.run_portfolio_credit_risk(bond_list,
+                                                        run_type=calculation_type,
+                                                        provider=trans_matrix_source,
+                                                        correlation=correlation)
+            print(results)
         except:
             response["status"] = 0
             response["message"] = "ERROR: "
