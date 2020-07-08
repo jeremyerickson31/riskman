@@ -8,7 +8,7 @@
 
 <!-- page content -->
 <div class="right" role="main">
-    <div class="">
+    <div class="" id="credit_risk_analytics_div">
         <div class="page-title">
             <div class="title_left">
                 <h3>Credit Risk Analytics</h3>
@@ -85,19 +85,7 @@
 
         <div class="clearfix"></div>
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="x_panel">
-                    <div class="x_title">
-                        <h2>Results</h2>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <br />
-                    </div>
-                </div>
-            </div>
-            <!-- /page content -->
+
 
 {% endblock %}
 
@@ -105,6 +93,46 @@
 
     <script>
         var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+
+        var credit_risk_div_id = "credit_risk_analytics_div"
+        var analytical_graph_div_id = "analytical_graph_div"
+        var simulation_graph_div_id = "simulation_graph_div"
+
+        function make_sized_analytics_div(div_title, size){
+
+            var clearfix_div = document.createElement("div")
+            clearfix_div.setAttribute("class", "clearfix")
+
+            // make new div with either full or half size
+            if (size == "full"){
+                var div_size = "col-md-12"
+            } else{
+                var div_size = "col-md-6"
+            }
+            var sized_analytics_div = document.createElement("div")
+            sized_analytics_div.setAttribute("class", div_size)
+
+            var x_panel_div = document.createElement("div")
+            x_panel_div.setAttribute("class", "x_panel")
+
+            var title_div = document.createElement("div")
+            var h2_element = document.createElement("h2")
+            h2_element.innerHTML = div_title
+            title_div.setAttribute("class", "x_title")
+            title_div.setAttribute("id", "analytics_div_title" + "id")
+            title_div.appendChild(h2_element)
+            title_div.appendChild(clearfix_div)
+
+            var content_div = document.createElement("div")
+            content_div.setAttribute("class", "x_content")
+            content_div.setAttribute("id", "analytics_div_content" + "id")
+
+            x_panel_div.appendChild(title_div)
+            x_panel_div.appendChild(content_div)
+            sized_analytics_div.appendChild(x_panel_div)
+
+            return sized_analytics_div
+        }
 
         function button_run_portfolio_credit_risk(){
 
