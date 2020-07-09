@@ -98,7 +98,10 @@
         var analytical_graph_div_id = "analytical_graph_div"
         var simulation_graph_div_id = "simulation_graph_div"
 
-        function make_sized_analytics_div(div_title, size){
+        function make_sized_analytics_div(div_title, graph_div_id, size){
+            // div_title is is what goes in the <b2> title
+            // div_id is the id of the content where graphs will be delivered
+            // size is either half or full width
 
             var clearfix_div = document.createElement("div")
             clearfix_div.setAttribute("class", "clearfix")
@@ -109,27 +112,34 @@
             } else{
                 var div_size = "col-md-6"
             }
+
+            // make the main div
             var sized_analytics_div = document.createElement("div")
             sized_analytics_div.setAttribute("class", div_size)
 
+            // make the inner div
             var x_panel_div = document.createElement("div")
             x_panel_div.setAttribute("class", "x_panel")
 
+            //
             var title_div = document.createElement("div")
+            title_div.setAttribute("class", "x_title")
+
+            // make the h2 element and put in the given title and append to x_title
             var h2_element = document.createElement("h2")
             h2_element.innerHTML = div_title
-            title_div.setAttribute("class", "x_title")
-            title_div.setAttribute("id", "analytics_div_title" + "id")
             title_div.appendChild(h2_element)
             title_div.appendChild(clearfix_div)
 
+            // make div for graph and set id to use for graph delivery
             var content_div = document.createElement("div")
             content_div.setAttribute("class", "x_content")
-            content_div.setAttribute("id", "analytics_div_content" + "id")
+            content_div.setAttribute("id", graph_div_id)
 
+            // append title and content divs to main x_panel
             x_panel_div.appendChild(title_div)
             x_panel_div.appendChild(content_div)
-            sized_analytics_div.appendChild(x_panel_div)
+            sized_analytics_div.appendChild(x_panel_div)  // append x_panel to sized div
 
             return sized_analytics_div
         }
