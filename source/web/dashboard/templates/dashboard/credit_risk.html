@@ -151,6 +151,32 @@
             var trans_matrix_source = jQuery("#form_trans_matrix_source_id").val()
             var correlation = jQuery("#form_correlation_id").val()
 
+            // get the main credit_risk_div for pushing analytics divs
+            var credit_risk_div = document.getElementById(credit_risk_div_id)
+
+            // make a new div with class = row
+            var new_row_div = document.createElement("div")
+            new_row_div.setAttribute("class", "row")
+
+            // make either one full or two half analytics divs based on calculation_type and append to new_row_div
+            if (calculation_type == "Analytical + Monte"){
+                var analytical_div = make_sized_analytics_div("Analytical", analytical_graph_div_id, "half")
+                var simulation_div = make_sized_analytics_div("Simulation", simulation_graph_div_id, "half")
+                new_row_div.appendChild(analytical_div)
+                new_row_div.appendChild(simulation_div)
+            }
+            if (calculation_type == "Analytical"){
+                var analytical_div = make_sized_analytics_div("Analytical", analytical_graph_div_id, "full")
+                new_row_div.appendChild(analytical_div)
+            }
+            if (calculation_type == "Monte Carlo"){
+                var simulation_div = make_sized_analytics_div("Simulation", simulation_graph_div_id, "full")
+                new_row_div.appendChild(simulation_div)
+            }
+
+            // append new_row_div (with either one full or two half child divs) to main credit_risk_div
+            credit_risk_div.appendChild(new_row_div)
+
             jQuery.ajax({
                     url: '{% url 'ajax_get_cred_risk_calcs' %}',
                     type: 'POST',
