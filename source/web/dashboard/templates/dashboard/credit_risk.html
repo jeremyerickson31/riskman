@@ -95,6 +95,7 @@
         var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
 
         var credit_risk_div_id = "credit_risk_analytics_div"
+        var new_analytics_row_div_id = "new_analytics_row_div"
         var analytical_graph_div_id = "analytical_graph_div"
         var simulation_graph_div_id = "simulation_graph_div"
 
@@ -151,12 +152,19 @@
             var trans_matrix_source = jQuery("#form_trans_matrix_source_id").val()
             var correlation = jQuery("#form_correlation_id").val()
 
+            // remove analytical divs if exists, so two clicks doesn't make doubles
+            var existing_analytics_row_div = document.getElementById(new_analytics_row_div_id)
+            if (existing_analytics_row_div){
+                existing_analytics_row_div.remove()
+            }
+
             // get the main credit_risk_div for pushing analytics divs
             var credit_risk_div = document.getElementById(credit_risk_div_id)
 
             // make a new div with class = row
             var new_row_div = document.createElement("div")
             new_row_div.setAttribute("class", "row")
+            new_row_div.setAttribute("id", new_analytics_row_div_id)
 
             // make either one full or two half analytics divs based on calculation_type and append to new_row_div
             if (calculation_type == "Analytical + Monte"){
