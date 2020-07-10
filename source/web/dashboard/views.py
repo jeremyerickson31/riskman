@@ -103,7 +103,7 @@ def ajax_get_cred_risk_calcs(request):
             if request.POST.get("calculation_type") == "Analytical + Monte":
                 calculation_type = "all"
             else:
-                calculation_type = request.POST.get("calculation_type")
+                calculation_type = request.POST.get("calculation_type").lower()
             trans_matrix_source = request.POST.get("trans_matrix_source")
             correlation = float(request.POST.get("correlation"))
 
