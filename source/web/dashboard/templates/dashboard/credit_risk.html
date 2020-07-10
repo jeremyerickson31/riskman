@@ -205,6 +205,58 @@
                         console.log("the AJAX call failed.....")
                     }
             });
+
+            Highcharts.chart(analytical_graph_div_id, {
+                chart: {
+                    type: 'scatter',
+                    zoomType: 'xy'
+                    },
+                title: {
+                    text: 'Portfolio Bonds Notional and Variance'
+                    },
+
+                xAxis: {
+                    title: {
+                    enabled: true,
+                    text: 'Height (cm)'
+                    },
+                    startOnTick: true,
+                    endOnTick: true,
+                    showLastLabel: true
+                  },
+                yAxis: {
+                    title: {
+                        text: 'Weight (kg)'
+                        }
+                  },
+                plotOptions: {
+                    scatter: {
+                        tooltip: {
+                            headerFormat: "",
+                            pointFormat: '<b>{point.name}</b><br>{point.x} cm, {point.y} kg'
+                            }
+                        }
+                },
+                series: [{
+                    data: [{
+                        name: 'one',
+                        x: 161.2,
+                        y: 51.6
+                        },
+                        {
+                        name: 'two',
+                        x: 167.5,
+                        y: 59.0
+                        },
+                        {
+                        name: 'three',
+                        x: 159.5,
+                        y: 49.2
+                        }
+                    ]
+                }]
+            });
+
         }
 </script>
 {% endblock %}
