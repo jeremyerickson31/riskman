@@ -92,7 +92,8 @@ def ajax_get_cred_risk_calcs(request):
     :return: 
     """
 
-    response = {'status': 1, 'message': 'OK', 'data': {}}
+    response = {'status': 1, 'message': 'OK', 'data': {"analytical_graph": list(),
+                                                       "simulation_graph": dict()}}
 
     if request.method == "POST":
         try:
@@ -118,6 +119,21 @@ def ajax_get_cred_risk_calcs(request):
                                                         provider=trans_matrix_source,
                                                         correlation=correlation)
             print(results)
+
+            # parse analytical portion of results
+            analytical_bond_calcs = results["analytical"]["bond_calcs"]
+            for bond_name in analytical_bond_calcs.keys():
+                bond = analytical_bond_calcs[bond_name]
+                if bond["type"] == "single_asset":
+                    bond_obj = bond["object"]
+                    notional = bond_obj.notional
+                    std_dev = bond_obj.price_stats_dollar["std_dev"]
+                    graph_package = {"name": bond_name,
+                                     "x": notional,
+                                     "y": std_dev}
+                    response["data"]["analytical_graph"].append(graph_package)
+                else:
+                    pass
         except:
             response["status"] = 0
             response["message"] = "ERROR: "
