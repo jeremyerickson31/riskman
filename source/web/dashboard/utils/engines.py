@@ -507,6 +507,8 @@ class Bond:
         self.maturity = properties["maturity"]
         self.rating = properties["rating"]
         self.seniority = properties["seniority"]
+        self.market_value_dollar = None
+        self.market_value_pct = None
 
         self.log_action("Attributes Set {par, coupon_pct, coupon_dollar, maturity, rating, seniority")
 
@@ -558,6 +560,10 @@ class Bond:
         recovery_stats = common.get_recovery_in_default(self.seniority)
         self.rating_level_prices_pct["D"] = recovery_stats["mean"]
         self.rating_level_prices_dollar["D"] = (recovery_stats["mean"] / 100.00) * self.notional
+
+        # set current market value equal to the price under the rating scenario where the rating doesn't change
+        self.market_value_dollar = self.rating_level_prices_dollar[self.rating]
+        self.market_value_pct = self.rating_level_prices_pct[self.rating]
 
     def get_transition_probabilities(self, provider):
         """
