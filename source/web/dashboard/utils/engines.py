@@ -464,6 +464,23 @@ def run_credit_risk_analytical(bonds, provider, correlation):
 
     portfolio_calcs = {"mean": portfolio_mean, "variance": portfolio_variance}
 
+    # loop through to get the marginal variance for each single asset in bond calcs
+    for bond_name in bond_names:
+        portfolio_variance_without = portfolio_variance
+        for calc_name in bond_calcs.keys():
+            if bond_name in calc_name:
+                if bond_calcs[calc_name]["type"] == "single_asset":
+                    # individual variances will be added back
+                    portfolio_variance_without += bond_calcs[calc_name]["object"].price_stats_dollar["variance"]
+
+                if bond_calcs[calc_name]["type"] == "two_asset":
+                    # two asset variances will be subtracted back out
+                    portfolio_variance_without -= bond_calcs[calc_name]["stats"]["dollar"]["variance"]
+            else:
+                pass
+
+        bond_calcs[bond_name]["object"].marginal_variance = portfolio_variance - portfolio_variance_without
+
     return bond_calcs, portfolio_calcs, logging
 
 
