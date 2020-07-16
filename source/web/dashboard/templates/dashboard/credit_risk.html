@@ -102,7 +102,7 @@
         var bond_table_div_id = "bond_table_div"
         var percentile_table_div_id = "percentile_table_div"
 
-        function make_sized_analytics_div(div_title, graph_div_id, size){
+        function make_sized_analytics_div(div_title, div_id, size){
             // div_title is is what goes in the <b2> title
             // div_id is the id of the content where graphs will be delivered
             // size is either half or full width
@@ -138,7 +138,7 @@
             // make div for graph and set id to use for graph delivery
             var content_div = document.createElement("div")
             content_div.setAttribute("class", "x_content")
-            content_div.setAttribute("id", graph_div_id)
+            content_div.setAttribute("id", div_id)
 
             // append title and content divs to main x_panel
             x_panel_div.appendChild(title_div)
