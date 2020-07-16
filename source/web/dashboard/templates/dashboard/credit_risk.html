@@ -97,10 +97,10 @@
         var credit_risk_div_id = "credit_risk_analytics_div"
         var new_analytics_row_graphs_div_id = "new_analytics_row_graphs_div"
         var new_analytics_row_tables_div_id = "new_analytics_row_tables_div"
-        var analytical_graph_div_id = "analytical_graph_div"
-        var simulation_graph_div_id = "simulation_graph_div"
-        var bond_table_div_id = "bond_table_div"
-        var percentile_table_div_id = "percentile_table_div"
+        var analytical_graphs_div_id = "analytical_graph_div"
+        var simulation_graphs_div_id = "simulation_graph_div"
+        var analytical_tables_div_id = "bond_table_div"
+        var simulation_tables_div_id = "percentile_table_div"
 
         function make_sized_analytics_div(div_title, div_id, size){
             // div_title is is what goes in the <b2> title
@@ -156,37 +156,55 @@
             var correlation = jQuery("#form_correlation_id").val()
 
             // remove analytical divs if exists, so two clicks doesn't make doubles
-            var existing_analytics_row_div = document.getElementById(new_analytics_row_graphs_div_id)
-            if (existing_analytics_row_div){
-                existing_analytics_row_div.remove()
+            var existing_analytics_row_graphs_div = document.getElementById(new_analytics_row_graphs_div_id)
+            var existing_analytics_row_tables_div = document.getElementById(new_analytics_row_tables_div_id)
+            if (existing_analytics_row_graphs_div){
+                existing_analytics_row_graphs_div.remove()
+            }
+            if (existing_analytics_row_tables_div){
+                existing_analytics_row_tables_div.remove()
             }
 
             // get the main credit_risk_div for pushing analytics divs
             var credit_risk_div = document.getElementById(credit_risk_div_id)
 
-            // make a new div with class = row
-            var new_row_div = document.createElement("div")
-            new_row_div.setAttribute("class", "row")
-            new_row_div.setAttribute("id", new_analytics_row_graphs_div_id)
+            // make a new div with class = row for the graphs
+            var new_row_graphs_div = document.createElement("div")
+            new_row_graphs_div.setAttribute("class", "row")
+            new_row_graphs_div.setAttribute("id", new_analytics_row_graphs_div_id)
+
+            // make a new div with class = row for the data tables
+            var new_row_tables_div = document.createElement("div")
+            new_row_tables_div.setAttribute("class", "row")
+            new_row_tables_div.setAttribute("id", new_analytics_row_tables_div_id)
 
             // make either one full or two half analytics divs based on calculation_type and append to new_row_div
             if (calculation_type == "Analytical + Monte"){
-                var analytical_div = make_sized_analytics_div("Analytical", analytical_graph_div_id, "half")
-                var simulation_div = make_sized_analytics_div("Simulation", simulation_graph_div_id, "half")
-                new_row_div.appendChild(analytical_div)
-                new_row_div.appendChild(simulation_div)
+                var analytical_graphs_div = make_sized_analytics_div("Analytical", analytical_graphs_div_id, "half")
+                var simulation_graphs_div = make_sized_analytics_div("Simulation", simulation_graphs_div_id, "half")
+                var analytical_tables_div = make_sized_analytics_div("Bond Results", analytical_tables_div_id, "half")
+                var simulation_tables_div = make_sized_analytics_div("Percentiles", simulation_tables_div_id, "half")
+                new_row_graphs_div.appendChild(analytical_graphs_div)
+                new_row_graphs_div.appendChild(simulation_graphs_div)
+                new_row_tables_div.appendChild(analytical_tables_div)
+                new_row_tables_div.appendChild(simulation_tables_div)
             }
             if (calculation_type == "Analytical"){
-                var analytical_div = make_sized_analytics_div("Analytical", analytical_graph_div_id, "full")
-                new_row_div.appendChild(analytical_div)
+                var analytical_graphs_div = make_sized_analytics_div("Analytical", analytical_graphs_div_id, "full")
+                var analytical_tables_div = make_sized_analytics_div("Bond Results", analytical_tables_div_id, "full")
+                new_row_graphs_div.appendChild(analytical_graphs_div)
+                new_row_tables_div.appendChild(analytical_tables_div)
             }
             if (calculation_type == "Monte Carlo"){
-                var simulation_div = make_sized_analytics_div("Simulation", simulation_graph_div_id, "full")
-                new_row_div.appendChild(simulation_div)
+                var simulation_graphs_div = make_sized_analytics_div("Simulation", simulation_graphs_div_id, "full")
+                var simulation_tables_div = make_sized_analytics_div("Percentiles", simulation_tables_div_id, "full")
+                new_row_table_div.appendChild(simulation_graphs_div)
+                new_row_table_div.appendChild(simulation_tables_div)
             }
 
             // append new_row_div (with either one full or two half child divs) to main credit_risk_div
-            credit_risk_div.appendChild(new_row_div)
+            credit_risk_div.appendChild(new_row_graphs_div)
+            credit_risk_div.appendChild(new_row_tables_div)
 
             jQuery.ajax({
                     url: '{% url 'ajax_get_cred_risk_calcs' %}',
@@ -211,7 +229,7 @@
             });
 
             function make_analytical_chart(response){
-                Highcharts.chart(analytical_graph_div_id, {
+                Highcharts.chart(analytical_graphs_div_id, {
                     chart: {
                         type: 'scatter',
                         zoomType: 'xy'
