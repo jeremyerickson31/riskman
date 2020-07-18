@@ -102,7 +102,7 @@
         var analytical_tables_div_id = "bond_table_div"
         var simulation_tables_div_id = "percentile_table_div"
 
-        function make_sized_analytics_div(div_title, div_id, size){
+        function make_sized_analytics_div(div_title, div_id, size, add_table=false){
             // div_title is is what goes in the <b2> title
             // div_id is the id of the content where graphs will be delivered
             // size is either half or full width
@@ -139,6 +139,12 @@
             var content_div = document.createElement("div")
             content_div.setAttribute("class", "x_content")
             content_div.setAttribute("id", div_id)
+
+            // make a new table element to append to x_content
+            var new_table_node = document.createElement("table")
+            new_table_node.setAttribute("id", div_id + "_table")
+            new_table_node.setAttribute("class", "table table-striped")
+            content_div.appendChild(new_table_node)
 
             // append title and content divs to main x_panel
             x_panel_div.appendChild(title_div)
@@ -182,8 +188,8 @@
             if (calculation_type == "Analytical + Monte"){
                 var analytical_graphs_div = make_sized_analytics_div("Analytical", analytical_graphs_div_id, "half")
                 var simulation_graphs_div = make_sized_analytics_div("Simulation", simulation_graphs_div_id, "half")
-                var analytical_tables_div = make_sized_analytics_div("Bond Results", analytical_tables_div_id, "half")
-                var simulation_tables_div = make_sized_analytics_div("Percentiles", simulation_tables_div_id, "half")
+                var analytical_tables_div = make_sized_analytics_div("Bond Results", analytical_tables_div_id, "half", true)
+                var simulation_tables_div = make_sized_analytics_div("Percentiles", simulation_tables_div_id, "half", true)
                 new_row_graphs_div.appendChild(analytical_graphs_div)
                 new_row_graphs_div.appendChild(simulation_graphs_div)
                 new_row_tables_div.appendChild(analytical_tables_div)
@@ -191,13 +197,13 @@
             }
             if (calculation_type == "Analytical"){
                 var analytical_graphs_div = make_sized_analytics_div("Analytical", analytical_graphs_div_id, "full")
-                var analytical_tables_div = make_sized_analytics_div("Bond Results", analytical_tables_div_id, "full")
+                var analytical_tables_div = make_sized_analytics_div("Bond Results", analytical_tables_div_id, "full", true)
                 new_row_graphs_div.appendChild(analytical_graphs_div)
                 new_row_tables_div.appendChild(analytical_tables_div)
             }
             if (calculation_type == "Monte Carlo"){
                 var simulation_graphs_div = make_sized_analytics_div("Simulation", simulation_graphs_div_id, "full")
-                var simulation_tables_div = make_sized_analytics_div("Percentiles", simulation_tables_div_id, "full")
+                var simulation_tables_div = make_sized_analytics_div("Percentiles", simulation_tables_div_id, "full", true)
                 new_row_table_div.appendChild(simulation_graphs_div)
                 new_row_table_div.appendChild(simulation_tables_div)
             }
@@ -221,12 +227,31 @@
                         {
                         console.log("fired the ajax")
                         make_analytical_chart(response)
+                        make_analytical_table(response)
                         }
                     },
                     failure: function (){
                         console.log("the AJAX call failed.....")
                     }
             });
+
+            function make_analytical_table(response){
+                $("#" + analytical_tables_div_id + "_table").DataTable( {
+                    pageLength: 25,
+                    responsive: true,
+                    dom: '<"html5buttons"B>lTfgitp',
+                    data: [
+                            ["Sample Name", "Ninja", "Toronto"],
+                            ["Sample Name", "Ninja", "Toronto"],
+                            ["Sample Name", "Ninja", "Toronto"],
+                        ],
+                    columns: [
+                        { title: "Name" },
+                        { title: "Position" },
+                        { title: "Office" },
+                        ]
+                    } );
+            }
 
             function make_analytical_chart(response){
                 Highcharts.chart(analytical_graphs_div_id, {
