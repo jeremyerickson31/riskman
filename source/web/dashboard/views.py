@@ -93,6 +93,7 @@ def ajax_get_cred_risk_calcs(request):
     """
 
     response = {'status': 1, 'message': 'OK', 'data': {"analytical_graph": list(),
+                                                       "analytical_table": {"columns": list(), "data": list()},
                                                        "simulation_graph": dict()}}
 
     if request.method == "POST":
@@ -119,6 +120,26 @@ def ajax_get_cred_risk_calcs(request):
                                                         provider=trans_matrix_source,
                                                         correlation=correlation)
             print(results)
+
+            # get data for the analytical table results
+            col_headers = ["Name", "Rating", "Value", "Mean", "Variance", "M_Variance"]
+            response["data"]["analytical_table"]["columns"] = [{"title": col} for col in col_headers]
+
+            analytical_bond_calcs = results["analytical"]["bond_calcs"]
+            for bond_name in analytical_bond_calcs.keys():
+                bond = analytical_bond_calcs[bond_name]
+                if bond["type"] == "single_asset":
+                    bond = bond["object"]
+                    name = bond.name
+                    rating = bond.rating
+                    value = bond.market_value_dollar
+                    mean = bond.price_stats_dollar["mean"]
+                    variance = bond.price_stats_dollar["variance"]
+                    marg_variance = bond.marginal_variance
+                    response["data"]["analytical_table"]["data"].append([name, rating, value, mean, variance, marg_variance])
+                else:
+                    pass
+
 
             # parse analytical portion of results
             analytical_bond_calcs = results["analytical"]["bond_calcs"]
