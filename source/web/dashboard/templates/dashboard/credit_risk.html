@@ -240,16 +240,8 @@
                     pageLength: 25,
                     responsive: true,
                     dom: '<"html5buttons"B>lTfgitp',
-                    data: [
-                            ["Sample Name", "Ninja", "Toronto"],
-                            ["Sample Name", "Ninja", "Toronto"],
-                            ["Sample Name", "Ninja", "Toronto"],
-                        ],
-                    columns: [
-                        { title: "Name" },
-                        { title: "Position" },
-                        { title: "Office" },
-                        ]
+                    data: response.data.analytical_table.data,
+                    columns: response.data.analytical_table.columns,
                     } );
             }
 
