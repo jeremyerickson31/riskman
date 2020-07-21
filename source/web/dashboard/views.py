@@ -122,7 +122,7 @@ def ajax_get_cred_risk_calcs(request):
             print(results)
 
             # get data for the analytical table results
-            col_headers = ["Name", "Rating", "Value", "Mean", "Variance", "M_Variance"]
+            col_headers = ["Name", "Rating", "Value($)", "Mean($)", "Var($^2)", "Marg Var($^2)"]
             response["data"]["analytical_table"]["columns"] = [{"title": col} for col in col_headers]
 
             analytical_bond_calcs = results["analytical"]["bond_calcs"]
@@ -132,10 +132,10 @@ def ajax_get_cred_risk_calcs(request):
                     bond = bond["object"]
                     name = bond.name
                     rating = bond.rating
-                    value = bond.market_value_dollar
-                    mean = bond.price_stats_dollar["mean"]
-                    variance = bond.price_stats_dollar["variance"]
-                    marg_variance = bond.marginal_variance
+                    value = round(common.fmt_num(bond.market_value_dollar, "$", 1, "MM"), 5)
+                    mean = round(common.fmt_num(bond.price_stats_dollar["mean"], "$", 1, "MM"), 5)
+                    variance = round(common.fmt_num(bond.price_stats_dollar["variance"], "$", 2, "MM"), 5)
+                    marg_variance = round(common.fmt_num(bond.marginal_variance, "$", 2, "MM"), 5)
                     response["data"]["analytical_table"]["data"].append([name, rating, value, mean, variance, marg_variance])
                 else:
                     pass
