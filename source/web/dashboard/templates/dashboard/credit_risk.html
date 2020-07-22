@@ -252,13 +252,13 @@
                         zoomType: 'xy'
                         },
                     title: {
-                        text: 'Portfolio Bonds Notional and Variance'
+                        text: 'Portfolio Bonds Value and % Std Dev'
                         },
 
                     xAxis: {
                         title: {
                         enabled: true,
-                        text: 'Height (cm)'
+                        text: 'Market Value ($MM)'
                         },
                         startOnTick: true,
                         endOnTick: true,
@@ -266,14 +266,14 @@
                       },
                     yAxis: {
                         title: {
-                            text: 'Weight (kg)'
+                            text: 'Std Dev / Market Value'
                             }
                       },
                     plotOptions: {
                         scatter: {
                             tooltip: {
                                 headerFormat: "",
-                                pointFormat: '<b>{point.name}</b><br>{point.x} cm, {point.y} kg'
+                                pointFormat: '<b>{point.name}</b><br>{point.x} $, {point.y} %'
                                 }
                             }
                     },
