@@ -136,22 +136,14 @@ def ajax_get_cred_risk_calcs(request):
                     mean = round(common.fmt_num(bond.price_stats_dollar["mean"], "$", 1, "MM"), 5)
                     variance = round(common.fmt_num(bond.price_stats_dollar["variance"], "$", 2, "MM"), 5)
                     marg_variance = round(common.fmt_num(bond.marginal_variance, "$", 2, "MM"), 5)
-                    response["data"]["analytical_table"]["data"].append([name, rating, value, mean, variance, marg_variance])
-                else:
-                    pass
+                    pct_std_dev = round(variance**0.5 / value * 100, 3)
 
-
-            # parse analytical portion of results
-            analytical_bond_calcs = results["analytical"]["bond_calcs"]
-            for bond_name in analytical_bond_calcs.keys():
-                bond = analytical_bond_calcs[bond_name]
-                if bond["type"] == "single_asset":
-                    bond_obj = bond["object"]
-                    notional = bond_obj.notional
-                    std_dev = bond_obj.price_stats_dollar["std_dev"]
+                    table_package = [name, rating, value, mean, variance, marg_variance]
                     graph_package = {"name": bond_name,
-                                     "x": notional,
-                                     "y": std_dev}
+                                     "x": value,
+                                     "y": pct_std_dev}
+
+                    response["data"]["analytical_table"]["data"].append(table_package)
                     response["data"]["analytical_graph"].append(graph_package)
                 else:
                     pass
