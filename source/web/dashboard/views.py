@@ -122,7 +122,7 @@ def ajax_get_cred_risk_calcs(request):
             print(results)
 
             # get data for the analytical table results
-            col_headers = ["Name", "Rating", "Value($)", "Mean($)", "Var($^2)", "Marg Var($^2)"]
+            col_headers = ["Name", "Rating", "Mat", "Coup (%)", "Face ($)", "Value ($)", "Mean ($)", "Var ($<sup>2)", "Marginal ($<sup>2)"]
             response["data"]["analytical_table"]["columns"] = [{"title": col} for col in col_headers]
 
             analytical_bond_calcs = results["analytical"]["bond_calcs"]
@@ -132,13 +132,16 @@ def ajax_get_cred_risk_calcs(request):
                     bond = bond["object"]
                     name = bond.name
                     rating = bond.rating
+                    maturity = bond.maturity
+                    coupon = round(bond.coupon_pct * 100, 2)
+                    notional = round(common.fmt_num(bond.notional, "$", 1, "MM"), 5)
                     value = round(common.fmt_num(bond.market_value_dollar, "$", 1, "MM"), 5)
                     mean = round(common.fmt_num(bond.price_stats_dollar["mean"], "$", 1, "MM"), 5)
                     variance = round(common.fmt_num(bond.price_stats_dollar["variance"], "$", 2, "MM"), 5)
                     marg_variance = round(common.fmt_num(bond.marginal_variance, "$", 2, "MM"), 5)
                     pct_std_dev = round(variance**0.5 / value * 100, 3)
 
-                    table_package = [name, rating, value, mean, variance, marg_variance]
+                    table_package = [name, rating, maturity, coupon, notional, value, mean, variance, marg_variance]
                     graph_package = {"name": bond_name,
                                      "x": value,
                                      "y": pct_std_dev}
