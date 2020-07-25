@@ -244,6 +244,7 @@
                         console.log("fired the ajax")
                         make_analytical_chart(response)
                         make_analytical_table(response)
+                        make_analytical_details_table(response)
                         }
                     },
                     failure: function (){
@@ -258,6 +259,16 @@
                     dom: '<"html5buttons"B>lTfgitp',
                     data: response.data.analytical_table.data,
                     columns: response.data.analytical_table.columns,
+                    } );
+            }
+
+            function make_analytical_details_table(response){
+                $("#" + analytical_details_tables_div_id + "_table").DataTable( {
+                    pageLength: 25,
+                    responsive: true,
+                    dom: '<"html5buttons"B>lTfgitp',
+                    data: response.data.analytical_details_table.data,
+                    columns: response.data.analytical_details_table.columns,
                     } );
             }
 

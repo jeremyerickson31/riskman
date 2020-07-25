@@ -94,6 +94,7 @@ def ajax_get_cred_risk_calcs(request):
 
     response = {'status': 1, 'message': 'OK', 'data': {"analytical_graph": list(),
                                                        "analytical_table": {"columns": list(), "data": list()},
+                                                       "analytical_details_table": {"columns": list(), "data": list()},
                                                        "simulation_graph": dict()}}
 
     if request.method == "POST":
@@ -121,9 +122,12 @@ def ajax_get_cred_risk_calcs(request):
                                                         correlation=correlation)
             print(results)
 
-            # get data for the analytical table results
-            col_headers = ["Name", "Rating", "Mat", "Coup (%)", "Face ($)", "Value ($)", "Mean ($)", "Var ($<sup>2)", "Marginal ($<sup>2)"]
-            response["data"]["analytical_table"]["columns"] = [{"title": col} for col in col_headers]
+            # get data from results for the graphs and tables
+            analytical_col_headers = ["Name", "Rating", "Mat", "Coup (%)", "Face ($)", "Value ($)", "Mean ($)", "Var ($<sup>2)", "Marginal ($<sup>2)"]
+            response["data"]["analytical_table"]["columns"] = [{"title": col} for col in analytical_col_headers]
+
+            analytical_details_col_headers = ["Name", "Rating", "Prices by Rating ($)", "Prices by Rating (%)", "Trans Probs"]
+            response["data"]["analytical_details_table"]["columns"] = [{"title": col} for col in analytical_details_col_headers]
 
             analytical_bond_calcs = results["analytical"]["bond_calcs"]
             for bond_name in analytical_bond_calcs.keys():
@@ -140,13 +144,24 @@ def ajax_get_cred_risk_calcs(request):
                     variance = round(common.fmt_num(bond.price_stats_dollar["variance"], "$", 2, "MM"), 5)
                     marg_variance = round(common.fmt_num(bond.marginal_variance, "$", 2, "MM"), 5)
                     pct_std_dev = round(variance**0.5 / value * 100, 3)
+                    rating_level_pct_prices_fmt = {
+                        key: round(bond.rating_level_prices_pct[key], 3)
+                        for key in bond.rating_level_prices_dollar.keys()}
+                    rating_level_dollar_prices_fmt = {
+                        key: round(common.fmt_num(bond.rating_level_prices_dollar[key], "$", 1, "MM"), 3)
+                        for key in bond.rating_level_prices_dollar.keys()}
 
-                    table_package = [name, rating, maturity, coupon, notional, value, mean, variance, marg_variance]
+                    analytical_table_package = [name, rating, maturity, coupon, notional, value, mean, variance, marg_variance]
+                    analytical_details_table_package = [name, rating,
+                                                        str(rating_level_dollar_prices_fmt),
+                                                        str(rating_level_pct_prices_fmt),
+                                                        str(bond.transition_probs)]
                     graph_package = {"name": bond_name,
                                      "x": value,
                                      "y": pct_std_dev}
 
-                    response["data"]["analytical_table"]["data"].append(table_package)
+                    response["data"]["analytical_table"]["data"].append(analytical_table_package)
+                    response["data"]["analytical_details_table"]["data"].append(analytical_details_table_package)
                     response["data"]["analytical_graph"].append(graph_package)
                 else:
                     pass
