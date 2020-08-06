@@ -55,11 +55,11 @@ db_conn['database'] = 'portfolio_risk_management'
 
 graph_settings = dict()
 
-graph_settings['scatter_graph_colors'] = {"AAA": 'rgba(20, 90, 250, .5)',
-                                          "AA": 'rgba(20, 200, 250, .5)',
-                                          "A": 'rgba(20, 250, 180, .5)',
-                                          "BBB": 'rgba(20, 250, 80, .5)',
-                                          "BB": 'rgba(250, 250, 20, .5)',
-                                          "B": 'rgba(250, 170, 20, .5)',
-                                          "CCC": 'rgba(250, 20, 20, .5)',
+graph_settings['scatter_graph_colors'] = {"AAA": 'rgba(0, 90, 250, 1)',
+                                          "AA": 'rgba(0, 200, 250, 1)',
+                                          "A": 'rgba(0, 250, 180, 1)',
+                                          "BBB": 'rgba(0, 250, 80, 1)',
+                                          "BB": 'rgba(250, 200, 0, 1)',
+                                          "B": 'rgba(250, 170, 0, 1)',
+                                          "CCC": 'rgba(250, 0, 0, 1)',
                                           }
