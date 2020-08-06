@@ -47,3 +47,19 @@ db_conn['username'] = 'riskmanuser'
 db_conn['password'] = 'abc123'
 db_conn['local_host'] = '127.0.0.1'
 db_conn['database'] = 'portfolio_risk_management'
+
+
+############################################
+# certain config settings dashboard graphs
+############################################
+
+graph_settings = dict()
+
+graph_settings['scatter_graph_colors'] = {"AAA": 'rgba(20, 90, 250, .5)',
+                                          "AA": 'rgba(20, 200, 250, .5)',
+                                          "A": 'rgba(20, 250, 180, .5)',
+                                          "BBB": 'rgba(20, 250, 80, .5)',
+                                          "BB": 'rgba(250, 250, 20, .5)',
+                                          "B": 'rgba(250, 170, 20, .5)',
+                                          "CCC": 'rgba(250, 20, 20, .5)',
+                                          }
