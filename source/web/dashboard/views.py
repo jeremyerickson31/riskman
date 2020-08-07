@@ -8,6 +8,7 @@ import os
 sys.path.append(os.getcwd() + "\\dashboard")
 from utils import common
 from utils import engines
+from utils import config
 
 
 # Create your views here.
@@ -92,7 +93,7 @@ def ajax_get_cred_risk_calcs(request):
     :return: 
     """
 
-    response = {'status': 1, 'message': 'OK', 'data': {"analytical_graph": list(),
+    response = {'status': 1, 'message': 'OK', 'data': {"analytical_graph": dict(),
                                                        "analytical_table": {"columns": list(), "data": list()},
                                                        "analytical_details_table": {"columns": list(), "data": list()},
                                                        "simulation_graph": dict()}}
@@ -121,6 +122,14 @@ def ajax_get_cred_risk_calcs(request):
                                                         provider=trans_matrix_source,
                                                         correlation=correlation)
             print(results)
+
+            # make the scatter plot names and colors
+            ratings = ["AAA", "AA", "A", "BBB", "BB", "B", "CCC"]
+            for rating in ratings:
+                response["data"]["analytical_graph"][rating] = {"name": rating,
+                                                                'color': config.graph_settings['scatter_graph_colors'][
+                                                                    rating],
+                                                                "data": []}
 
             # get data from results for the graphs and tables
             analytical_col_headers = ["Name", "Rating", "Mat", "Coup (%)", "Face ($)", "Value ($)", "Mean ($)", "Var ($<sup>2)", "Marginal ($<sup>2)"]
@@ -162,9 +171,13 @@ def ajax_get_cred_risk_calcs(request):
 
                     response["data"]["analytical_table"]["data"].append(analytical_table_package)
                     response["data"]["analytical_details_table"]["data"].append(analytical_details_table_package)
-                    response["data"]["analytical_graph"].append(graph_package)
+                    response["data"]["analytical_graph"][bond.rating]["data"].append(graph_package)
+
                 else:
                     pass
+
+            response["data"]["analytical_graph"] = [response["data"]["analytical_graph"][rating] for rating in response["data"]["analytical_graph"].keys()]
+
         except:
             response["status"] = 0
             response["message"] = "ERROR: "
