@@ -88,6 +88,7 @@ def load_matrix_json():
     file_loc = config.model_inputs["one_year_matrix_file"]
     f = open(file_loc)
     data_dict = json.load(f)
+    f.close()
 
     return data_dict
 
@@ -107,6 +108,7 @@ def load_bond_portfolio_json(portfolio_name):
             f = open(portfolio_folder + "\\" + portfolio_file)
             portfolio_data = json.load(f)
             bond_list = portfolio_data["portfolio_bonds"]  # this line was updated
+            f.close()
             break
     else:
         bond_list = {"NONE"}
@@ -196,6 +198,7 @@ def get_provider_correlation_joint_probs(provider, correlation):
 
     f = open(file_name)
     joint_probs_dict = json.load(f)
+    f.close()
 
     return joint_probs_dict
 
@@ -319,6 +322,7 @@ def get_interest_rate_curves():
     f = open(file_loc)
     data_dict = json.load(f)
     rating_level_rates_dict = data_dict["rates"]
+    f.close()
 
     return rating_level_rates_dict
 
@@ -333,6 +337,7 @@ def get_recovery_in_default(seniority):
     file_loc = config.model_inputs["recoveries_in_default"]
     f = open(file_loc)
     data_dict = json.load(f)
+    f.close()
 
     try:
         recovery = data_dict[seniority]
