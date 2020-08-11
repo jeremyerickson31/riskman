@@ -247,18 +247,21 @@ def forward_interest_rate_repricing(bond, forward_curve):
     if not isinstance(bond, Bond):
         raise Exception("Type Error: bond parameter must be a Bond class object with associated attributes")
 
-    # discount cash flows
-    price = 0.0
-    for i, r in enumerate(forward_curve):
+    if bond.maturity == 1:
+        price = bond.par + bond.coupon_dollar
+    else:
+        # discount cash flows
+        price = 0.0
+        for i, r in enumerate(forward_curve):
 
-        # if on last rate then receive coupon plus principal
-        if i == len(forward_curve) - 1:
-            price += (bond.coupon_dollar + bond.par) / (1 + r) ** (i + 1)
-        else:
-            price += bond.coupon_dollar / (1 + r) ** (i + 1)
+            # if on last rate then receive coupon plus principal
+            if i == len(forward_curve) - 1:
+                price += (bond.coupon_dollar + bond.par) / (1 + r) ** (i + 1)
+            else:
+                price += bond.coupon_dollar / (1 + r) ** (i + 1)
 
-    # from today we calc price at end of year 1. Receive end of year 1 coupon + PV of future coupons and par
-    price += bond.coupon_dollar
+        # from today we calc price at end of year 1. Receive end of year 1 coupon + PV of future coupons and par
+        price += bond.coupon_dollar
 
     return price, logging
 
