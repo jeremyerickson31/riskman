@@ -369,23 +369,35 @@ def run_portfolio_credit_risk(bonds, run_type="all", provider="Credit Metrics", 
         raise Exception("Parameter Error: Correlation must be a single float")
     # ######################## parameter validation #########################
 
+    # ###################### bond re-pricing ######################
+    # do this now because rating level prices are used in both Analytical and Simulation
+    # rating level interest rate curves for bond repricing under rating level scenarios
+    logging.append("ENGINE: Fetching rating level interest rates for bond repricing")
+    forward_rates = common.get_interest_rate_curves()
+    bond_objects = []
+    for bond_properties in bonds:
+        bond = Bond(bond_properties)  # initialize the bond object
+        bond.get_transition_probabilities(provider)  # fetch transition probs for given provider and self.rating
+        bond.calc_prices_under_forwards(forward_rates)  # use provided forward rates to do re-pricing
+        bond_objects.append(bond)
+
     # run calculations as per input
     credit_risk_results = dict()
 
     if run_type == "analytical" or run_type == "all":
-        bond_calcs, portfolio_calcs, analytic_logs = run_credit_risk_analytical(bonds, provider, correlation)
+        bond_calcs, portfolio_calcs, analytic_logs = run_credit_risk_analytical(bond_objects, provider, correlation)
         credit_risk_results["analytical"] = {"bond_calcs": bond_calcs,
                                              "portfolio_calcs": portfolio_calcs,
                                              "logs": analytic_logs}
 
     if run_type == "simulation" or run_type == "all":
-        sim_results = run_credit_risk_simulation(bonds, provider, correlation)
+        sim_results = run_credit_risk_simulation(bond_objects, provider, correlation)
         credit_risk_results["simulation"] = {"sim_results": sim_results}
 
     return credit_risk_results
 
 
-def run_credit_risk_analytical(bonds, provider, correlation):
+def run_credit_risk_analytical(bond_list, provider, correlation):
     """
     this is the engine that will run the portfolio credit risk under the analytical approach
     The calculation is the Analytical approach which involves the following:
@@ -396,7 +408,7 @@ def run_credit_risk_analytical(bonds, provider, correlation):
         (5) combine individual mean values to get portfolio mean value
         (6) combine pair-wise variances with individual variances to get portfolio variance
 
-    :param bonds: a list of dictionaries with bond properties
+    :param bond_list: a list of Bond objects
     :param provider: one of the transition matrix providers
     :param correlation: either float in approved list or a correlation matrix
     :return: results of the analytical calcs: bond_calcs (dict), portfolio_calcs (dict), logging (list)
@@ -407,22 +419,15 @@ def run_credit_risk_analytical(bonds, provider, correlation):
 
     logging = list()
 
-    # rating level interest rate curves for bond repricing under rating level scenarios
-    logging.append("ENGINE: Fetching rating level interest rates for bond repricing")
-    forward_rates = common.get_interest_rate_curves()
-
     # get master file of joint probabilities for provider/correlation pair
     logging.append("ENGINE: Fetching pre-made joint probability matrix for %s and %s" % (provider, correlation))
     joint_probs_master = common.get_provider_correlation_joint_probs(provider, correlation)
 
     logging.append("ENGINE: Performing Single Bond Calcs")
-    bond_names = [item["bond_name"] for item in bonds]  # list of names to use for making two asset sub portfolios
+    bond_names = [bond.name for bond in bond_list]  # list of names to use for making two asset sub portfolios
     bond_calcs = dict()  # dictionary for holding the single asset and two asset calculations that have been done
-    for bond_properties in bonds:
-        bond = Bond(bond_properties)  # initialize the bond object
-        bond.get_transition_probabilities(provider)  # fetch transition probs for given provider and self.rating
-        bond.calc_prices_under_forwards(forward_rates)  # use provided forward rates to do re-pricing
-        bond.calc_price_stats()  # apply transition probabilities to get mean and variance
+    for bond in bond_list:
+        bond.calc_price_stats()  # apply transition probabilities to prices to get mean and variance
 
         # add this bond object to the dictionary of bond objects that we have done calculations for
         bond_calcs[bond.name] = {"type": "single_asset", "stats": None, "object": bond}
@@ -487,11 +492,11 @@ def run_credit_risk_analytical(bonds, provider, correlation):
     return bond_calcs, portfolio_calcs, logging
 
 
-def run_credit_risk_simulation(bonds, provider, correlation):
+def run_credit_risk_simulation(bond_list, provider, correlation):
     """
     this is the engine that will run the portfolio credit risk under the simulation approach
 
-    :param bonds: a list of dictionaries with bond properties
+    :param bond_list: a list of dictionaries with bond properties
     :param provider: one of the transition matrix providers
     :param correlation: either float in approved list or a correlation matrix
     :return: results of the simulation calcs: TBD
