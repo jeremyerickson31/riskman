@@ -2,6 +2,7 @@ import json
 import os
 import sys
 import numpy
+import scipy.stats
 
 from io import TextIOWrapper
 from datetime import datetime
@@ -91,6 +92,20 @@ def load_matrix_json():
     f.close()
 
     return data_dict
+
+
+def load_transition_thresholds(provider):
+    """
+    gets the transition thresholds for the specified provider
+    :return:
+    """
+
+    file_loc = config.model_inputs["transition_thresholds_folder"] + provider + ".json"
+    f = open(file_loc)
+    trans_thresholds = json.load(f)
+    f.close()
+
+    return trans_thresholds
 
 
 def load_bond_portfolio_json(portfolio_name):
@@ -345,6 +360,8 @@ def get_recovery_in_default(seniority):
         raise Exception("KeyError: Recovery JSON has no seniority level {%s}" % seniority)
 
     return recovery
+
+
 
 
 def get_two_asset_combinations(name_list):
