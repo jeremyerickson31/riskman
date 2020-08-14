@@ -362,6 +362,48 @@ def get_recovery_in_default(seniority):
     return recovery
 
 
+def rand_to_rating(initial_rating, provider, rand_num):
+    """
+    this function accepts a random number between 0 and 1, applies the normal inverse function, and finds what rating
+    that corresponds to for a given provider transition thresholds
+    :param initial_rating: initial rating
+    :param rand_num: float between 0 and 1
+    :param provider: Credit Metrics, Moodys, SP
+    :return: rating
+    """
+
+    if not isinstance(rand_num, float):
+        raise Exception("Parameter Error: rand_num must be a float. Got " + str(type(rand_num)))
+    if not 0.0 < rand_num < 1.0:
+        raise Exception("Value Error: rand_num must be float between 0.0 and 1.0")
+
+    # load transition thresholds
+    trans_thresholds = load_transition_thresholds(provider)
+    initial_rating_thresholds = trans_thresholds[initial_rating]
+
+    # get ordered ratings so we can go from D --> AAA
+    ratings = get_ordered_rating_keys()
+    rating_keys = list(ratings.keys())
+    rating_keys.sort()
+    rating_keys.reverse()  # results in [8,7,6,...] one nunber for each major rating level in oneyeartransitions.json)
+
+    # convert random number between 0 and 1 to a standard normal value
+    transition_value = scipy.stats.norm(0., 1.0).ppf(rand_num)
+
+    for key in rating_keys:
+        rating_level = ratings[key]
+        threshold = initial_rating_thresholds[rating_level]
+
+        if transition_value < threshold:
+            final_rating = rating_level
+            break
+        else:
+            continue
+    else:
+        # if the less than is never hit then the rand number is really high and the highest rating is the result
+        final_rating = ratings(rating_keys[1])
+
+    return final_rating
 
 
 def get_two_asset_combinations(name_list):
