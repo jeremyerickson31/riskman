@@ -305,7 +305,7 @@ def rand_to_rating(initial_rating, provider, rand_num):
             continue
     else:
         # if the less than is never hit then the rand number is really high and the highest rating is the result
-        final_rating = ratings(rating_keys[1])
+        final_rating = ratings[rating_keys[-1]]
 
     return final_rating
 
