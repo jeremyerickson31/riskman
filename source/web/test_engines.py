@@ -53,12 +53,26 @@ class TestEngines(unittest.TestCase):
             "notional": 11000000.0,
             "rating": "AA",
             "seniority": "Senior Unsecured"}
-
         bond = engines.Bond(bond_props)  # initialize the bond object
         bond.get_transition_probabilities(provider)  # fetch transition probs for given provider and self.rating
         bond.calc_prices_under_forwards(forward_rates)  # use provided forward rates to do re-pricing
         price = bond.rating_level_prices_pct["AA"]
         self.assertEqual(round(100.72202761155926, 10), round(price, 10))
+
+    def test_rand_to_rating_Credit_Metrics_AAA_to_D(self):
+        final_rating = engines.rand_to_rating("AAA", "Credit Metrics", 0.0001)
+        self.assertEqual("D", final_rating)
+
+    def test_rand_to_rating_Credit_Metrics_AAA_to_BBB(self):
+        final_rating = engines.rand_to_rating("AAA", "Credit Metrics", 0.005)
+        self.assertEqual("BBB", final_rating)
+
+    def test_rand_to_rating_Credit_Metrics_AAA_to_AAA(self):
+        final_rating = engines.rand_to_rating("AAA", "Credit Metrics", 0.25)
+        self.assertEqual("AAA", final_rating)
+
+
+
 
 
 if __name__ == '__main__':
