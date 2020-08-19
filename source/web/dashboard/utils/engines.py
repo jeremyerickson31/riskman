@@ -268,18 +268,16 @@ def forward_interest_rate_repricing(bond, forward_curve):
 
 def rand_to_rating(initial_rating, provider, rand_num):
     """
-    this function accepts a random number between 0 and 1, applies the normal inverse function, and finds what rating
-    that corresponds to for a given provider transition thresholds
+    this function accepts a random number between 0 and 1 (or a list of randoms), applies the normal inverse function,
+    and finds what rating that corresponds to for a given provider transition thresholds
     :param initial_rating: initial rating
-    :param rand_num: float between 0 and 1
+    :param rand_num: float between 0 and 1, or list of floats
     :param provider: Credit Metrics, Moodys, SP
-    :return: rating
+    :return: single rating as string or list of ratings
     """
 
-    if not isinstance(rand_num, float):
+    if not isinstance(rand_num, float) and not isinstance(rand_num, list):
         raise Exception("Parameter Error: rand_num must be a float. Got " + str(type(rand_num)))
-    if not 0.0 < rand_num < 1.0:
-        raise Exception("Value Error: rand_num must be float between 0.0 and 1.0")
 
     # load transition thresholds
     trans_thresholds = common.load_transition_thresholds(provider)
@@ -292,22 +290,32 @@ def rand_to_rating(initial_rating, provider, rand_num):
     rating_keys.reverse()  # results in [8,7,6,...] one nunber for each major rating level in oneyeartransitions.json)
 
     # convert random number between 0 and 1 to a standard normal value
-    transition_value = scipy.stats.norm(0., 1.0).ppf(rand_num)
+    if isinstance(rand_num, float):
+        transition_values = [scipy.stats.norm(0., 1.0).ppf(rand_num)]
+    if isinstance(rand_num, list):
+        transition_values = [scipy.stats.norm(0., 1.0).ppf(num) for num in rand_num]
 
-    for key in rating_keys:
-        rating_level = ratings[key]
-        threshold = initial_rating_thresholds[rating_level]
+    results = []
+    for trans_value in transition_values:
 
-        if transition_value < threshold:
-            final_rating = rating_level
-            break
+        for key in rating_keys:
+            rating_level = ratings[key]
+            threshold = initial_rating_thresholds[rating_level]
+
+            if trans_value < threshold:
+                final_rating = rating_level
+                break
+            else:
+                continue
         else:
-            continue
-    else:
-        # if the less than is never hit then the rand number is really high and the highest rating is the result
-        final_rating = ratings[rating_keys[-1]]
+            # if the less than is never hit then the rand number is really high and the highest rating is the result
+            final_rating = ratings[rating_keys[-1]]
+        results.append(final_rating)
 
-    return final_rating
+    if isinstance(rand_num, float):
+        results = results[0]
+
+    return results
 
 
 def calc_two_asset_portfolio_stats(bond1, bond2, joint_trans_probs):
