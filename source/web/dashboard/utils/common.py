@@ -327,6 +327,21 @@ def make_bivariate_gauss_mu_mat():
     return matrix
 
 
+def make_random_square_matrix(size):
+    """
+    function that makes a numpy array/matrix with random values from 0 to 1
+    :param size: dimensions of the desired matrix
+    :return: random numpy array
+    """
+
+    if not isinstance(size, int):
+        raise Exception("Parameter Error: size must be an integer")
+
+    rands = numpy.random.normal(0, 1, size=(size, size))
+
+    return rands
+
+
 def get_interest_rate_curves():
     """
     fetch interest rate curves found in the param folder
