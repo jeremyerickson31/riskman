@@ -71,8 +71,9 @@ class TestEngines(unittest.TestCase):
         final_rating = engines.rand_to_rating("AAA", "Credit Metrics", 0.25)
         self.assertEqual("AAA", final_rating)
 
-
-
+    def test_rand_to_rating_lists_Credit_Metrics_AAA_to_AAA_and_BBB_and_D(self):
+        final_ratings = engines.rand_to_rating("AAA", "Credit Metrics", [0.0001, 0.005, 0.25])
+        self.assertEqual(["D", "BBB", "AAA"], final_ratings)
 
 
 if __name__ == '__main__':
