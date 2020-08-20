@@ -342,6 +342,24 @@ def make_random_square_matrix(size):
     return rands
 
 
+def make_flat_square_corr_matrix(value, size):
+    """
+    will make a square matrix with each entry being value and will have size x size dimensions
+    :param value: float between 0 and 1
+    :param size: matrix dimensions
+    :return: square matrix
+    """
+
+    if not isinstance(value, float):
+        raise Exception("Parameter Error: value must be a float")
+    if not isinstance(size, int):
+        raise Exception("Parameter Error: size must be a float")
+
+    matrix = value * numpy.ones((size, size))
+
+    return matrix
+
+
 def get_interest_rate_curves():
     """
     fetch interest rate curves found in the param folder
