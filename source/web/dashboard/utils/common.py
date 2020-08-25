@@ -361,7 +361,7 @@ def make_flat_square_corr_matrix(value, size):
     return matrix
 
 
-def make_square_correlated_random_matrix(correlation, size):
+def make_flat_square_correlated_random_matrix(correlation, size):
     """
     function that will make a matrix of correlated random numbers
     makes a random matrix and use the Cholesky decomposition to make correlated random
