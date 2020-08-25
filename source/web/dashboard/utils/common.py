@@ -3,6 +3,7 @@ import os
 import sys
 import numpy
 import scipy.stats
+from numpy.linalg import cholesky
 
 from io import TextIOWrapper
 from datetime import datetime
@@ -358,6 +359,28 @@ def make_flat_square_corr_matrix(value, size):
     matrix = value * numpy.ones((size, size))
 
     return matrix
+
+
+def make_square_correlated_random_matrix(correlation, size):
+    """
+    function that will make a matrix of correlated random numbers
+    makes a random matrix and use the Cholesky decomposition to make correlated random
+    :param correlation: flat correlation nunber to use
+    :param size: dimensions of square matrix
+    :return: correlated randoms in a numpy matrix
+    """
+
+    if not isinstance(correlation, float):
+        raise Exception("Parameter Error: value must be a float")
+    if not isinstance(size, int):
+        raise Exception("Parameter Error: size must be a float")
+
+    rand_mat = make_random_square_matrix(size)
+    corr_mat = make_flat_square_corr_matrix(correlation, size)
+
+    correlated_randoms = cholesky(corr_mat) @ rand_mat
+
+    return correlated_randoms
 
 
 def get_interest_rate_curves():
