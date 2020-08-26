@@ -548,13 +548,34 @@ def run_credit_risk_simulation(bond_list, provider, correlation):
     """
     this is the engine that will run the portfolio credit risk under the simulation approach
 
-    :param bond_list: a list of dictionaries with bond properties
+    :param bond_list: a list of bond objects
     :param provider: one of the transition matrix providers
     :param correlation: either float in approved list or a correlation matrix
     :return: results of the simulation calcs: TBD
     """
     logging = list()
     sim_results = None
+
+    logging.append("ENGINE: Performing Simulation Calculation")
+
+    logging.append("ENGINE: Making Matrix of Correlated Random Numbers")
+    correlated_randoms = common.make_flat_square_correlated_random_matrix(correlation, len(bond_list)).tolist()
+
+    logging.append("ENGINE: Beginning Transition Threshold and Price Lookup for Each Random")
+    portfolio_prices = list()
+    for bond, rand_list in zip(bond_list, correlated_randoms):
+        logging.append("ENGINE: Performing transition and price lookups for " + bond.name)
+        simulation_bond_ratings = rand_to_rating(bond.rating, "Credit Metrics", rand_list)
+        simulation_bond_prices = [bond.rating_level_prices_dollar[rating] for rating in simulation_bond_ratings]
+
+        print(bond.name)
+        print(bond.rating)
+        print(rand_list)
+        print(simulation_bond_ratings)
+        print(simulation_bond_prices)
+
+
+
 
     return sim_results, logging
 
