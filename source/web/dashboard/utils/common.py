@@ -357,6 +357,7 @@ def make_flat_square_corr_matrix(value, size):
         raise Exception("Parameter Error: size must be a float")
 
     matrix = value * numpy.ones((size, size))
+    numpy.fill_diagonal(matrix, 1.0)  # diagonal of a matrix is all one since correlation of X with X is 1
 
     return matrix
 
