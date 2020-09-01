@@ -291,9 +291,9 @@ def rand_to_rating(initial_rating, provider, rand_num):
 
     # convert random number between 0 and 1 to a standard normal value
     if isinstance(rand_num, float):
-        transition_values = [scipy.stats.norm(0., 1.0).ppf(rand_num)]
+        transition_values = [rand_num]
     if isinstance(rand_num, list):
-        transition_values = [scipy.stats.norm(0., 1.0).ppf(num) for num in rand_num]
+        transition_values = rand_num
 
     results = []
     for trans_value in transition_values:
