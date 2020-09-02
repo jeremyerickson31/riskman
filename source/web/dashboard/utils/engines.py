@@ -554,18 +554,19 @@ def run_credit_risk_simulation(bond_list, provider, correlation):
     :return: results of the simulation calcs: TBD
     """
     logging = list()
+    sim_runs = 10000
     sim_results = None
 
     logging.append("ENGINE: Performing Simulation Calculation")
 
     logging.append("ENGINE: Making Matrix of Correlated Random Numbers")
-    correlated_randoms = common.make_flat_square_correlated_random_matrix(correlation, len(bond_list)).tolist()
+    correlated_randoms = common.make_flat_square_correlated_random_matrix(correlation, len(bond_list), sim_runs).tolist()
 
     logging.append("ENGINE: Beginning Transition Threshold and Price Lookup for Each Random")
     portfolio_prices = list()
     for bond, rand_list in zip(bond_list, correlated_randoms):
         logging.append("ENGINE: Performing transition and price lookups for " + bond.name)
-        simulation_bond_ratings = rand_to_rating(bond.rating, "Credit Metrics", rand_list)
+        simulation_bond_ratings = rand_to_rating(bond.rating, provider, rand_list)
         simulation_bond_prices = [bond.rating_level_prices_dollar[rating] for rating in simulation_bond_ratings]
 
         print(bond.name)
