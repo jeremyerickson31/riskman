@@ -563,20 +563,18 @@ def run_credit_risk_simulation(bond_list, provider, correlation):
     correlated_randoms = common.make_flat_square_correlated_random_matrix(correlation, len(bond_list), sim_runs).tolist()
 
     logging.append("ENGINE: Beginning Transition Threshold and Price Lookup for Each Random")
-    portfolio_prices = list()
+    all_bond_prices = list()
     for bond, rand_list in zip(bond_list, correlated_randoms):
         logging.append("ENGINE: Performing transition and price lookups for " + bond.name)
         simulation_bond_ratings = rand_to_rating(bond.rating, provider, rand_list)
         simulation_bond_prices = [bond.rating_level_prices_dollar[rating] for rating in simulation_bond_ratings]
 
-        print(bond.name)
-        print(bond.rating)
-        print(rand_list)
-        print(simulation_bond_ratings)
-        print(simulation_bond_prices)
+        all_bond_prices.append(simulation_bond_prices)
 
-
-
+    portfolio_prices = numpy.array(all_bond_prices).sum(axis=0)  # summing down the column adds the bond prices for each sim run
+    prices_histogram, bins = numpy.histogram(portfolio_prices, bins=100)
+    prices_histogram, bins = list(prices_histogram), list(bins)
+    bins = [round(bin / 1000000.0, 3) for bin in bins]
 
     return sim_results, logging
 
