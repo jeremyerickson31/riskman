@@ -328,17 +328,20 @@ def make_bivariate_gauss_mu_mat():
     return matrix
 
 
-def make_random_square_matrix(size):
+def make_random_square_matrix(size, runs):
     """
     function that makes a numpy array/matrix with random values from 0 to 1
-    :param size: dimensions of the desired matrix
+    :param size: dimensions of the desired number of rows
+    :param runs: dimensions of the desired number of columns
     :return: random numpy array
     """
 
     if not isinstance(size, int):
         raise Exception("Parameter Error: size must be an integer")
+    if not isinstance(runs, int):
+        raise Exception("Parameter Error: runs must be an integer")
 
-    rands = numpy.random.normal(0, 1, size=(size, size))
+    rands = numpy.random.normal(0, 1, size=(size, runs))
 
     return rands
 
@@ -362,12 +365,13 @@ def make_flat_square_corr_matrix(value, size):
     return matrix
 
 
-def make_flat_square_correlated_random_matrix(correlation, size):
+def make_flat_square_correlated_random_matrix(correlation, size, runs):
     """
     function that will make a matrix of correlated random numbers
     makes a random matrix and use the Cholesky decomposition to make correlated random
     :param correlation: flat correlation nunber to use
     :param size: dimensions of square matrix
+    :param runs: number of random number columns
     :return: correlated randoms in a numpy matrix
     """
 
@@ -375,8 +379,10 @@ def make_flat_square_correlated_random_matrix(correlation, size):
         raise Exception("Parameter Error: value must be a float")
     if not isinstance(size, int):
         raise Exception("Parameter Error: size must be a float")
+    if not isinstance(runs, int):
+        raise Exception("Parameter Error: runs must be a float")
 
-    rand_mat = make_random_square_matrix(size)
+    rand_mat = make_random_square_matrix(size, runs)
     corr_mat = make_flat_square_corr_matrix(correlation, size)
 
     correlated_randoms = cholesky(corr_mat) @ rand_mat
