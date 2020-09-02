@@ -555,6 +555,7 @@ def run_credit_risk_simulation(bond_list, provider, correlation):
     """
     logging = list()
     sim_runs = 10000
+    percentiles = [0.001, 0.01, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50]
     sim_results = None
 
     logging.append("ENGINE: Performing Simulation Calculation")
