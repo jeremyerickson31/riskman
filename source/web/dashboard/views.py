@@ -188,6 +188,9 @@ def ajax_get_cred_risk_calcs(request):
             prices_histogram, bins = list(prices_histogram), list(bins)
             bins = [round(bin / 1000000.0, 3) for bin in bins]
 
+            # make percentiles and get percentiles of value distribution"
+            percentiles = [0.001, 0.01, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50]
+
         except:
             response["status"] = 0
             response["message"] = "ERROR: "
