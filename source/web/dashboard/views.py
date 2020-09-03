@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseNotFound
 
+import numpy
 import json
 import sys
 import os
@@ -101,7 +102,7 @@ def ajax_get_cred_risk_calcs(request):
     if request.method == "POST":
         try:
 
-            # read in form data
+            # ##### read in form data #####
             print("reading in form data")
             portfolio_name = request.POST.get("portfolio_name")
             if request.POST.get("calculation_type") == "Analytical + Monte":
@@ -111,19 +112,19 @@ def ajax_get_cred_risk_calcs(request):
             trans_matrix_source = request.POST.get("trans_matrix_source")
             correlation = float(request.POST.get("correlation"))
 
-            # load the sample portfolio submitted from the form
+            # ##### load the sample portfolio submitted from the form #####
             print("reading in bond portfolio")
             bond_list = common.load_bond_portfolio_json(portfolio_name)
 
-            # push bond portfolio and form parameters into engine
+            # ##### push bond portfolio and form parameters into engine #####
             print("running credit risk calcs")
             results = engines.run_portfolio_credit_risk(bond_list,
                                                         run_type=calculation_type,
                                                         provider=trans_matrix_source,
                                                         correlation=correlation)
-            print(results)
 
-            # make the scatter plot names and colors
+            # ##### ANALYTICAL RESULTS #####
+            # ##### make the scatter plot names and colors #####
             ratings = ["AAA", "AA", "A", "BBB", "BB", "B", "CCC"]
             for rating in ratings:
                 response["data"]["analytical_graph"][rating] = {"name": rating,
@@ -131,7 +132,7 @@ def ajax_get_cred_risk_calcs(request):
                                                                     rating],
                                                                 "data": []}
 
-            # get data from results for the graphs and tables
+            # ##### get data from results for the graphs and tables #####
             analytical_col_headers = ["Name", "Rating", "Mat", "Coup (%)", "Face ($)", "Value ($)", "Mean ($)", "Var ($<sup>2)", "Marginal ($<sup>2)"]
             response["data"]["analytical_table"]["columns"] = [{"title": col} for col in analytical_col_headers]
 
@@ -177,6 +178,15 @@ def ajax_get_cred_risk_calcs(request):
                     pass
 
             response["data"]["analytical_graph"] = [response["data"]["analytical_graph"][rating] for rating in response["data"]["analytical_graph"].keys()]
+
+            # ##### SIMULATION RESULTS #####
+            # ##### get simulation results and make into numpy array for adding #####
+            sim_results = results["simulation"]["sim_results"]
+
+            portfolio_prices = numpy.array(sim_results["all_bond_prices"]).sum(axis=0)  # summing down the column adds the bond prices for each sim run
+            prices_histogram, bins = numpy.histogram(portfolio_prices, bins=100)
+            prices_histogram, bins = list(prices_histogram), list(bins)
+            bins = [round(bin / 1000000.0, 3) for bin in bins]
 
         except:
             response["status"] = 0

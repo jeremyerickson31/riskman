@@ -576,10 +576,6 @@ def run_credit_risk_simulation(bond_list, provider, correlation):
 
     sim_results["sim_bond_ratings"] = simulation_bond_ratings
     sim_results["sim_bond_prices"] = simulation_bond_prices
-    portfolio_prices = numpy.array(all_bond_prices).sum(axis=0)  # summing down the column adds the bond prices for each sim run
-    prices_histogram, bins = numpy.histogram(portfolio_prices, bins=100)
-    prices_histogram, bins = list(prices_histogram), list(bins)
-    bins = [round(bin / 1000000.0, 3) for bin in bins]
 
     return sim_results, logging
 
