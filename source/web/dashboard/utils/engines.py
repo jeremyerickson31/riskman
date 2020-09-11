@@ -555,7 +555,7 @@ def run_credit_risk_simulation(bond_list, provider, correlation):
     """
     logging = list()
     sim_runs = 10000
-    sim_results = {"sim_bond_ratings": None, "sim_bond_prices": None, "price_dist_pctls": None}
+    sim_results = {"sim_bond_ratings": None, "sim_bond_prices": None}
 
     logging.append("ENGINE: Performing Simulation Calculation")
 
