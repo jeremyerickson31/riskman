@@ -443,7 +443,7 @@ def run_portfolio_credit_risk(bonds, run_type="all", provider="Credit Metrics", 
                                              "logs": analytic_logs}
 
     if run_type == "simulation" or run_type == "all":
-        sim_results = run_credit_risk_simulation(bond_objects, provider, correlation)
+        sim_results, simulation_logs = run_credit_risk_simulation(bond_objects, provider, correlation)
         credit_risk_results["simulation"] = {"sim_results": sim_results}
 
     return credit_risk_results
