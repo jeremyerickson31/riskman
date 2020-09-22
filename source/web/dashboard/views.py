@@ -182,14 +182,16 @@ def ajax_get_cred_risk_calcs(request):
             # ##### SIMULATION RESULTS #####
             # ##### get simulation results and make into numpy array for adding #####
             sim_results = results["simulation"]["sim_results"]
-            print(sim_results.keys())
 
             portfolio_prices = numpy.array(sim_results["sim_bond_prices"]).sum(axis=0)  # summing down the column adds the bond prices for each sim run
             prices_histogram, bins = numpy.histogram(portfolio_prices, bins=100)
             prices_histogram, bins = list(prices_histogram), list(bins)
+            prices_histogram = [float(price) for price in prices_histogram]
             bins = [round(bin / 1000000.0, 3) for bin in bins]
             print(prices_histogram)
             print(bins)
+            response["data"]["simulation_graph"]["categories"] = bins
+            response["data"]["simulation_graph"]["series"] = prices_histogram
 
             # make percentiles and get percentiles of value distribution"
             percentiles = [0.001, 0.01, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50]
