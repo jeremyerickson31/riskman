@@ -245,6 +245,7 @@
                         make_analytical_chart(response)
                         make_analytical_table(response)
                         make_analytical_details_table(response)
+                        make_simulation_graph(response)
                         }
                     },
                     failure: function (){
@@ -307,6 +308,22 @@
                     series: response.data.analytical_graph
                 });
             }
+
+            function make_simulation_graph(response){
+                Highcharts.chart(simulation_graphs_div_id, {
+                    chart: {type: 'column'},
+                    title: {text: 'Value Distribution'},
+                    xAxis: {categories: response.data.simulation_graph.categories ,
+                            title:{enabled:false}
+                            },
+                    yAxis: {title: 'Count'},
+                    series: [{name: 'Value',
+                             data: response.data.simulation_graph.series
+                             }],
+                    plotOptions: {column: {pointPadding: 0.2,
+                                  borderWidth: 0} },
+                });
+            };
 
         }
 </script>
