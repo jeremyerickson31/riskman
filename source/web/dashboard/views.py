@@ -97,7 +97,9 @@ def ajax_get_cred_risk_calcs(request):
     response = {'status': 1, 'message': 'OK', 'data': {"analytical_graph": dict(),
                                                        "analytical_table": {"columns": list(), "data": list()},
                                                        "analytical_details_table": {"columns": list(), "data": list()},
-                                                       "simulation_graph": dict()}}
+                                                       "simulation_graph": dict(),
+                                                       "simulation_graph_half": dict(),
+                                                       "simulation_graph_quarter": dict()}}
 
     if request.method == "POST":
         try:
@@ -192,6 +194,10 @@ def ajax_get_cred_risk_calcs(request):
             print(bins)
             response["data"]["simulation_graph"]["categories"] = bins
             response["data"]["simulation_graph"]["series"] = prices_histogram
+            response["data"]["simulation_graph_half"]["categories"] = bins[0:51]
+            response["data"]["simulation_graph_half"]["series"] = prices_histogram[0:51]
+            response["data"]["simulation_graph_quarter"]["categories"] = bins[0:26]
+            response["data"]["simulation_graph_quarter"]["series"] = prices_histogram[0:26]
 
             # make percentiles and get percentiles of value distribution"
             percentiles = [0.001, 0.01, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50]

@@ -100,6 +100,8 @@
         var new_analytics_row_details_tables_div_id = "new_analytics_row_details_tables_div"
         var analytical_graphs_div_id = "analytical_graph_div"
         var simulation_graphs_div_id = "simulation_graph_div"
+        var simulation_graphs_lowerhalf_div_id = "simulation_graph_lowerhalf_div"
+        var simulation_graphs_lowerquarter_div_id = "simulation_graph_lowerquarter_div"
         var analytical_tables_div_id = "bond_table_div"
         var simulation_tables_div_id = "percentile_table_div"
         var analytical_details_tables_div_id = "bond_details_tables_div"
@@ -198,12 +200,16 @@
             // make either one full or two half analytics divs based on calculation_type and append to new_row_div
             if (calculation_type == "Analytical + Monte"){
                 var analytical_graphs_div = make_sized_analytics_div("Analytical", analytical_graphs_div_id, "half")
-                var simulation_graphs_div = make_sized_analytics_div("Simulation", simulation_graphs_div_id, "half")
+                var simulation_graphs_div = make_sized_analytics_div("Simulation (full)", simulation_graphs_div_id, "half")
+                var simulation_graphs_lowerhalf_div = make_sized_analytics_div("Simulation (lower 50%)", simulation_graphs_lowerhalf_div_id, "half")
+                var simulation_graphs_lowerquarter_div = make_sized_analytics_div("Simulation (lower 25%)", simulation_graphs_lowerquarter_div_id, "half")
                 var analytical_tables_div = make_sized_analytics_div("Bond Results (in millions)", analytical_tables_div_id, "half", true)
                 var simulation_tables_div = make_sized_analytics_div("Percentiles (in millions)", simulation_tables_div_id, "half", true)
                 var analytical_details_tables_div = make_sized_analytics_div("Bond Calculation Details (in millions)", analytical_details_tables_div_id, "full", true)
                 new_row_graphs_div.appendChild(analytical_graphs_div)
                 new_row_graphs_div.appendChild(simulation_graphs_div)
+                new_row_graphs_div.appendChild(simulation_graphs_lowerhalf_div)
+                new_row_graphs_div.appendChild(simulation_graphs_lowerquarter_div)
                 new_row_tables_div.appendChild(analytical_tables_div)
                 new_row_tables_div.appendChild(simulation_tables_div)
                 new_row_details_tables_div.appendChild(analytical_details_tables_div)
@@ -218,8 +224,12 @@
             }
             if (calculation_type == "Monte Carlo"){
                 var simulation_graphs_div = make_sized_analytics_div("Simulation", simulation_graphs_div_id, "full")
+                var simulation_graphs_lowerhalf_div = make_sized_analytics_div("Simulation (lower 50%)", simulation_graphs_lowerhalf_div_id, "full")
+                var simulation_graphs_lowerquarter_div = make_sized_analytics_div("Simulation (lower 25%)", simulation_graphs_lowerquarter_div_id, "full")
                 var simulation_tables_div = make_sized_analytics_div("Percentiles", simulation_tables_div_id, "full", true)
                 new_row_table_div.appendChild(simulation_graphs_div)
+                new_row_table_div.appendChild(simulation_graphs_lowerhalf_div)
+                new_row_table_div.appendChild(simulation_graphs_lowerquarter_div)
                 new_row_table_div.appendChild(simulation_tables_div)
             }
 
@@ -246,6 +256,8 @@
                         make_analytical_table(response)
                         make_analytical_details_table(response)
                         make_simulation_graph(response)
+                        make_simulation_graph_lower_half(response)
+                        make_simulation_graph_lower_quarter(response)
                         }
                     },
                     failure: function (){
@@ -319,6 +331,38 @@
                     yAxis: {title: 'Count'},
                     series: [{name: 'Value',
                              data: response.data.simulation_graph.series
+                             }],
+                    plotOptions: {column: {pointPadding: 0.2,
+                                  borderWidth: 0} },
+                });
+            };
+
+            function make_simulation_graph_lower_half(response){
+                Highcharts.chart(simulation_graphs_lowerhalf_div_id, {
+                    chart: {type: 'column'},
+                    title: {text: 'Value Distribution'},
+                    xAxis: {categories: response.data.simulation_graph_half.categories ,
+                            title:{enabled:false}
+                            },
+                    yAxis: {title: 'Count'},
+                    series: [{name: 'Value',
+                             data: response.data.simulation_graph_half.series
+                             }],
+                    plotOptions: {column: {pointPadding: 0.2,
+                                  borderWidth: 0} },
+                });
+            };
+
+            function make_simulation_graph_lower_quarter(response){
+                Highcharts.chart(simulation_graphs_lowerquarter_div_id, {
+                    chart: {type: 'column'},
+                    title: {text: 'Value Distribution'},
+                    xAxis: {categories: response.data.simulation_graph_quarter.categories ,
+                            title:{enabled:false}
+                            },
+                    yAxis: {title: 'Count'},
+                    series: [{name: 'Value',
+                             data: response.data.simulation_graph_quarter.series
                              }],
                     plotOptions: {column: {pointPadding: 0.2,
                                   borderWidth: 0} },
