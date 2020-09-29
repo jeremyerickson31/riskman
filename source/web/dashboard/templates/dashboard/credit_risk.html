@@ -323,14 +323,27 @@
 
             function make_simulation_graph(response){
                 Highcharts.chart(simulation_graphs_div_id, {
-                    chart: {type: 'column'},
                     title: {text: 'Value Distribution'},
                     xAxis: {categories: response.data.simulation_graph.categories ,
                             title:{enabled:false}
                             },
-                    yAxis: {title: 'Count'},
-                    series: [{name: 'Value',
-                             data: response.data.simulation_graph.series
+                    yAxis: [{ // Primary yAxis
+                            title: {
+                                text: 'Value Count',}
+                            },
+                            { // Secondary yAxis
+                            title: {
+                                text: 'Cumulative',},
+                                opposite: true
+                                }],
+                    series: [{type: 'column',
+                              name: 'Value',
+                              data: response.data.simulation_graph.series
+                             },
+                             {type: 'line',
+                              name: 'Cumulative',
+                              data: response.data.simulation_graph.cumulative_series,
+                              yAxis: 1
                              }],
                     plotOptions: {column: {pointPadding: 0.2,
                                   borderWidth: 0} },
