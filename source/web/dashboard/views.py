@@ -190,10 +190,14 @@ def ajax_get_cred_risk_calcs(request):
             prices_histogram, bins = list(prices_histogram), list(bins)
             prices_histogram = [float(price) for price in prices_histogram]
             bins = [round(bin / 1000000.0, 3) for bin in bins]
+            cumulative_prices = numpy.array(prices_histogram).cumsum()
+            cumulative_prices = [int(value) for value in cumulative_prices]
             print(prices_histogram)
             print(bins)
+            print(cumulative_prices)
             response["data"]["simulation_graph"]["categories"] = bins
             response["data"]["simulation_graph"]["series"] = prices_histogram
+            response["data"]["simulation_graph"]["cumulative_series"] = cumulative_prices
             response["data"]["simulation_graph_half"]["categories"] = bins[0:51]
             response["data"]["simulation_graph_half"]["series"] = prices_histogram[0:51]
             response["data"]["simulation_graph_quarter"]["categories"] = bins[0:26]
