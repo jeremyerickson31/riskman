@@ -478,8 +478,10 @@ def run_credit_risk_analytical(bond_list, provider, correlation):
     logging.append("ENGINE: Performing Single Bond Calcs")
     bond_names = [bond.name for bond in bond_list]  # list of names to use for making two asset sub portfolios
     bond_calcs = dict()  # dictionary for holding the single asset and two asset calculations that have been done
+    current_portfolio_value = 0.0
     for bond in bond_list:
         bond.calc_price_stats()  # apply transition probabilities to prices to get mean and variance
+        current_portfolio_value += bond.market_value_dollar
 
         # add this bond object to the dictionary of bond objects that we have done calculations for
         bond_calcs[bond.name] = {"type": "single_asset", "stats": None, "object": bond}
@@ -522,7 +524,7 @@ def run_credit_risk_analytical(bond_list, provider, correlation):
             # add the two-asset sub portfolio vars
             portfolio_variance += bond_calcs[calc_name]["stats"]["dollar"]["variance"]
 
-    portfolio_calcs = {"mean": portfolio_mean, "variance": portfolio_variance}
+    portfolio_calcs = {"current_portfolio_value": current_portfolio_value, "mean": portfolio_mean, "variance": portfolio_variance}
 
     # loop through to get the marginal variance for each single asset in bond calcs
     for bond_name in bond_names:
