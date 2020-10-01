@@ -99,7 +99,9 @@ def ajax_get_cred_risk_calcs(request):
                                                        "analytical_details_table": {"columns": list(), "data": list()},
                                                        "simulation_graph": dict(),
                                                        "simulation_graph_half": dict(),
-                                                       "simulation_graph_quarter": dict()}}
+                                                       "simulation_graph_quarter": dict(),
+                                                       "simulation_pctls_table": {"columns": list(), "data": list()}}
+                }
 
     if request.method == "POST":
         try:
@@ -192,9 +194,7 @@ def ajax_get_cred_risk_calcs(request):
             bins = [round(bin / 1000000.0, 3) for bin in bins]
             cumulative_prices = numpy.array(prices_histogram).cumsum()
             cumulative_prices = [int(value) for value in cumulative_prices]
-            print(prices_histogram)
-            print(bins)
-            print(cumulative_prices)
+
             response["data"]["simulation_graph"]["categories"] = bins
             response["data"]["simulation_graph"]["series"] = prices_histogram
             response["data"]["simulation_graph"]["cumulative_series"] = cumulative_prices
@@ -205,6 +205,11 @@ def ajax_get_cred_risk_calcs(request):
 
             # make percentiles and get percentiles of value distribution"
             percentiles = [0.001, 0.01, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50]
+            values_at_percentile = [numpy.percentile(portfolio_prices, pctl*100.0) for pctl in percentiles]
+            response["data"]["simulation_pctls_table"]["columns"] = [str(pctl*100) + "th %" for pctl in percentiles]
+            response["data"]["simulation_pctls_table"]["data"] = values_at_percentile
+            print(response["data"]["simulation_pctls_table"]["data"])
+            print(response["data"]["simulation_pctls_table"]["columns"])
 
         except:
             response["status"] = 0
