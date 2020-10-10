@@ -137,7 +137,7 @@ def ajax_get_cred_risk_calcs(request):
                                                                 "data": []}
 
             # ##### get data from results for the graphs and tables #####
-            analytical_col_headers = ["ID", "Name", "Rating", "Mat", "Coup (%)", "Face ($)", "Value ($)", "Mean ($)", "Var ($<sup>2)", "Marginal ($<sup>2)"]
+            analytical_col_headers = ["ID", "Name", "Rating", "Mat", "Coup (%)", "Face ($)", "Value ($)", "Mean ($)", "Var ($<sup>2)"]
             response["data"]["analytical_table"]["columns"] = [{"title": col} for col in analytical_col_headers]
 
             analytical_details_col_headers = ["Name", "Rating", "Prices by Rating ($)", "Prices by Rating (%)", "Trans Probs"]
@@ -154,11 +154,11 @@ def ajax_get_cred_risk_calcs(request):
                     rating = bond.rating
                     maturity = bond.maturity
                     coupon = round(bond.coupon_pct * 100, 2)
-                    notional = round(common.fmt_num(bond.notional, "$", 1, "MM"), 5)
-                    value = round(common.fmt_num(bond.market_value_dollar, "$", 1, "MM"), 5)
-                    mean = round(common.fmt_num(bond.price_stats_dollar["mean"], "$", 1, "MM"), 5)
-                    variance = round(common.fmt_num(bond.price_stats_dollar["variance"], "$", 2, "MM"), 5)
-                    marg_variance = round(common.fmt_num(bond.marginal_variance, "$", 2, "MM"), 5)
+                    notional = round(common.fmt_num(bond.notional, "$", 1, "MM"), 3)
+                    value = round(common.fmt_num(bond.market_value_dollar, "$", 1, "MM"), 3)
+                    mean = round(common.fmt_num(bond.price_stats_dollar["mean"], "$", 1, "MM"), 3)
+                    variance = round(common.fmt_num(bond.price_stats_dollar["variance"], "$", 2, "MM"), 3)
+                    marg_variance = round(common.fmt_num(bond.marginal_variance, "$", 2, "MM"), 3)
                     pct_std_dev = round(variance**0.5 / value * 100, 3)
                     rating_level_pct_prices_fmt = {
                         key: round(bond.rating_level_prices_pct[key], 3)
@@ -167,7 +167,7 @@ def ajax_get_cred_risk_calcs(request):
                         key: round(common.fmt_num(bond.rating_level_prices_dollar[key], "$", 1, "MM"), 3)
                         for key in bond.rating_level_prices_dollar.keys()}
 
-                    analytical_table_package = [bond_id, name, rating, maturity, coupon, notional, value, mean, variance, marg_variance]
+                    analytical_table_package = [bond_id, name, rating, maturity, coupon, notional, value, mean, variance]
                     analytical_details_table_package = [name, rating,
                                                         str(rating_level_dollar_prices_fmt),
                                                         str(rating_level_pct_prices_fmt),
