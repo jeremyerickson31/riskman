@@ -258,6 +258,7 @@
                         make_simulation_graph(response)
                         make_simulation_graph_lower_half(response)
                         make_simulation_graph_lower_quarter(response)
+                        make_simulation_percentile_table(response)
                         }
                     },
                     failure: function (){
@@ -380,6 +381,16 @@
                     plotOptions: {column: {pointPadding: 0.2,
                                   borderWidth: 0} },
                 });
+            };
+
+            function make_simulation_percentile_table(response){
+                $("#" + simulation_tables_div_id + "_table").DataTable( {
+                    pageLength: 25,
+                    responsive: true,
+                    dom: '<"html5buttons"B>lTfgitp',
+                    data: response.data.simulation_pctls_table.data,
+                    columns: response.data.simulation_pctls_table.columns,
+                    } );
             };
 
         }
