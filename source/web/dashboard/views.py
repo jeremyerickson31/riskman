@@ -137,16 +137,18 @@ def ajax_get_cred_risk_calcs(request):
                                                                 "data": []}
 
             # ##### get data from results for the graphs and tables #####
-            analytical_col_headers = ["Name", "Rating", "Mat", "Coup (%)", "Face ($)", "Value ($)", "Mean ($)", "Var ($<sup>2)", "Marginal ($<sup>2)"]
+            analytical_col_headers = ["ID", "Name", "Rating", "Mat", "Coup (%)", "Face ($)", "Value ($)", "Mean ($)", "Var ($<sup>2)", "Marginal ($<sup>2)"]
             response["data"]["analytical_table"]["columns"] = [{"title": col} for col in analytical_col_headers]
 
             analytical_details_col_headers = ["Name", "Rating", "Prices by Rating ($)", "Prices by Rating (%)", "Trans Probs"]
             response["data"]["analytical_details_table"]["columns"] = [{"title": col} for col in analytical_details_col_headers]
 
             analytical_bond_calcs = results["analytical"]["bond_calcs"]
+            bond_id = 0
             for bond_name in analytical_bond_calcs.keys():
                 bond = analytical_bond_calcs[bond_name]
                 if bond["type"] == "single_asset":
+                    bond_id += 1
                     bond = bond["object"]
                     name = bond.name
                     rating = bond.rating
@@ -165,7 +167,7 @@ def ajax_get_cred_risk_calcs(request):
                         key: round(common.fmt_num(bond.rating_level_prices_dollar[key], "$", 1, "MM"), 3)
                         for key in bond.rating_level_prices_dollar.keys()}
 
-                    analytical_table_package = [name, rating, maturity, coupon, notional, value, mean, variance, marg_variance]
+                    analytical_table_package = [bond_id, name, rating, maturity, coupon, notional, value, mean, variance, marg_variance]
                     analytical_details_table_package = [name, rating,
                                                         str(rating_level_dollar_prices_fmt),
                                                         str(rating_level_pct_prices_fmt),
@@ -204,12 +206,22 @@ def ajax_get_cred_risk_calcs(request):
             response["data"]["simulation_graph_quarter"]["series"] = prices_histogram[0:26]
 
             # make percentiles and get percentiles of value distribution"
+            portfolio_curr_val = results["analytical"]["portfolio_calcs"]["current_portfolio_value"]
+            sim_percentile_columns = ["ID", "Percentile", "Value (MM$)", "% Change"]
+            simulation_percentile_table_data = list()
             percentiles = [0.001, 0.01, 0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50]
-            values_at_percentile = [numpy.percentile(portfolio_prices, pctl*100.0) for pctl in percentiles]
-            response["data"]["simulation_pctls_table"]["columns"] = [str(pctl*100) + "th %" for pctl in percentiles]
-            response["data"]["simulation_pctls_table"]["data"] = values_at_percentile
-            print(response["data"]["simulation_pctls_table"]["data"])
-            print(response["data"]["simulation_pctls_table"]["columns"])
+            id = 0
+            for pctl in percentiles:
+                id += 1
+                pctl_name = str(pctl*100) + "th %"
+                pctl_value = numpy.percentile(portfolio_prices, pctl*100.0)
+                pctl_percent_of_currval = round((pctl_value - portfolio_curr_val) / portfolio_curr_val * 100, 3)
+
+                pctl_value = round(pctl_value / 1000000.0, 5)
+                simulation_percentile_table_data.append([id, pctl_name, pctl_value, pctl_percent_of_currval])
+
+            response["data"]["simulation_pctls_table"]["data"] = simulation_percentile_table_data
+            response["data"]["simulation_pctls_table"]["columns"] = [{"title": col} for col in sim_percentile_columns]
 
         except:
             response["status"] = 0
